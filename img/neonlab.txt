@@ -1,0 +1,127 @@
+DASH 8+5-
+
+body
+    background: #fbfbfb
+    font-size: 14px
+    font-family: 'PragmaticaC' ,'PragmaticaC Bold', 'PragmaticaC Oblique'
+
+link
+    color: #3782d7
+
+header
+    height: 55px;
+      menu
+          font: Veranda Regular 14px uppercase {@link} (active: b6c1c6)
+          
+grey header
+     font1:
+           font-size: 21px
+     font2:
+           font-size: 12px
+           color: #cbd4de
+           
+TOP CONTENT
+           
+left_column
+     width:252px
+     margin-right:18px
+     header
+           font: 12px #858e93 uppercase
+     italic_text
+           font: 'PFCentroSlabPro Italic' italic 12px #b6c1c6
+                
+     controls(button,input)
+	   width: 228px
+           blue
+               width: 141px
+               background: 498ad5
+               color: #fff
+               font (+ HelveticaNeue Bold 17px) {@standart} uppercase
+	   yellow
+	       background: ffde00
+	       color: 424c58
+               font: {@standart} uppercase
+	   input
+	        border: 1px solid cbcbcb
+	        color1 275a08
+	        color2 b6c1c6
+               
+main_area
+	 width: 752px
+	 editor
+	       border 1px solid
+	       head
+		   750x32
+	           button
+	                 background: a3b1b8
+	                 font: #ffffff uppercase {@standart}
+			 170x30
+		   select
+		         triangl: a6a5a3
+		         color: #858e93
+		         stroke: e7ecf1
+	       base
+	           750x208
+	           stroke: e0e5ef
+	           background: #f7f7f7
+	           background-iamge: +(dash 8+5- #d7e2ec)
+	result
+	      padding:84px
+	      width: 668
+       	      		  block1:
+			      font1: 10px b6c1c6 uppercase
+			      font2: 30px 272e41
+			      font3: 30px 858e93
+			      334x108
+			  hr
+			    background-image
+			  h1
+			    21px uppercase 272e41
+			  file
+			      17px
+			      272e41
+			  p
+			   17px
+			   858e93
+			   
+			  span
+			      uppercase 10px b6c1c6
+			      30px  272e41
+			  span_itog
+			           30px 858e93
+
+	      
+FOOTER
+      color 3e4758
+      
+POPUP
+     paddin 40 30
+     bg: f7f7f7
+     color: 858e93
+     stroke: d5dcea
+     
+     buttons
+            color: 424c58
+            stroke: e5e5e5
+            14px uppercase
+            
+SELECT
+      background (#ffffff #76a2ca #f7f7f7)
+      color(#858e93, #fff, #272e41)
+      
+STICK
+     color: 858e93
+     bg: f7f7f7
+     padding 55 35
+     
+checkbox
+	stroke: d5dcea
+	
+@green 819625
+
+@red f26c4f
+            
+	           
+		         
+	                 
+	       

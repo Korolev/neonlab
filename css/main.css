@@ -1,0 +1,477 @@
+/**
+ * Global Reset of all HTML Elements
+ *
+ * Resetting all of our HTML Elements ensures a smoother
+ * visual transition between browsers. If you don't believe me,
+ * try temporarily commenting out this block of code, then go
+ * and look at Mozilla versus Safari, both good browsers with
+ * a good implementation of CSS. The thing is, all browser CSS
+ * defaults are different and at the end of the day if visual
+ * consistency is what we're shooting for, then we need to
+ * make sure we're resetting all spacing elements.
+ *
+ */
+html,
+body {
+  border: 0;
+  font-family: "Helvetica-Neue", "Helvetica", Arial, sans-serif;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+}
+div,
+span,
+object,
+iframe,
+img,
+table,
+caption,
+thead,
+tbody,
+tfoot,
+tr,
+tr,
+td,
+article,
+aside,
+canvas,
+details,
+figure,
+hgroup,
+menu,
+nav,
+footer,
+header,
+section,
+summary,
+mark,
+audio,
+video {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+address,
+cit,
+code,
+del,
+dfn,
+em,
+ins,
+q,
+samp,
+small,
+strong,
+sub,
+sup,
+b,
+i,
+hr,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+legend,
+label {
+  border: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  margin: 0;
+  padding: 0;
+}
+article,
+aside,
+canvas,
+figure,
+figure img,
+figcaption,
+hgroup,
+footer,
+header,
+nav,
+section,
+audio,
+video {
+  display: block;
+}
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+table caption,
+table th,
+table td {
+  text-align: left;
+  vertical-align: middle;
+}
+a img {
+  border: 0;
+}
+:focus {
+  outline: 0;
+}
+@font-face {
+  font-family: 'Conv_pfagoraslabpro-italicwebfont';
+  src: url('fonts/pfagoraslabpro-italicwebfont.eot');
+  src: local('☺'), url('fonts/pfagoraslabpro-italicwebfont.woff') format('woff'), url('fonts/pfagoraslabpro-italicwebfont.ttf') format('truetype'), url('fonts/pfagoraslabpro-italicwebfont.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Conv_Pragmatica';
+  src: url('fonts/Pragmatica.eot');
+  src: local('☺'), url('fonts/Pragmatica.woff') format('woff'), url('fonts/Pragmatica.ttf') format('truetype'), url('fonts/Pragmatica.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Conv_Pragmatica Bold';
+  src: url('fonts/Pragmatica Bold.eot');
+  src: local('☺'), url('fonts/Pragmatica Bold.woff') format('woff'), url('fonts/Pragmatica Bold.ttf') format('truetype'), url('fonts/Pragmatica Bold.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Conv_Pragmatica BoldItalic';
+  src: url('fonts/Pragmatica BoldItalic.eot');
+  src: local('☺'), url('fonts/Pragmatica BoldItalic.woff') format('woff'), url('fonts/Pragmatica BoldItalic.ttf') format('truetype'), url('fonts/Pragmatica BoldItalic.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Conv_Pragmatica Italic';
+  src: url('fonts/Pragmatica Italic.eot');
+  src: local('☺'), url('fonts/Pragmatica Italic.woff') format('woff'), url('fonts/Pragmatica Italic.ttf') format('truetype'), url('fonts/Pragmatica Italic.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+html {
+  min-height: 100%;
+}
+i.icon {
+  background-image: url('../img/main_sprite.png');
+  background-repeat: no-repeat;
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+}
+html.test {
+  background-image: url("../png/2NEONLAB1.png");
+  background-repeat: no-repeat;
+  background-position: top center;
+  padding-top: 2500px;
+}
+.box_sizing_border_box {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
+}
+body {
+  background-image: url("../img/grey_bg.png");
+  background-repeat: repeat-x;
+  background-position: 0 55px;
+  min-height: 100%;
+  background-color: #fbfbfb;
+  color: #858e93;
+  font-size: 14px;
+  font-family: 'Conv_Pragmatica', Sans-Serif;
+}
+b {
+  font-family: "Conv_Pragmatica Bold";
+}
+.vr {
+  display: inline-block;
+  min-height: 15px;
+  min-width: 1px;
+  margin: 0 2px;
+  background-color: #b6c1c6;
+  position: relative;
+  top: 3px;
+}
+.clear {
+  float: none !important;
+  clear: both;
+}
+input,
+.button {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
+  height: 45px;
+  min-width: 20px;
+}
+.button {
+  color: white;
+  text-transform: uppercase;
+  line-height: 46px;
+  text-align: center;
+  cursor: pointer;
+}
+.blue_button {
+  background-color: #498ad5;
+}
+.yellow_button {
+  background-color: #ffde00;
+  color: #424c58;
+}
+input[type='text'] {
+  border: 1px solid #cbcbcb;
+  padding: 8px;
+}
+a,
+a:hover,
+a:visited,
+a:active {
+  color: #3782d7;
+  text-decoration: none;
+}
+a.selected {
+  color: #b6c1c6;
+}
+.wrapper {
+  max-width: 1022px;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+.head_nav {
+  height: 55px;
+  width: 100%;
+  font-family: Verdana, Helvetica, "san-serif";
+}
+.head_nav ul {
+  list-style: none;
+  float: right;
+}
+.head_nav ul li {
+  float: left;
+  line-height: 55px;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0 24px;
+}
+.head_grey {
+  height: 87px;
+  color: white;
+  margin-bottom: 18px;
+}
+.head_grey h1 {
+  font-size: 21px;
+  text-transform: uppercase;
+  padding: 6px;
+  font-weight: normal;
+  line-height: 1.2;
+}
+.head_grey p {
+  font-size: 12px;
+  color: #cbd4de;
+  padding-left: 6px;
+}
+.left_column {
+  float: left;
+  width: 234px;
+  margin-right: 24px;
+  padding-left: 9px;
+}
+.left_column h2 {
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: normal;
+  margin: 18px 0 8px;
+  padding-left: 8px;
+}
+.left_column .blue_button {
+  display: inline-block;
+  width: 141px;
+  vertical-align: top;
+}
+.left_column .blue_button_after {
+  display: inline-block;
+  height: 45px;
+  width: 45px;
+  background-image: url("../img/main_sprite.png");
+  background-repeat: no-repeat;
+  vertical-align: top;
+}
+.left_column .blue_button_after.question {
+  background-position: 4px -106px;
+}
+.left_column input[type='text'] {
+  width: 100%;
+}
+.left_column .yellow_button {
+  margin-top: 36px;
+}
+.left_column .comment {
+  font-family: san-serif;
+  font-size: 12px;
+  font-style: italic;
+  color: #b6c1c6;
+  padding: 18px;
+  margin-top: 18px;
+  font-family: 'Conv_pfagoraslabpro-italicwebfont', Sans-Serif;
+}
+.main_page {
+  width: 752px;
+  float: left;
+}
+.main_page .editor {
+  margin-top: 18px;
+}
+.main_page .editor > div {
+  border-radius: 2px;
+}
+.main_page .editor .editor_head {
+  width: 750px;
+  height: 34px;
+  border: 1px solid #e0e5ef;
+  border-bottom: none;
+  background-color: white;
+}
+.main_page .editor .editor_head .button {
+  width: 170px;
+  height: 30px;
+  background-color: #a3b1b8;
+  margin: 2px 0 0 2px;
+  line-height: 30px;
+}
+.main_page .editor .editor_head .button i {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  background-position: -7px -403px;
+}
+.main_page .editor .editor_base {
+  width: 750px;
+  height: 458px;
+  border: 1px solid #e0e5ef;
+  background-color: #f7f7f7;
+}
+.main_page .result_out {
+  width: 668px;
+  margin-left: 84px;
+}
+.main_page .result_out .background_dash_image {
+  background-image: url("../img/blue_dash.png");
+  background-repeat: repeat-x;
+  background-position: left bottom;
+}
+.main_page .result_out .result_block_holder {
+  height: 108px;
+  background-image: url("../img/blue_dash.png");
+  background-repeat: repeat-x;
+  background-position: left bottom;
+}
+.main_page .result_out .result_block {
+  height: 108px;
+  width: 334px;
+  float: left;
+  font-size: 17px;
+}
+.main_page .result_out .result_block .top {
+  text-transform: uppercase;
+  width: 150px;
+  font-size: 11px;
+  line-height: 13px;
+  color: #b6c1c6;
+  height: 46px;
+  padding-top: 24px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.main_page .result_out .result_block .bottom {
+  height: 54px;
+  font-size: 30px;
+  line-height: 55px;
+}
+.main_page .result_out .result_block .bottom span.digit_dark {
+  color: #272e41;
+  font-family: 'Conv_Pragmatica Bold', Sans-Serif;
+}
+.main_page .result_out .result_block .bottom span.slim_digit {
+  color: #272e41;
+}
+.main_page .result_out .summ_result .top {
+  height: 35px;
+  padding-top: 18px;
+}
+.main_page .result_out .summ_result .bottom {
+  line-height: 40px;
+}
+.main_page .result_out .result_text {
+  background-image: url("../img/blue_dash.png");
+  background-repeat: repeat-x;
+  background-position: left bottom;
+  font-size: 17px;
+  padding-bottom: 36px;
+}
+.main_page .result_out h1 {
+  font-size: 21px;
+  color: #272e41;
+  text-transform: uppercase;
+  font-weight: normal;
+  margin: 36px 0 18px;
+}
+.main_page .result_out .file_name {
+  color: #272e41;
+  font-family: 'Conv_Pragmatica Bold', Sans-Serif;
+}
+.main_page .result_out .text_block {
+  float: left;
+  width: 334px;
+}
+.main_page .result_out .text_block .text_block_item {
+  margin-top: 18px;
+}
+.main_page .result_out .text_block .text_block_item div span {
+  color: #272e41;
+  font-family: 'Conv_Pragmatica Bold', Sans-Serif;
+}
+.stick {
+  position: absolute;
+  left: 0;
+  top: 780px;
+  background-color: #f7f7f7;
+  padding: 55px 35px 35px;
+  border: 1px solid #e0e5ef;
+  width: 260px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.stick i.mark {
+  background-position: -2px -340px;
+  top: 24px;
+  left: 30px;
+  position: absolute;
+}
+.stick .stick_link {
+  margin-top: 13px;
+}
+.footer {
+  color: #3e4758;
+  width: 752px;
+  text-align: center;
+  height: 40px;
+  padding-top: 80px;
+  padding-left: 270px;
+}
