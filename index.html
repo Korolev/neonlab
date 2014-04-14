@@ -44,8 +44,11 @@
         </div>
         <div class="left_column">
             <h2>Загрузите фаил</h2>
-            <div class="button blue_button">Добавить</div>
-            <div class="blue_button_after question"></div>
+            <form method="post" enctype="multipart/form-data" id="file_upload">
+                <input type="file" name="cdrfile">
+                <div class="button blue_button">Добавить</div>
+                <div class="blue_button_after question"></div>
+            </form>
             <h2>Задайте глубину вывески</h2>
             <input type="text" name="deep">
             <div class="button yellow_button">Расчитать</div>
@@ -152,5 +155,7 @@
            © ООО "НеонЛаб" - световая наружная, светододная реклама, 2005-2014
         </div>
     </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>

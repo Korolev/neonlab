@@ -173,7 +173,7 @@ html.test {
   background-image: url("../png/2NEONLAB1.png");
   background-repeat: no-repeat;
   background-position: top center;
-  padding-top: 2500px;
+  padding-bottom: 2500px;
 }
 .box_sizing_border_box {
   -webkit-box-sizing: border-box;
@@ -296,10 +296,19 @@ a.selected {
   margin: 18px 0 8px;
   padding-left: 8px;
 }
+.left_column #file_upload input {
+  display: none;
+  position: absolute;
+  width: 140px;
+  z-index: 10;
+  left: 0;
+  cursor: pointer;
+}
 .left_column .blue_button {
   display: inline-block;
   width: 141px;
   vertical-align: top;
+  overflow: hidden;
 }
 .left_column .blue_button_after {
   display: inline-block;

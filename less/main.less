@@ -19,7 +19,7 @@ html.test {
   background-image: url("../png/2NEONLAB1.png");
   background-repeat: no-repeat;
   background-position: top center;
-  padding-top: 2500px;
+  padding-bottom: 2500px;
 }
 
 //Variables COLORS
@@ -174,10 +174,24 @@ a.selected {
     padding-left: 8px;
   }
 
+  #file_upload{
+    input{
+      //      visibility: hidden;
+      //      opacity: 0;
+      display: none;
+      position: absolute;
+      width: 140px;
+      z-index: 10;
+      left: 0;
+      cursor: pointer;
+    }
+  }
+
   .blue_button {
     display: inline-block;
     width: 141px;
     vertical-align: top;
+    overflow: hidden;
   }
 
   .blue_button_after {
