@@ -245,6 +245,7 @@ a.selected {
   color: #b6c1c6;
 }
 .wrapper {
+  min-width: 1022px;
   max-width: 1022px;
   width: 100%;
   margin: 0 auto;
