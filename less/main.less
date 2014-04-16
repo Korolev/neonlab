@@ -208,6 +208,11 @@ a.selected {
     background-position: 4px -106px;
   }
 
+  .blue_button_after.loading {
+    background-position: 4px 8px;
+    background-image: url("../img/loading_1.gif");
+  }
+
   input[type='text'] {
     width: 100%;
     //border: 1px solid cbcbcb
@@ -275,7 +280,10 @@ a.selected {
       height: 458px;
       border: 1px solid @editor_border;
       background-color: @editor_background;
+      overflow: hidden;
+      cursor: move;
       //background-iamge: +(dash 8+5- #d7e2ec)
+
     }
   }
 

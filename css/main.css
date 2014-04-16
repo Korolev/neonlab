@@ -322,6 +322,10 @@ a.selected {
 .left_column .blue_button_after.question {
   background-position: 4px -106px;
 }
+.left_column .blue_button_after.loading {
+  background-position: 4px 8px;
+  background-image: url("../img/loading_1.gif");
+}
 .left_column input[type='text'] {
   width: 100%;
 }
@@ -372,6 +376,8 @@ a.selected {
   height: 458px;
   border: 1px solid #e0e5ef;
   background-color: #f7f7f7;
+  overflow: hidden;
+  cursor: move;
 }
 .main_page .result_out {
   width: 668px;
