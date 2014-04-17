@@ -219,7 +219,7 @@ input,
 .button {
   color: white;
   text-transform: uppercase;
-  line-height: 46px;
+  line-height: 50px;
   text-align: center;
   cursor: pointer;
 }
@@ -496,8 +496,8 @@ a.selected {
 .footer {
   color: #3e4758;
   width: 752px;
-  text-align: center;
+  text-align: left;
   height: 40px;
   padding-top: 80px;
-  padding-left: 270px;
+  padding-left: 350px;
 }
