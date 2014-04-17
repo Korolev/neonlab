@@ -332,10 +332,21 @@ a.selected {
 }
 .left_column .blue_button_after.loading {
   background-position: 4px 8px;
-  background-image: url("../img/loading_1.gif");
+  background-image: url("../img/loading_2.gif");
 }
 .left_column input[type='text'] {
   width: 100%;
+  font-size: 21px;
+  color: #424c58;
+  position: relative;
+}
+.left_column input:after {
+  display: block;
+  width: 20px;
+  height: 20px;
+  content: 'mm';
+  position: absolute;
+  right: -3px;
 }
 .left_column .yellow_button {
   margin-top: 36px;
@@ -380,6 +391,7 @@ a.selected {
   height: 16px;
   vertical-align: middle;
   background-position: -7px -403px;
+  margin-right: 3px;
 }
 .main_page .editor .editor_base {
   width: 750px;
