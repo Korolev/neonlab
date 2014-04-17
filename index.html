@@ -46,12 +46,12 @@
         <div class="left_column">
             <h2>Загрузите фаил</h2>
             <form method="post" enctype="multipart/form-data" id="file_upload">
-                <input type="file" name="cdrfile">
+                <input type="file" data-bind="event:{change:changeInputFile}">
                 <div class="button blue_button">Добавить</div>
-                <div class="blue_button_after question"></div>
+                <div class="blue_button_after " data-bind="css:statusClass"></div>
             </form>
             <h2>Задайте глубину вывески</h2>
-            <input type="text" name="deep">
+            <input type="text" id="deep" data-bind="value:greedDeep">
             <div class="button yellow_button">Рассчитать</div>
 
             <p class="comment">
@@ -62,6 +62,17 @@
             <div class="editor">
                 <div class="editor_head">
                     <div class="button darkgrey_button"><i class="icon i-edit"></i>Редактировать</div>
+
+                    <!--ZOOM-->
+                    <div style="padding-left: 50px; display: inline-block">
+                        <a href="#" data-bind="click:function(){$root.setZoom('zoomIn')}">Zoom +   </a>
+                        <a href="#"  data-bind="click:function(){$root.setZoom('zoomOut')}">Zoom -   </a>
+                        <a href="#"  data-bind="click:function(){$root.setZoom('height')}">По высоте   </a>
+                        <a href="#"  data-bind="click:function(){$root.setZoom('fit')}">Заполнить   </a>
+                        <a href="#"  data-bind="click:function(){$root.setZoom('1:1')}">1:1 </a>
+                    </div>
+                    <!--ZOOM-->
+
                 </div>
                 <div class="editor_base">
                     <svg id="editor_svg"></svg>
@@ -85,7 +96,7 @@
                 </div>
                 <div class="result_text">
                     <h1>Технические показатели</h1>
-                    <div class="file_name">Фаил: Karo_film.cdr</div>
+                    <div class="file_name">Фаил: <span data-bind="text:fileName"></span></div>
                     <div class="text_block">
                         <div class="text_block_item">
                             <div>Размеры: <span>0</span><span> мм</span></div>
@@ -159,7 +170,9 @@
         </div>
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script src="js/libs/knockout-3.1.0.js"></script>
     <script src="js/libs/snap.svg-min.js"></script>
+    <script src="js/ViewModel/ApplicationViewModel.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

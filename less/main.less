@@ -169,7 +169,7 @@ a.selected {
 
   h2 {
     font-size: 12px;
-    text-transform: uppercase;
+//    text-transform: uppercase;
     font-weight: normal;
     margin: 18px 0 8px;
     padding-left: 8px;
@@ -204,8 +204,21 @@ a.selected {
     vertical-align: top;
   }
 
+
+  .blue_button_after.none__ {
+    background-image: none;
+  }
+
   .blue_button_after.question {
     background-position: 4px -106px;
+  }
+
+  .blue_button_after.success {
+    background-position: 4px 8px;
+  }
+
+  .blue_button_after.error {
+    background-position: 4px -48px;
   }
 
   .blue_button_after.loading {
@@ -260,6 +273,7 @@ a.selected {
         background-color: #a3b1b8;
         margin: 2px 0 0 2px;
         line-height: 30px;
+        display: inline-block;
 
         i{
           width: 16px;
@@ -351,7 +365,7 @@ a.selected {
 
     .result_text{
       .background_dash_image;
-      font-size: 17px;
+      font-size: 14px;
       padding-bottom: 36px;
     }
 
@@ -359,8 +373,8 @@ a.selected {
       font-size: 21px;
       color: @default_dark_text_color;
       text-transform: uppercase;
-      font-weight: normal;
       margin: 36px 0 18px;
+      font-family: 'Conv_Pragmatica Bold',Sans-Serif;
     }
 
     .file_name {
@@ -396,6 +410,7 @@ a.selected {
   border: 1px solid @editor_border;
   width: 260px;
   .box_sizing_border_box;
+  font-size: 12px;
 
   i.mark{
     background-position: -2px -340px;
