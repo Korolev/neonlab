@@ -365,13 +365,14 @@ a.selected {
   border: 1px solid #e0e5ef;
   border-bottom: none;
   background-color: white;
+  text-align: right;
 }
 .main_page .editor .editor_head .button {
   width: 170px;
   height: 30px;
   background-color: #a3b1b8;
-  margin: 2px 0 0 2px;
-  line-height: 30px;
+  margin: 2px 2px 0 2px;
+  line-height: 33px;
   display: inline-block;
 }
 .main_page .editor .editor_head .button i {
