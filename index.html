@@ -58,8 +58,11 @@
                 <div class="blue_button_after " data-bind="css:statusClass"></div>
             </form>
             <h2>Задайте глубину вывески</h2>
-            <input type="text" id="deep" data-bind="value:greedDeep">
-            <div class="button yellow_button">Рассчитать</div>
+            <div class="deep_form">
+                <input type="text" id="deep" data-bind="value:greedDeep">
+                <div class="deep_size">mm</div>
+            </div>
+            <div class="button yellow_button" data-bind="click:calculateDiod">Рассчитать</div>
 
             <p class="comment">
                 Если Вас не устраивает общий результат, Вы можете отредактировать каждый объект.
@@ -106,6 +109,7 @@
                     <div class="file_name">Фаил: <span data-bind="text:fileName"></span></div>
                     <div class="text_block">
                         <div class="text_block_item">
+                            <div>Характеристики: <span>-</span></div>
                             <div>Размеры: <span>0</span><span> мм</span></div>
                             <div>Общий периметр: <span>0</span><span> мм</span></div>
                             <div>Общая глубина: <span>0</span><span> мм</span></div>
@@ -114,8 +118,7 @@
                             <div>Блок питания: <span>-</span></div>
                             <div>Необходимая мощность<br>
                                 блока питания: <span>0</span><span> Вт</span></div>
-                            <div>Глубина: <span>0</span><span> мм</span></div>
-                            <div>Характеристики: <span>-</span></div>
+                            <!--<div>Глубина: <span>0</span><span> мм</span></div>-->
                             <div>Количество: <span>0</span><span> Шт</span></div>
                             <div>Сила тока: <span>0</span><span> А</span></div>
                         </div>
@@ -169,7 +172,7 @@
             <div class="stick_link">
                 <a href="mailto:info@neonlab.ru">Написать нам</a>
                 <span class="vr"></span>
-                <a href="http://сalculed.reformal.ru">Поддержка</a>
+                <a href="http://calculed.reformal.ru">Поддержка</a>
             </div>
         </div>
         <div class="footer">

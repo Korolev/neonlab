@@ -16,7 +16,7 @@ var ApplicationViewModel = function(){
     this.svgObject = ko.observable();
     this.svgStartunitType = 0;
     this.svgScale = ko.observable(1);
-    this.greedDeep = ko.observable(1);
+    this.greedDeep = ko.observable();
 
     this.fileUploadStatus = {
         ready:{
@@ -46,6 +46,31 @@ var ApplicationViewModel = function(){
             self.svgObject().setAttribute('transform','scale('+val+')');
         }
     });
+
+    this.calculateDiod = function(){
+        /*
+        * 20x9(d:60-100)
+        * 25x25(d:80-150)
+        * 25x25(d:150-200)
+        * 25x25(d:180-250)
+        * */
+        var svgDom = self.svgObject(),
+            w,
+            h;
+
+        svgDom.width.baseVal.convertToSpecifiedUnits(self.svgStartUnitType);
+        svgDom.height.baseVal.convertToSpecifiedUnits(self.svgStartUnitType);
+
+        w = svgDom.width.baseVal.value;
+        h = svgDom.height.baseVal.value;
+
+        console.log(w);
+        console.log(h);
+
+        console.log(self.greedDeep());
+        var svg = self.canvas.select('svg');
+
+    };
 
     this.setZoom = function(zoom){
         zoom = zoom || 'fit';
