@@ -225,12 +225,12 @@ input,
 }
 .blue_button {
   background-color: #498ad5;
-  box-shadow: 2px 2px 2px rgba(176, 191, 204, 0.5);
+  box-shadow: 0px 2px 2px rgba(176, 191, 204, 0.5);
 }
 .yellow_button {
   background-color: #ffde00;
   color: #424c58;
-  box-shadow: 2px 2px 2px rgba(218, 184, 32, 0.75);
+  box-shadow: 0px 2px 2px rgba(218, 184, 32, 0.75);
 }
 input[type='text'] {
   border: 1px solid #cbcbcb;
