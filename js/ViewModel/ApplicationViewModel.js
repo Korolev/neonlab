@@ -150,6 +150,9 @@ var ApplicationViewModel = function(){
             self.pointsCount(pointsCount);
             self.setZoom('fit');
             $(ifrm).remove();
+            setTimeout(function(){
+                self.showDialog(true);
+            },1000);
         });
 
     };
