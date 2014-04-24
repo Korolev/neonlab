@@ -103,6 +103,8 @@ input,
 input[type='text'] {
   border: 1px solid #cbcbcb;
   padding: 8px;
+  font-size: 21px;
+  color: @yellow_button_text;
 }
 
 a,
@@ -148,7 +150,8 @@ a.selected {
   height: 87px;
   color: white;
   margin-bottom: 18px;
-  background-image: url("../img/logo.png");
+//  background-image: url("../img/logo.png");
+  background-image: url("../img/logo_finish.png");
   background-repeat: no-repeat;
   background-position: center right;
 
@@ -258,8 +261,6 @@ a.selected {
 
   input[type='text'] {
     width: 100%;
-    font-size: 21px;
-    color: @yellow_button_text;
     padding-right: 40px;
     //border: 1px solid cbcbcb
     //color1 275a08
@@ -481,5 +482,123 @@ a.selected {
   height: 40px;
   padding-top: 80px;
   padding-left: 350px;
+}
+
+.show_dialog{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.dialog_holder{
+  position: fixed;
+  z-index: 50;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.dialog_body{
+  background-color: #ffffff;
+  width: 706px;
+  min-height: 200px;
+  top:40px;
+  left: 50%;
+  margin-left: -375px;
+  position: absolute;
+  z-index: 100;
+
+  .dialog_close{
+    position: absolute;
+    right: -25px;
+    top: 3px;
+    color: #ffffff;
+    font-weight: bold;
+    cursor: pointer;
+    background-image: url("../img/closeDialog.png");
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.user_info_dialog{
+  padding-bottom: 80px;
+
+  .img_holder{
+    background-color: @editor_background;
+
+    .img_svg{
+      min-height: 200px;
+      text-align: center;
+    }
+
+    .remember_me{
+      text-align: right;
+      padding:0 72px 18px;
+      input{
+        visibility: hidden;
+      }
+      label{
+        position: relative;
+        font-size: 12px;
+        line-height: 20px;
+      }
+      input + label:before{
+        position: absolute;
+        content: '';
+        left: -24px;
+        top: -3px;
+        height: 16px;
+        width: 16px;
+        display: block;
+        border: 1px solid #76a2ca;
+        cursor: pointer;
+      }
+      input:checked + label:before{
+        background-image: url("../img/main_sprite.png");
+        background-repeat: no-repeat;
+        background-position: -6px -459px;
+      }
+    }
+  }
+
+  .state_message{
+    padding: 30px 100px;
+    text-align: center;
+    color: @default_text_color;
+  }
+
+  .form{
+    padding: 20px 0 0 103px;
+    .horisontal_form_element{
+      min-height: 30px;
+      height: 65px;
+      width: 228px;
+      margin: 6px 36px 0 0;
+      float: left;
+      .box_sizing_border_box;
+      position: relative;
+
+      input{
+        width: 100%;
+        color: @default_text_color;
+        font-size: 18px;
+      }
+
+      .label{
+        text-transform: uppercase;
+        font-size: 10px;
+
+        span{
+          color: red;
+        }
+      }
+    }
+    .label{
+      height: 20px;
+    }
+  }
 }
 

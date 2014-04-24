@@ -1,8 +1,15 @@
 /**
  * Created by mk-sfdev on 4/17/14.
  */
+//147.svg - KARO
+
 var ApplicationViewModel = function(){
     var self = this,
+        messages = {
+            base:"Пожалуйста, введите Ваши данные,<br>\
+            технический расчет будет отправлен на Ваш электронный адрес<br>\
+                и Вы всегда сможете вернуться к нему."
+        }
         uploadUrl = 'http://neonlab.studiovsemoe.com/upload.php',
         downloadUrl = 'http://neonlab.studiovsemoe.com/upload/',
         editor_holder = $('.editor_base'),
@@ -13,10 +20,22 @@ var ApplicationViewModel = function(){
         width: workrarea_width,
         height: workarea_height
     });
+    this.svgDomObject = ko.observable();
     this.svgObject = ko.observable();
     this.svgStartunitType = 0;
     this.svgScale = ko.observable(1);
     this.greedDeep = ko.observable();
+
+/* =============== */
+    this.showDialog = ko.observable(false);
+    this.currentMessage = ko.observable(messages.base);
+    this.userName = ko.observable('');
+    this.userEmail = ko.observable('');
+    this.userPhone = ko.observable('');
+    this.userPhoneMask = ko.observable('+7(9999)-999-99-99');
+/* =============== */
+    this.pointsCount = ko.observable(0);
+/* =============== */
 
     this.fileUploadStatus = {
         ready:{
@@ -41,10 +60,31 @@ var ApplicationViewModel = function(){
         return st ? st.cssClass : 'none__';
     },this).extend({throttle:1});
 
+    this.getSvgImg = ko.computed(function(){
+        var html = '';
+        if(self.svgObject()){
+//            var bStr = window.btoa(self.svgObject().outerHTML);
+//            html = '<img src="data:image/svg+xml;base64,'+bStr+'" style="width:550px">'
+        }
+        return html;
+    },this).extend({throttle:100});
+
     self.svgScale.subscribe(function(val){
         if(val && val > 0){
             self.svgObject().setAttribute('transform','scale('+val+')');
         }
+    });
+
+    self.greedDeep.subscribe(function(val){
+       var v = parseInt(val,10);
+        if(isNaN(v)){
+            v = 80;
+        }else if (v < 60){
+            v = 80;
+        }else if(v > 250){
+            v = 200;
+        }
+        self.greedDeep(v);
     });
 
     this.calculateDiod = function(){
@@ -54,29 +94,71 @@ var ApplicationViewModel = function(){
         * 25x25(d:150-200)
         * 25x25(d:180-250)
         * */
-        var svgDom = self.svgObject(),
-            w,
-            h;
+        var ifrm = document.createElement('IFRAME'),
+            svgDom = self.svgObject();
 
-        svgDom.width.baseVal.convertToSpecifiedUnits(self.svgStartUnitType);
-        svgDom.height.baseVal.convertToSpecifiedUnits(self.svgStartUnitType);
+        ifrm.setAttribute('src',location.origin+location.pathname+'iframe.html');
+        ifrm.style.width = '250mm';
+        ifrm.style.height = '250mm';
+        document.body.appendChild(ifrm);
+        self.ifrm = ifrm;
 
-        w = svgDom.width.baseVal.value;
-        h = svgDom.height.baseVal.value;
 
-        console.log(w);
-        console.log(h);
+        var ifrmWin = ifrm.contentWindow,
+            ifrmDoc = ifrmWin.document;
 
-        console.log(self.greedDeep());
-        var svg = self.canvas.select('svg');
+
+        $(ifrm).load(function(){
+            var _Sanp = ifrmWin.Snap,
+                deep = self.greedDeep();
+
+            var b = _Sanp(ifrmWin.document.body);
+            b.append(svgDom);
+
+            var canvas = _Sanp(svgDom),
+                canvasWidth = parseInt(canvas.attr('width'),10),
+                canvasHeight = parseInt(canvas.attr('height'),10),
+                viewBox = canvas.attr('viewBox'),
+                pixelUnitToMillimeterX = canvas.node.pixelUnitToMillimeterX,
+                scrollX = 0,
+                scrollY = 0,
+                pointsCount = 0;
+
+            self.pixelUnitToMillimeterX = pixelUnitToMillimeterX;
+
+
+            while(scrollX < canvasWidth){
+                while(scrollY < canvasHeight){
+                    var _figure_ = _Sanp.getElementByPoint(deep/pixelUnitToMillimeterX, deep/pixelUnitToMillimeterX);
+                    if(_figure_ && _figure_.attr('fill') == "rgb(255, 255, 255)"){
+                        canvas.rect(
+                            scrollX*100+viewBox.x+5000,
+                            scrollY*100+viewBox.y+5000,
+                            2500,2500);
+                        pointsCount++;
+                    }
+                    scrollY += deep;
+                    ifrmWin.scrollTo(scrollX/pixelUnitToMillimeterX,scrollY/pixelUnitToMillimeterX);
+                }
+                scrollY = 0;
+                scrollX += deep;
+            }
+
+            ifrmWin.scrollTo(0,0);
+            self.canvas.append(canvas.node);
+            self.canvas.select('svg').drag();
+            self.pointsCount(pointsCount);
+            self.setZoom('fit');
+            $(ifrm).remove();
+        });
 
     };
 
     this.setZoom = function(zoom){
         zoom = zoom || 'fit';
         var a = self.canvas.select('svg'),
-            svgWidth = parseFloat(a.attr('width')),
-            svgHeight = parseFloat(a.attr('height')),
+            svgWidth = parseFloat(a.attr('width'))/self.pixelUnitToMillimeterX,
+            svgHeight = parseFloat(a.attr('height'))/self.pixelUnitToMillimeterX,
             kX = svgWidth/workrarea_width,
             kY = svgHeight/workarea_height,
             k = kX < kY ? kX : kY,
@@ -116,6 +198,7 @@ var ApplicationViewModel = function(){
 
 //TODO check file extension in JavaScript before upload
         $.ajax({
+//            url: '/upload',
             url: uploadUrl,
             type: "POST",
             data: data,
@@ -123,18 +206,11 @@ var ApplicationViewModel = function(){
             contentType: false,   // tell jQuery not to set contentType
             success:function(r){
                 if(r.file){
+//                    downloadUrl = '/upload/?f=';
                     $.get(downloadUrl+ r.file,function(r){
                         self.uploadStatus('success');
 
                         var svgDom = r.firstChild;
-                        if(self.svgObject()){
-                            self.canvas.select('svg').remove();
-                        }
-                        self.svgObject(svgDom);
-                        self.svgStartUnitType = svgDom.width.baseVal.unitType;
-                        svgDom.width.baseVal.convertToSpecifiedUnits(5);
-                        svgDom.height.baseVal.convertToSpecifiedUnits(5);
-
 
 
                         var recusiveWalk = function(node){
@@ -147,6 +223,7 @@ var ApplicationViewModel = function(){
                                                 _node.setAttribute('fill','#ffffff');
                                             }
                                             _node.setAttribute('stroke','#000000');
+                                            _node.setAttribute('stroke-width','100');
                                         }
                                     }
                                     recusiveWalk(_node);
@@ -155,17 +232,15 @@ var ApplicationViewModel = function(){
                         };
 
                         recusiveWalk(svgDom);
-                        self.canvas.append(svgDom);
-                        var a = self.canvas.select('svg');
-                        a.drag();
 
-                        self.setZoom('height');
+
+                        self.svgObject(svgDom);
+                        self.svgDomObject(r);
                     });
                 }
             },
             error:function(r){
-                indicator.removeClass('loading');
-                alert(r.statusText);
+                self.uploadStatus('error');
             }
         });
 

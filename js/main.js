@@ -17,6 +17,12 @@
         ko.applyBindings(app);
 
         $__app = app;
+
+        $(document).on('keypress',function(e){
+            if(e.keyCode == 27){
+                app.showDialog(false);
+            }
+        })
     });
 
 })(document, window, jQuery);

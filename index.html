@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<!-- 5h 21:30 -   -->
+<!-- 5h 21:30 -  SunDay 5h -->
 <head>
     <title>Световая наружная реклама, изготовление световых вывесок в Москве — «НеонЛаб»</title>
     <meta name="Keywords" content="световая наружная реклама, изготовление световой вывески, производство световой рекламы">
@@ -93,13 +93,13 @@
                     <div class="result_block">
                         <div class="top">Общее количество<br> светодиодов</div>
                         <div class="bottom">
-                            <span class="digit_dark">0</span>
+                            <span class="digit_dark" data-bind="text:pointsCount">0</span>
                         </div>
                     </div>
                     <div class="result_block">
                         <div class="top">Потребляемая<br> мощность</div>
                         <div class="bottom">
-                            <span class="digit_dark">0</span>
+                            <span class="digit_dark" data-bind="text:pointsCount()*0.72">0</span>
                             <span class="points">Вт</span>
                         </div>
                     </div>
@@ -132,7 +132,7 @@
                                 блока питания: <span>0</span><span> Вт</span></div>
                             <!--<div>Глубина: <span>0</span><span> мм</span></div>-->
                             <div>Количество: <span>0</span><span> Шт</span></div>
-                            <div>Необходимая сила тока: <span>0</span><span> А</span></div>
+                            <div>Сила тока потребления: <span>0</span><span> А</span></div>
                         </div>
                     </div>
                     <div class="clear"></div>
@@ -180,9 +180,46 @@
            © ООО «НеонЛаб» &ndash; световая наружная, светододная реклама, 2005-2014
         </div>
     </div>
+    <div class="" data-bind="if:showDialog, css:{'show_dialog':showDialog}">
+        <div class="dialog_holder">&nbsp;</div>
+        <div class="dialog_body">
+            <div class="dialog_close" data-bind="click:function(){$__app.showDialog(false)}"></div>
+            <div class="user_info_dialog">
+                <div class="img_holder">
+                    <div class="img_svg" data-bind="html:getSvgImg"></div>
+                    <div class="remember_me">
+                        <input type="checkbox" id="remember_me_">
+                        <label for="remember_me_">Запомнить меня</label>
+                    </div>
+                </div>
+                <div class="state_message" data-bind="html:currentMessage"></div>
+                <div class="form">
+                    <div class="horisontal_form_element">
+                        <div class="label">Имя<span>*</span></div>
+                        <input type="text" data-bind="value:userName,valueUpdate:'input'">
+                    </div>
+                    <div class="horisontal_form_element">
+                        <div class="label">Электронная почта<span>*</span></div>
+                        <input type="text" data-bind="value:userEmail,valueUpdate:'input'">
+                    </div>
+                    <div class="horisontal_form_element">
+                        <div class="label">Мобильный телефон</div>
+                        <input type="text" data-bind="masked: userPhone, mask: userPhoneMask()">
+                    </div>
+                    <div class="horisontal_form_element">
+                        <div class="label"></div>
+                        <div class="button blue_button">ПРОДОЛЖИТЬ</div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
     <script src="js/libs/knockout-3.1.0.js"></script>
+    <script src="js/utils/ko.additional.js"></script>
     <script src="js/libs/snap.svg-min.js"></script>
+    <script src="js/libs/jquery.maskedinput.js"></script>
     <script src="js/ViewModel/ApplicationViewModel.js"></script>
     <script src="js/main.js"></script>
 </body>
