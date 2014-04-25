@@ -35,7 +35,7 @@ var ApplicationViewModel = function () {
     this.svgOrignHTML = ko.observable();
     this.svgStartunitType = 0;
     this.svgScale = ko.observable(1);
-    this.greedDeep = ko.observable(100);
+    this.greedDeep = ko.observable();
 
     /* =============== */
     this.modalTypes = ['alert', 'info'];
