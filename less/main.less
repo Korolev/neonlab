@@ -59,6 +59,10 @@ b{
   font-family: "Conv_Pragmatica Bold";
 }
 
+.hidden{
+  display: none;
+}
+
 .vr{
   display: inline-block;
   min-height: 15px;
@@ -235,6 +239,29 @@ a.selected {
     background-image: url("../img/main_sprite.png");
     background-repeat: no-repeat;
     vertical-align: top;
+    cursor: pointer;
+    .click_area{
+      position: relative;
+      width: 20px;
+      height: 20px;
+      top:13px;
+      left:8px;
+    }
+
+    .status_text{
+      position: relative;
+
+      .status_text_message{
+        position: absolute;
+        bottom: -45px;
+        left: 40px;
+        padding: 40px;
+        width: 172px;
+        background: @editor_background;
+        box-shadow: 1px 2px 4px #ccc;
+        color: @default_dark_text_color;
+      }
+    }
   }
 
 
@@ -244,6 +271,11 @@ a.selected {
 
   .blue_button_after.question {
     background-position: 4px -106px;
+  }
+
+  .blue_button_after.remove {
+    background-image: url("../img/remove_img.png");
+    background-position: 7px 12px;
   }
 
   .blue_button_after.success {
@@ -347,8 +379,21 @@ a.selected {
       background-color: @editor_background;
       overflow: hidden;
       cursor: move;
+      position: relative;
       //background-iamge: +(dash 8+5- #d7e2ec)
 
+      .big_loader{
+        top:0;
+        left:0;
+        position: absolute;
+        z-index: 100;
+        width: 100%;
+        height: 100%;
+        background-image: url("../img/loader_big_white.gif");
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-color: rgba(0,0,0,0.3);
+      }
     }
   }
 
@@ -601,4 +646,76 @@ a.selected {
     }
   }
 }
+
+.modal_body{
+  width: 278px;
+  background-color: @editor_background;
+  border: 1px solid #d5dcea;
+  padding: 30px 30px 15px;
+  position: fixed;
+  left: 50%;
+  top: 40%;
+  margin-left: -139px;
+  box-shadow: 2px 2px 2px #ccc;
+
+  .message{
+    padding-left: 20px;
+    position: relative;
+
+    i{
+      position: absolute;
+      left: -5px;
+      display: block;
+      height: 20px;
+      width: 20px;
+      background-image: url('../img/main_sprite.png');
+    }
+
+    i.alert{
+      background-position: -6px -287px;
+    }
+
+    i.info{
+      background-position: -5px -230px;
+    }
+
+    p{
+
+    }
+  }
+
+
+
+
+  .buttons_holder{
+    padding: 10px;
+    text-align: center;
+    .button{
+      text-transform: uppercase;
+      font-size: 14px;
+      border: 1px solid #e5e5e5;
+      margin: 0 10px;
+      height: 35px;
+      line-height: 37px;
+      display: inline-block;
+      min-width: 95px;
+      padding: 0 15px;
+      color: @default_dark_text_color;
+    }
+  }
+
+}
+
+/*
+POPUP
+     paddin 40 30
+     bg: f7f7f7
+     color: 858e93
+     stroke: d5dcea
+
+     buttons
+            color: 424c58
+            stroke: e5e5e5
+            14px uppercase
+*/
 

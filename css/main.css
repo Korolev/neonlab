@@ -194,6 +194,9 @@ body {
 b {
   font-family: "Conv_Pragmatica Bold";
 }
+.hidden {
+  display: none;
+}
 .vr {
   display: inline-block;
   min-height: 15px;
@@ -346,12 +349,37 @@ a.selected {
   background-image: url("../img/main_sprite.png");
   background-repeat: no-repeat;
   vertical-align: top;
+  cursor: pointer;
+}
+.left_column .blue_button_after .click_area {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  top: 13px;
+  left: 8px;
+}
+.left_column .blue_button_after .status_text {
+  position: relative;
+}
+.left_column .blue_button_after .status_text .status_text_message {
+  position: absolute;
+  bottom: -45px;
+  left: 40px;
+  padding: 40px;
+  width: 172px;
+  background: #f7f7f7;
+  box-shadow: 1px 2px 4px #ccc;
+  color: #272e41;
 }
 .left_column .blue_button_after.none__ {
   background-image: none;
 }
 .left_column .blue_button_after.question {
   background-position: 4px -106px;
+}
+.left_column .blue_button_after.remove {
+  background-image: url("../img/remove_img.png");
+  background-position: 7px 12px;
 }
 .left_column .blue_button_after.success {
   background-position: 4px 8px;
@@ -432,6 +460,19 @@ a.selected {
   background-color: #f7f7f7;
   overflow: hidden;
   cursor: move;
+  position: relative;
+}
+.main_page .editor .editor_base .big_loader {
+  top: 0;
+  left: 0;
+  position: absolute;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+  background-image: url("../img/loader_big_white.gif");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: rgba(0, 0, 0, 0.3);
 }
 .main_page .result_out {
   width: 668px;
@@ -654,3 +695,60 @@ a.selected {
 .user_info_dialog .form .label {
   height: 20px;
 }
+.modal_body {
+  width: 278px;
+  background-color: #f7f7f7;
+  border: 1px solid #d5dcea;
+  padding: 30px 30px 15px;
+  position: fixed;
+  left: 50%;
+  top: 40%;
+  margin-left: -139px;
+  box-shadow: 2px 2px 2px #ccc;
+}
+.modal_body .message {
+  padding-left: 20px;
+  position: relative;
+}
+.modal_body .message i {
+  position: absolute;
+  left: -5px;
+  display: block;
+  height: 20px;
+  width: 20px;
+  background-image: url('../img/main_sprite.png');
+}
+.modal_body .message i.alert {
+  background-position: -6px -287px;
+}
+.modal_body .message i.info {
+  background-position: -5px -230px;
+}
+.modal_body .buttons_holder {
+  padding: 10px;
+  text-align: center;
+}
+.modal_body .buttons_holder .button {
+  text-transform: uppercase;
+  font-size: 14px;
+  border: 1px solid #e5e5e5;
+  margin: 0 10px;
+  height: 35px;
+  line-height: 37px;
+  display: inline-block;
+  min-width: 95px;
+  padding: 0 15px;
+  color: #272e41;
+}
+/*
+POPUP
+     paddin 40 30
+     bg: f7f7f7
+     color: 858e93
+     stroke: d5dcea
+
+     buttons
+            color: 424c58
+            stroke: e5e5e5
+            14px uppercase
+*/

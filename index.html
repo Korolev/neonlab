@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<!-- 5h 21:30 -  SunDay 5h -->
+<!-- 5h 21:30 -  SunDay 5h  5h  4h-->
 <head>
     <title>Световая наружная реклама, изготовление световых вывесок в Москве — «НеонЛаб»</title>
     <meta name="Keywords" content="световая наружная реклама, изготовление световой вывески, производство световой рекламы">
@@ -55,7 +55,12 @@
             <form method="post" enctype="multipart/form-data" id="file_upload">
                 <input type="file" data-bind="event:{change:changeInputFile}">
                 <div class="button blue_button">Добавить</div>
-                <div class="blue_button_after " data-bind="css:statusClass"></div>
+                <div class="blue_button_after " data-bind="css:statusClass">
+                    <div class="status_text" data-bind="if:statusText">
+                        <div class="status_text_message" data-bind="html:statusText"></div>
+                    </div>
+                    <div class="click_area"></div>
+                </div>
             </form>
             <h2>Задайте глубину вывески</h2>
             <div class="deep_form">
@@ -74,11 +79,11 @@
 
                     <!--ZOOM-->
                     <div style="padding-left: 50px; display: inline-block">
-                        <a href="#" data-bind="click:function(){$root.setZoom('zoomIn')}">Zoom +   </a>
-                        <a href="#"  data-bind="click:function(){$root.setZoom('zoomOut')}">Zoom -   </a>
-                        <a href="#"  data-bind="click:function(){$root.setZoom('height')}">По высоте   </a>
-                        <a href="#"  data-bind="click:function(){$root.setZoom('fit')}">Заполнить   </a>
-                        <a href="#"  data-bind="click:function(){$root.setZoom('1:1')}">1:1 </a>
+                        <!--<a href="#" data-bind="click:function(){$root.setZoom('zoomIn')}">Zoom +   </a>-->
+                        <!--<a href="#"  data-bind="click:function(){$root.setZoom('zoomOut')}">Zoom -   </a>-->
+                        <!--<a href="#"  data-bind="click:function(){$root.setZoom('height')}">По высоте   </a>-->
+                        <!--<a href="#"  data-bind="click:function(){$root.setZoom('fit')}">Заполнить   </a>-->
+                        <!--<a href="#"  data-bind="click:function(){$root.setZoom('1:1')}">1:1 </a>-->
                     </div>
                     <!--ZOOM-->
 
@@ -86,6 +91,7 @@
                 </div>
                 <div class="editor_base">
                     <svg id="editor_svg"></svg>
+                    <div class="big_loader" data-bind="css:{hidden:workAreaReady}"></div>
                 </div>
             </div>
             <div class="result_out">
@@ -99,7 +105,7 @@
                     <div class="result_block">
                         <div class="top">Потребляемая<br> мощность</div>
                         <div class="bottom">
-                            <span class="digit_dark" data-bind="text:pointsCount()*0.72">0</span>
+                            <span class="digit_dark" data-bind="text:pointsWattCount">0</span>
                             <span class="points">Вт</span>
                         </div>
                     </div>
@@ -180,6 +186,19 @@
            © ООО «НеонЛаб» &ndash; световая наружная, светододная реклама, 2005-2014
         </div>
     </div>
+    <div class="" data-bind="if:showModal, css:{'show_dialog':showModal}">
+        <div class="modal_body">
+            <div class="message" >
+                <i data-bind="css:modalType"></i>
+                <p data-bind="html:modalMessage"></p>
+            </div>
+            <div class="buttons_holder" data-bind="if:modalButtons().length">
+                <div data-bind="foreach:modalButtons">
+                    <div class="button" data-bind="text:text,click:callback"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="" data-bind="if:showDialog, css:{'show_dialog':showDialog}">
         <div class="dialog_holder">&nbsp;</div>
         <div class="dialog_body">
@@ -203,12 +222,12 @@
                         <input type="text" data-bind="value:userEmail,valueUpdate:'input'">
                     </div>
                     <div class="horisontal_form_element">
-                        <div class="label">Мобильный телефон</div>
-                        <input type="text" data-bind="masked: userPhone, mask: userPhoneMask()">
+                        <div class="label">Мобильный телефон <span>*</span></div>
+                        <input type="text" data-bind="masked: userPhone, mask: userPhoneMask(), attr:{placeholder:'+7 (___) ___-__-__'}">
                     </div>
                     <div class="horisontal_form_element">
                         <div class="label"></div>
-                        <div class="button blue_button">ПРОДОЛЖИТЬ</div>
+                        <div class="button blue_button" data-bind="click:function(){$root.showDialog(false);}">ПРОДОЛЖИТЬ</div>
                     </div>
                 </div>
                 <div class="clear"></div>
