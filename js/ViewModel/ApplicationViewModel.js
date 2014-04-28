@@ -146,7 +146,7 @@ var ApplicationViewModel = function () {
             error = true;
         }
         if (error) {
-            self.modalMessage('Введенная глубина конструкции не попадает в диапазон от 60 мм до 250 мм. Попробуйте еще раз!');
+            self.modalMessage('Введенная глубина конструкции<br> не попадает в диапазон от 60 мм<br> до 250 мм. Попробуйте еще раз!');
             self.modalButtons([
                 {
                     text: 'Ok',
