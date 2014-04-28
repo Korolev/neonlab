@@ -61,6 +61,7 @@ var ApplicationViewModel = function () {
     this.showStatusText = ko.observable(false);
     this.showDialog = ko.observable(false);
     this.currentMessage = ko.observable(messages.base);
+    this.rememberMe = ko.observable(true);
     this.userName = ko.observable('');
     this.userEmail = ko.observable('');
     this.userPhone = ko.observable('');
