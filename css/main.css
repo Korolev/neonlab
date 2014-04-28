@@ -744,6 +744,7 @@ a.selected {
   min-width: 95px;
   padding: 0 15px;
   color: #858e93;
+  text-align: left;
 }
 /*
 POPUP
