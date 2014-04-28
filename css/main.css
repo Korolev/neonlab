@@ -316,7 +316,7 @@ a.selected {
   left: 0;
   cursor: pointer;
 }
-.left_column .blue_button {
+.left_column .yellow_button {
   display: inline-block;
   width: 141px;
   vertical-align: top;
@@ -335,7 +335,7 @@ a.selected {
   color: #b6c1c6;
   left: 0px;
 }
-.left_column .yellow_button:before {
+.left_column .blue_button:before {
   content: '3.';
 }
 .left_column .deep_form:before {
@@ -361,6 +361,7 @@ a.selected {
 }
 .left_column .blue_button_after .status_text {
   position: relative;
+  z-index: 100;
 }
 .left_column .blue_button_after .status_text .status_text_message {
   position: absolute;
@@ -370,7 +371,7 @@ a.selected {
   width: 172px;
   background: #f7f7f7;
   box-shadow: 1px 2px 4px #ccc;
-  color: #272e41;
+  color: #858e93;
 }
 .left_column .blue_button_after.none__ {
   background-image: none;
@@ -409,7 +410,7 @@ a.selected {
   top: 0px;
   padding-right: 15px;
 }
-.left_column .yellow_button {
+.left_column .blue_button {
   margin-top: 36px;
 }
 .left_column .comment {
@@ -442,7 +443,7 @@ a.selected {
 .main_page .editor .editor_head .button {
   width: 170px;
   height: 30px;
-  background-color: #a3b1b8;
+  background-color: #498ad5;
   margin: 2px 2px 0 2px;
   line-height: 33px;
   display: inline-block;
@@ -453,6 +454,7 @@ a.selected {
   vertical-align: middle;
   background-position: -7px -403px;
   margin-right: 3px;
+  z-index: 500;
 }
 .main_page .editor .editor_base {
   width: 750px;
@@ -741,7 +743,7 @@ a.selected {
   display: inline-block;
   min-width: 95px;
   padding: 0 15px;
-  color: #272e41;
+  color: #858e93;
 }
 /*
 POPUP

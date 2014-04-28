@@ -54,7 +54,7 @@
             <h2>Загрузите фаил</h2>
             <form method="post" enctype="multipart/form-data" id="file_upload">
                 <input type="file" data-bind="event:{change:changeInputFile}">
-                <div class="button blue_button">Добавить</div>
+                <div class="button yellow_button">Добавить</div>
                 <div class="blue_button_after " data-bind="css:statusClass">
                     <div class="status_text" data-bind="if:statusText">
                         <div class="status_text_message" data-bind="html:statusText"></div>
@@ -67,7 +67,7 @@
                 <input type="text" id="deep" data-bind="value:greedDeep">
                 <div class="deep_size">мм</div>
             </div>
-            <div class="button yellow_button" data-bind="click:calculateDiod">Рассчитать</div>
+            <div class="button blue_button" data-bind="click:calculateDiod">Рассчитать</div>
 
             <p class="comment">
                 Если Вас не устраивает общий результат, Вы можете отредактировать каждый объект.

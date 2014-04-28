@@ -202,7 +202,7 @@ a.selected {
     }
   }
 
-  .blue_button {
+  .yellow_button {
     display: inline-block;
     width: 141px;
     vertical-align: top;
@@ -223,7 +223,7 @@ a.selected {
     left: 0px;
   }
 
-  .yellow_button:before{
+  .blue_button:before{
     content: '3.';
   }
 
@@ -251,6 +251,7 @@ a.selected {
 
     .status_text{
       position: relative;
+      z-index: 100;
 
       .status_text_message{
         position: absolute;
@@ -260,7 +261,7 @@ a.selected {
         width: 172px;
         background: @editor_background;
         box-shadow: 1px 2px 4px #ccc;
-        color: @default_dark_text_color;
+        color: @default_text_color;
       }
     }
   }
@@ -315,7 +316,7 @@ a.selected {
     }
   }
 
-  .yellow_button {
+  .blue_button {
     margin-top: 36px;
   }
 
@@ -353,7 +354,7 @@ a.selected {
       .button {
         width: 170px;
         height: 30px;
-        background-color: #a3b1b8;
+        background-color: @blue_button;
         margin: 2px 2px 0 2px;
         line-height: 33px;
         display: inline-block;
@@ -364,6 +365,7 @@ a.selected {
           vertical-align: middle;
           background-position: -7px -403px;
           margin-right: 3px;
+          z-index: 500;
         }
       }
 
@@ -703,7 +705,7 @@ a.selected {
       display: inline-block;
       min-width: 95px;
       padding: 0 15px;
-      color: @default_dark_text_color;
+      color: @default_text_color;
     }
   }
 
