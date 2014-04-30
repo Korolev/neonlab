@@ -32,6 +32,8 @@ var ApplicationViewModel = function () {
 
     this.workAreaReady = ko.observable(true);
     this.svgObject = ko.observable();
+    this.svgObjWidth = ko.observable(0);
+    this.svgObjHeight = ko.observable(0);
     this.svgOrignHTML = ko.observable();
     this.svgStartunitType = 0;
     this.svgScale = ko.observable(1);
@@ -60,6 +62,9 @@ var ApplicationViewModel = function () {
 
     this.showStatusText = ko.observable(false);
     this.showDialog = ko.observable(false);
+    this.dialogCssTop = ko.computed(function(){
+        return $(window).scrollTop() + 40;
+    },this).extend({throttle:100});
     this.currentMessage = ko.observable(messages.base);
     this.rememberMe = ko.observable(true);
     this.userName = ko.observable('');
@@ -67,18 +72,115 @@ var ApplicationViewModel = function () {
     this.userPhone = ko.observable('');
     this.userPhoneMask = ko.observable('+7 (999) 999-99-99');
     /* =============== */
+    var defDiod = {h1: '60-100', name: '-', size: '0', luminous: '0', power: '0', distance: '0', price: '00', itemsCount:0},
+        defPowerSupply = {name: '-', characteristic:'-',power:'0' ,amperage:'0', cost:'0', itemsCount:0};
     this.diodInfo = [
         {h1: '60-100', name: 'X-Led Samsung 25', size: '20x9', luminous: '25', power: '0.6', distance: '100', price: '20'},
         {h1: '80-150', name: 'X-Led Samsung 50', size: '25x25', luminous: '50', power: '0.72', distance: '165', price: '32'},
         {h1: '130-200', name: 'X-Led Samsung 80', size: '25x25', luminous: '80', power: '0.72', distance: '215', price: '53'},
         {h1: '180-250', name: 'X-Led Samsung 120', size: '25x25', luminous: '120', power: '0.72', distance: '215', price: '60'}
     ];
-    this.diodType = ko.observable(1);
+    this.powerSuplyInfo = [
+        {name: 'Mean Well', characteristic:'20 Вт, 12 В, IP 67',power:'20' ,amperage:'0.11', price:'450'},
+        {name: 'Mean Well', characteristic:' 35 Вт, 12 В, IP 67',power:'35', amperage:'0.19', price:'620'},
+        {name: 'Mean Well', characteristic:' 60 Вт, 12 В, IP 67',power:'60', amperage:'0.33', price:'740'},
+        {name: 'Mean Well', characteristic:' 100 Вт, 12 В, IP 67',power:'100', amperage:'0.54', price:'1200'},
+        {name: 'Mean Well', characteristic:' 150 Вт, 12 В, IP 65',power:'150', amperage:'0.78', price:'2450'}
+    ];
+    this.usedDiodTypes = ko.observableArray([defDiod]);
+    this.usedPowerSupplyTypes = ko.observableArray([defPowerSupply]);
     this.pointsCount = ko.observable(0);
+    this.projectNumber = ko.observable('0001');
+    this.diodTotalCost = ko.computed(function () {
+        var res = 0,
+            total = self.pointsCount();
+        $.each(self.usedDiodTypes(),function(k,v){
+            res += (v.itemsCount | 0) * parseFloat(v.price || 0);
+            console.log(v.itemsCount, parseFloat(v.price || 0));
+        });
+        console.log('1,',res);
+        return res;
+    }, this).extend({throttle: 100});
+    this.powerSupplyTotalCost = ko.computed(function () {
+        var res = 0;
+        $.each(self.usedPowerSupplyTypes(),function(k,v){
+            res += (v.itemsCount | 0) * parseFloat(v.price || 0);
+        });
+        return res;
+    }, this).extend({throttle: 100});
+    this.projectCost = ko.computed(function () {
+        return self.powerSupplyTotalCost() + self.diodTotalCost();
+    }, this).extend({throttle: 100});
     this.pointsWattCount = ko.computed(function () {
-        var res = self.pointsCount() * parseFloat(self.diodInfo[self.diodType()].power);
+        var res = 0,
+            resN = 0,
+            bestBPIdx = 0,
+            blocksPower = {},
+            total = self.pointsCount(),
+            candidate = [],
+            choice;
+
+        $.each(self.usedDiodTypes(),function(k,dt){
+            res += dt.itemsCount * parseFloat(dt.power);
+        });
+
+        resN = res * 1.15;
+        if(resN > 0){
+            $.each(self.powerSuplyInfo,function(k,pw){
+                self.powerSuplyInfo[k].itemsCount = 0;
+                blocksPower[k] = {
+                    power: parseInt(pw.power,10),
+                    rate: pw.price/pw.power,
+                    idx:k
+                };
+                bestBPIdx = bestBPIdx || k;
+                if(blocksPower[k].rate < blocksPower[bestBPIdx].rate){
+                    bestBPIdx = k;
+                }
+            });
+
+            while(resN > blocksPower[bestBPIdx].power){
+                self.powerSuplyInfo[bestBPIdx].itemsCount++;
+                resN -= blocksPower[bestBPIdx].power;
+            }
+
+            $.each(blocksPower,function(k,pw){
+                if(pw.power > resN){
+                    candidate.push(pw);
+                }
+            });
+
+            $.each(candidate,function(k,cd){
+                choice = choice || cd;
+                if(cd.price < self.powerSuplyInfo[choice.idx].price){
+                    choice = cd;
+                }
+            });
+
+            self.powerSuplyInfo[choice.idx].itemsCount++;
+
+            self.usedPowerSupplyTypes([]);
+            $.each(self.powerSuplyInfo,function(k,pw){
+                if(pw.itemsCount > 0){
+                  self.usedPowerSupplyTypes.push(pw);
+                }
+            });
+
+        }else{
+            self.usedPowerSupplyTypes([defPowerSupply]);
+        }
+
         return Math.round(res);
-    }, this).extend({throttle: 10});
+    }, this).extend({throttle: 100});
+
+    this.size = ko.computed(function(){
+        return self.svgObjWidth()+'x'+self.svgObjHeight();
+    },this).extend({throttle:100});
+    this.perimetr = ko.computed(function(){
+        return (self.svgObjWidth() + self.svgObjHeight()) * 2;
+    },this).extend({throttle:100});
+    this.luminousSumm = ko.computed(function(){},this).extend({throttle:100});
+
     /* =============== */
 
     this.fileUploadStatus = {
@@ -127,6 +229,7 @@ var ApplicationViewModel = function () {
     }, this).extend({throttle: 100});
 
     /* =============== */
+
     self.svgScale.subscribe(function (val) {
         if (val && val > 0) {
             self.svgObject().setAttribute('transform', 'scale(' + val + ')');
@@ -134,20 +237,39 @@ var ApplicationViewModel = function () {
     });
 
     self.greedDeep.subscribe(function (val) {
+        var minHVal, maxHVal,
+            selectedType = 0;
+
+        $.each(self.diodInfo,function(k,d){
+            var h = d.h1.split('-'), hFrom = h[0], hTo = h[1];
+            minHVal = minHVal || hFrom;
+            maxHVal = maxHVal || hTo;
+
+            minHVal = Math.min(minHVal, hFrom);
+            maxHVal = Math.max(maxHVal, hTo);
+
+            if(val >= hFrom && val <= hTo){
+                selectedType = k;
+            }
+        });
+
         var v = parseInt(val, 10),
             error = false;
         if (isNaN(v)) {
-            v = 80;
+            v = minHVal;
             error = true;
-        } else if (v < 60) {
-            v = 80;
+        } else if (v < minHVal) {
+            v = minHVal;
             error = true;
-        } else if (v > 250) {
-            v = 200;
+        } else if (v > maxHVal) {
+            v = maxHVal;
             error = true;
         }
         if (error) {
-            self.modalMessage('Введенная глубина конструкции<br> не попадает в диапазон от 60 мм<br> до 250 мм. Попробуйте еще раз!');
+            self.modalMessage('Введенная глубина конструкции<br> не попадает в диапазон от '+
+                minHVal+
+                ' мм<br> до '+maxHVal+
+                ' мм. Попробуйте еще раз!');
             self.modalButtons([
                 {
                     text: 'Ok',
@@ -161,6 +283,9 @@ var ApplicationViewModel = function () {
             }, 4000);
             self.showModal(true);
         }
+        self.usedDiodTypes([]);
+        self.diodInfo[selectedType].itemsCount = self.diodInfo[selectedType].itemsCount || 0;
+        self.usedDiodTypes.push(self.diodInfo[selectedType]);
         self.greedDeep(v);
     });
 
@@ -171,14 +296,15 @@ var ApplicationViewModel = function () {
     };
 
     this.calculateDiod = function () {
-        /*
-         * 20x9(d:60-100)
-         * 25x25(d:80-150)
-         * 25x25(d:150-200)
-         * 25x25(d:180-250)
-         * */
+        if(!self.svgObject()){
+            return false;
+        }
         var ifrm = document.createElement('IFRAME'),
-            svgHtml = self.svgOrignHTML();
+            svgHtml = self.svgOrignHTML(),
+            diod = self.usedDiodTypes()[0],
+            diodWH = diod.size.split('x'),
+            dw = diodWH[0]*100,
+            dh = diodWH[1]*100;
 
         self.workAreaReady(false);
 
@@ -222,10 +348,12 @@ var ApplicationViewModel = function () {
             });
 
             var finishAction = function () {
-                console.log('TYT');
                 self.canvas.select('svg').remove();
                 self.canvas.append(canvas.node);
+                diod.itemsCount = pointsCount;
+
                 self.pointsCount(pointsCount);
+
 
                 //            self.setZoom('fit');
                 self.canvas.select('svg').attr({
@@ -236,7 +364,9 @@ var ApplicationViewModel = function () {
                 self.workAreaReady(true);
 
                 setTimeout(function () {
-                    self.showDialog(true);
+                    if(!self.userName() || !self.userEmail()){
+                        self.showDialog(true);
+                    }
                 }, 1000);
             };
 
@@ -279,7 +409,7 @@ var ApplicationViewModel = function () {
                             canvas.rect(
                                 (p.scrollX + deep) * 100 + viewBox.x,
                                 (p.scrollY + deep) * 100 + viewBox.y,
-                                2500, 2500);
+                                dw, dh);
                             pointsCount++;
                         }
                         totalCountReverse--;
@@ -331,6 +461,11 @@ var ApplicationViewModel = function () {
     };
 
     this.changeInputFile = function (el, event) {
+
+        if(self.svgObject()){
+            return false;
+        }
+
         var element = event.target,
             file = element.files[0],
             data = new FormData();
@@ -384,9 +519,11 @@ var ApplicationViewModel = function () {
                         self.svgOrignHTML(svgDom.outerHTML);
                         self.svgObject(svgDom);
                         self.canvas.append(svgDom);
+                        self.svgObjWidth(parseInt(self.canvas.select('svg').attr('width'), 10));
+                        self.svgObjHeight(parseInt(self.canvas.select('svg').attr('height'), 10));
 //TODO set ZOOM FIT
-                        var svgW = parseInt(self.canvas.select('svg').attr('width'), 10),
-                            svgH = parseInt(self.canvas.select('svg').attr('height'), 10),
+                        var svgW = self.svgObjWidth(),
+                            svgH = self.svgObjHeight(),
                             k1 = workrarea_width / workarea_height,
                             k2 = svgW / svgH,
                             nx = 0, ny = 0;

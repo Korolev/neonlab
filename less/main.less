@@ -413,6 +413,29 @@ a.selected {
     .result_block_holder {
       height: 108px;
       .background_dash_image;
+      position: relative;
+
+      .user_stick{
+        position: absolute;
+        left: -321px;
+        top:10px;
+        padding: 5px 35px 35px;
+        width: 231px;
+        .box_sizing_border_box;
+        font-size: 12px;
+
+        div{
+
+          span{
+            display: inline-block;
+            min-width: 40px;
+          }
+          span+span{
+            color: @default_dark_text_color;
+          }
+        }
+      }
+
     }
 
     .result_block {
@@ -453,6 +476,30 @@ a.selected {
     }
 
     .summ_result{
+      height:  206px;
+
+      .separate_result{
+        display: block;
+        height: 108px;
+        border-bottom: 1px solid @link_color;
+        color: @default_dark_text_color;
+        font-size: 14px;
+        padding: 40px 0 0 5px;
+        .box_sizing_border_box;
+
+        .result_line{
+
+          div{
+            display: inline-block;
+            width: 55%;
+          }
+          div+div{
+            width: 30%;
+          }
+
+        }
+      }
+
       .top{
         height: 35px;
         padding-top: 18px;

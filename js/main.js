@@ -13,14 +13,14 @@
             inputFile.trigger('click');
         });
 
-        window.__trigger__click = function(){
-            button.click();
-        }
-
         var app = new ApplicationViewModel();
         ko.applyBindings(app);
 
         $__app = app;
+
+        window.__trigger__click = function () {
+            button.click();
+        };
 
         $(document).on('keypress', function (e) {
             if (e.keyCode == 27) {

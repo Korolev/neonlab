@@ -492,6 +492,26 @@ a.selected {
   background-image: url("../img/blue_dash.png");
   background-repeat: repeat-x;
   background-position: left bottom;
+  position: relative;
+}
+.main_page .result_out .result_block_holder .user_stick {
+  position: absolute;
+  left: -321px;
+  top: 10px;
+  padding: 5px 35px 35px;
+  width: 231px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
+  font-size: 12px;
+}
+.main_page .result_out .result_block_holder .user_stick div span {
+  display: inline-block;
+  min-width: 40px;
+}
+.main_page .result_out .result_block_holder .user_stick div span + span {
+  color: #272e41;
 }
 .main_page .result_out .result_block {
   height: 108px;
@@ -523,6 +543,28 @@ a.selected {
 }
 .main_page .result_out .result_block .bottom span.slim_digit {
   color: #272e41;
+}
+.main_page .result_out .summ_result {
+  height: 206px;
+}
+.main_page .result_out .summ_result .separate_result {
+  display: block;
+  height: 108px;
+  border-bottom: 1px solid #3782d7;
+  color: #272e41;
+  font-size: 14px;
+  padding: 40px 0 0 5px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.main_page .result_out .summ_result .separate_result .result_line div {
+  display: inline-block;
+  width: 55%;
+}
+.main_page .result_out .summ_result .separate_result .result_line div + div {
+  width: 30%;
 }
 .main_page .result_out .summ_result .top {
   height: 35px;
