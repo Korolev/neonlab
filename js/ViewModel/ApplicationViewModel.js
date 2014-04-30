@@ -15,7 +15,15 @@ var ApplicationViewModel = function () {
         editor_holder = $('.editor_base'),
         workrarea_width = editor_holder.width(),
         workarea_height = editor_holder.height(),
-        greedStep = 100;
+        greedStep = 100,
+        user = (function(){
+            var data = getCookie('userInfo');
+            if(data){
+                data = decodeURIComponent(data);
+                data = JSON.parse(data);
+            }
+            return data;
+        })();
 
     /* =============== */
     this.canvas = Snap('#editor_svg').attr({
@@ -71,6 +79,17 @@ var ApplicationViewModel = function () {
     this.userEmail = ko.observable('');
     this.userPhone = ko.observable('');
     this.userPhoneMask = ko.observable('+7 (999) 999-99-99');
+
+    this.saveUserInfo = function(){
+//TODO create validation for field not empty
+        self.showDialog(false);
+        var data = {
+            userName: self.userName(),
+            userEmail: self.userEmail(),
+            userPhone: self.userPhone()
+        };
+        setCookie('userInfo',encodeURIComponent(JSON.stringify(data)),{expires:new Date([2020])});
+    };
     /* =============== */
     var defDiod = {h1: '60-100', name: '-', size: '0', luminous: '0', power: '0', distance: '0', price: '00', itemsCount:0},
         defPowerSupply = {name: '-', characteristic:'-',power:'0' ,amperage:'0', cost:'0', itemsCount:0};
@@ -574,4 +593,10 @@ var ApplicationViewModel = function () {
 
     }
 
+    if(user){
+        for(var key in user){
+            self[key](user[key]);
+            console.log(key,user[key]);
+        }
+    }
 };
