@@ -591,15 +591,15 @@ var ApplicationViewModel = function () {
 
 //TODO check file extension in JavaScript before upload
         $.ajax({
-            url: '/upload',
-//            url: uploadUrl,
+//            url: '/upload',
+            url: uploadUrl,
             type: "POST",
             data: data,
             processData: false,  // tell jQuery not to process the data
             contentType: false,   // tell jQuery not to set contentType
             success: function (r) {
                 if (r.file) {
-                    downloadUrl = '/upload/?f=';
+//                    downloadUrl = '/upload/?f=';
                     $.get(downloadUrl + r.file, function (r) {
                         self.uploadStatus('success');
 
