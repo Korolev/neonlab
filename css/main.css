@@ -170,6 +170,13 @@ html {
   font-family: 'Conv_Pragmatica', Sans-Serif;
   font-weight: normal;
 }
+.fitalic {
+  font-family: san-serif;
+  font-size: 12px;
+  font-style: italic;
+  color: #b6c1c6;
+  font-family: 'Conv_pfagoraslabpro-italicwebfont', Sans-Serif;
+}
 i.icon {
   background-image: url('../img/main_sprite.png');
   background-repeat: no-repeat;
@@ -427,9 +434,9 @@ a.selected {
   font-size: 12px;
   font-style: italic;
   color: #b6c1c6;
+  font-family: 'Conv_pfagoraslabpro-italicwebfont', Sans-Serif;
   padding: 18px 12px 18px 0;
   margin-top: 22px;
-  font-family: 'Conv_pfagoraslabpro-italicwebfont', Sans-Serif;
 }
 .main_page {
   width: 752px;
@@ -674,6 +681,14 @@ a.selected {
 .main_page .result_out .result_block_holder .user_stick div span + span {
   color: #272e41;
 }
+.main_page .result_out .result_block_holder .user_stick .comment {
+  font-family: san-serif;
+  font-size: 12px;
+  font-style: italic;
+  color: #b6c1c6;
+  font-family: 'Conv_pfagoraslabpro-italicwebfont', Sans-Serif;
+  margin: 10px 0;
+}
 .main_page .result_out .result_block {
   height: 108px;
   width: 334px;
@@ -740,6 +755,17 @@ a.selected {
   background-position: left bottom;
   font-size: 14px;
   padding-bottom: 36px;
+}
+.main_page .result_out .sent_manager {
+  padding: 36px;
+  text-align: right;
+}
+.main_page .result_out .sent_manager div {
+  width: 231px;
+  display: inline-block;
+}
+.main_page .result_out .sent_manager .fitalic {
+  margin-top: 18px;
 }
 .main_page .result_out h1 {
   font-size: 21px;
@@ -817,7 +843,7 @@ a.selected {
   top: 40px;
   left: 50%;
   margin-left: -375px;
-  position: absolute;
+  position: fixed;
   z-index: 100;
 }
 .dialog_body .dialog_close {

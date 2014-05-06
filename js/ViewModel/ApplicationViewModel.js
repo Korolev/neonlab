@@ -127,13 +127,6 @@ var ApplicationViewModel = function () {
 
     this.showStatusText = ko.observable(false);
     this.showDialog = ko.observable(false);
-    this.dialogCssTop = ko.computed(function () {
-        var d = 0;
-        if (self.showDialog()) {
-            d = 40
-        }
-        return $(window).scrollTop() + d;
-    }, this).extend({throttle: 100});
     this.currentMessage = ko.observable(messages.base);
     this.rememberMe = ko.observable(true);
     this.userName = ko.observable('');

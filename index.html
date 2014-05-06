@@ -255,7 +255,8 @@
                             <span class="slim_digit"> р.</span>
                         </div>
                     </div>
-                    <div class="user_stick" data-bind="if:userName">
+                    <div class="user_stick">
+                        <!-- ko if: userName() -->
                         <div><span>Имя:</span><span data-bind="text:userName"></span></div>
                         <div><span>Mail:</span><span data-bind="text:userEmail"></span></div>
                         <div><span>Тел:</span><span data-bind="text:userPhone"></span></div>
@@ -263,6 +264,21 @@
                         <div>
                             <a href="#" data-bind="click:function(){$root.showDialog(true)}">Изменить</a>
                         </div>
+                        <!-- /ko -->
+                        <!-- ko ifnot: userName() -->
+                        <div>
+                            <a href="#" data-bind="click:function(){$root.showDialog(true)}">Отправить мне</a>
+                        </div>
+                        <div class="comment" style="margin-right: -20px">
+                            Выслать результаты расчетов<br/> на почту.
+                        </div>
+                        <!-- /ko -->
+                    </div>
+                </div>
+                <div class="sent_manager">
+                    <div>
+                        <div class="blue_button button">Отправить менеджеру</div>
+                        <div class="fitalic">Отправить заказ менеджеру в производство.</div>
                     </div>
                 </div>
             </div>
@@ -307,7 +323,7 @@
     </div>
     <div class="hidden" data-bind="if:showDialog, css:{'show_dialog':showDialog,hidden:!showDialog()}">
         <div class="dialog_holder">&nbsp;</div>
-        <div class="dialog_body" data-bind="attr:{style:'top:'+dialogCssTop()+'px;'}">
+        <div class="dialog_body" >
             <div class="dialog_close" data-bind="click:function(){$__app.showDialog(false)}"></div>
             <div class="user_info_dialog">
                 <div class="img_holder">

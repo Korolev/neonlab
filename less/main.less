@@ -18,6 +18,15 @@ html {
   font-weight: normal;
 }
 
+.fitalic {
+  font-family: san-serif;
+  font-size: 12px;
+  font-style: italic;
+  color: @link_color_active;
+  //font: 'PFCentroSlabPro Italic' italic 12px #b6c1c6
+  font-family: 'Conv_pfagoraslabpro-italicwebfont', Sans-Serif;
+}
+
 i.icon {
   background-image: url('../img/main_sprite.png');
   background-repeat: no-repeat;
@@ -332,14 +341,9 @@ a.selected {
   }
 
   .comment {
-    font-family: san-serif;
-    font-size: 12px;
-    font-style: italic;
-    color: @link_color_active;
+    .fitalic;
     padding: 18px 12px 18px 0;
     margin-top: 22px;
-    //font: 'PFCentroSlabPro Italic' italic 12px #b6c1c6
-    font-family: 'Conv_pfagoraslabpro-italicwebfont', Sans-Serif;
   }
 }
 
@@ -602,6 +606,11 @@ a.selected {
             color: @default_dark_text_color;
           }
         }
+
+        .comment{
+          .fitalic;
+          margin: 10px 0;
+        }
       }
 
     }
@@ -681,6 +690,20 @@ a.selected {
       .background_dash_image;
       font-size: 14px;
       padding-bottom: 36px;
+    }
+
+    .sent_manager{
+      padding: 36px;
+      text-align: right;
+
+      div{
+        width: 231px;
+        display: inline-block;
+      }
+
+      .fitalic{
+        margin-top: 18px;
+      }
     }
 
     h1 {
@@ -771,7 +794,8 @@ a.selected {
   top: 40px;
   left: 50%;
   margin-left: -375px;
-  position: absolute;
+//  position: absolute;
+  position: fixed;
   z-index: 100;
 
   .dialog_close {
