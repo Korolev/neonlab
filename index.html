@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<!-- 5h 21:30 -  SunDay 5h  5h  4h-->
+<!-- 5h 21:30 -  SunDay 5h  5h  4h 8h 6h 2h-->
 <head>
     <title>Световая наружная реклама, изготовление световых вывесок в Москве — «НеонЛаб»</title>
     <meta name="Keywords" content="световая наружная реклама, изготовление световой вывески, производство световой рекламы">
@@ -74,24 +74,106 @@
             </p>
         </div>
         <div class="main_page">
-            <div class="editor">
+            <div class="editor" data-bind="css:{'full_screen':workAreaFullScreen}">
                 <div class="editor_head">
 
+                    <div class="instruments_holder">
+                        <i class="icon item_edit" data-bind="click:function(){$root.setMode('moveItem')},css:{selected:editMode() == 'moveItem'}"></i>
+                        <i class="icon item_add" data-bind="click:function(){$root.setMode('addItem')},css:{selected:editMode() == 'addItem'}"></i></i>
+                        <i class="icon item_remove" data-bind="click:function(){$root.setMode('removeItem')},css:{selected:editMode() == 'removeItem'}"></i></i>
+                    </div>
+
+                    <div class="button darkgrey_button" data-bind="click:changeEditMode">
+                        <!-- ko ifnot: workAreaFullScreen -->
+                        <i class="icon i-edit"></i><span>Редактировать</span>
+                        <!-- /ko -->
+                        <!-- ko if: workAreaFullScreen -->
+                        <span>Сохранить</span>
+                        <!-- /ko -->
+                    </div>
+                </div>
+                <div class="editor_base" data-bind="attr{style:baseStyle}">
                     <!--ZOOM-->
-                    <div style="padding-left: 50px; display: inline-block">
-                        <!--<a href="#" data-bind="click:function(){$root.setZoom('zoomIn')}">Zoom +   </a>-->
-                        <!--<a href="#"  data-bind="click:function(){$root.setZoom('zoomOut')}">Zoom -   </a>-->
-                        <!--<a href="#"  data-bind="click:function(){$root.setZoom('height')}">По высоте   </a>-->
-                        <!--<a href="#"  data-bind="click:function(){$root.setZoom('fit')}">Заполнить   </a>-->
-                        <!--<a href="#"  data-bind="click:function(){$root.setZoom('1:1')}">1:1 </a>-->
+                    <div class="zoom_pane">
+                        <div data-bind="click:function(){$root.setZoom('zoomIn')}" title="Увеличить"><i class="icon zoom_in"></i></div>
+                        <div data-bind="click:function(){$root.setZoom('zoomOut')}" title="Уменьшить"><i class="icon zoom_out"></i></div>
+                        <div data-bind="click:function(){$root.setZoom('fit')}"  title="Показать все "><i class="icon zoom_fit"></i></div>
+                        <div data-bind="click:function(){$root.setZoom('1:1')}"  title="Актуальный размер "><i class="icon zoom_full"></i></div>
                     </div>
                     <!--ZOOM-->
-
-                    <div class="button darkgrey_button"><i class="icon i-edit"></i>Редактировать</div>
-                </div>
-                <div class="editor_base">
                     <svg id="editor_svg"></svg>
                     <div class="big_loader" data-bind="css:{hidden:workAreaReady}"></div>
+                </div>
+                <div class="editor_base_after" data-bind="if:workAreaFullScreen">
+                    <div>
+                        <div class="after_left_column">
+                            <h1>Технические показатели</h1>
+                            <div>
+                                <div class="label">Светодиоды:</div>
+                                <div class="data" data-bind="foreach:usedDiodTypes">
+                                    <div>
+                                        <span data-bind="text:$index()+1"></span>.&nbsp;
+                                        <span data-bind="text:name"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="after_right_column">
+                            <div class="top_block">
+                                <div class="info_block">
+                                    <h3>Количество<br> светодиодов</h3>
+                                    <span class="digit_dark" data-bind="text:pointsCount">0</span>
+                                </div>
+
+                                <div class="info_block">
+                                    <h3>Потребляемая<br> мощность</h3>
+                                    <span class="digit_dark" data-bind="text:pointsWattCount">0</span>
+                                    <span class="points">Вт</span>
+                                </div>
+
+                                <div class="info_block">
+                                    <h3>Необх. мощность<br> блока питания</h3>
+                                    <span class="digit_dark" data-bind="text:pointsWattCount">0</span>
+                                    <span class="points">Вт</span>
+                                </div>
+
+                                <div class="info_block">
+                                    <h3>Количество<br> блоков</h3>
+                                    <span class="digit_dark" data-bind="text:pointsWattCount">0</span>
+                                </div>
+
+                                <div class="info_block">
+                                    <h3>Сила тока<br> потребления</h3>
+                                    <span class="digit_dark" data-bind="text:pointsWattCount">0</span>
+                                </div>
+
+                                <div class="info_block">
+                                    <h3>Макс. глубина<br> конструкции</h3>
+                                    <span class="digit_dark" data-bind="text:pointsWattCount">0</span>
+                                </div>
+
+                                <div class="info_block">
+                                    <h3>Световой<br> поток</h3>
+                                    <span class="digit_dark" data-bind="text:pointsWattCount">0</span>
+                                </div>
+                            </div>
+                            <div class="bottom_block">
+                                <div class="info_block">
+                                    <div>Общий размер: <span>0х 0</span><span> мм</span></div>
+                                    <div>Общий периметр: <span>0х 0</span><span> мм</span></div>
+                                </div>
+
+                                <div class="info_block">
+                                    <div>Блок питания: <span>0х 0</span><span> мм</span></div>
+                                    <div>Характеристики: <span>0х 0</span><span> мм</span></div>
+                                </div>
+
+                                <div class="info_block">
+                                    <div>Поверхность: <span>0х 0</span><span> мм</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="result_out">
@@ -258,7 +340,8 @@
             </div>
         </div>
     </div>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>-->
+    <script src="js/libs/jquery.min.js"></script>
     <script src="js/libs/knockout-3.1.0.js"></script>
     <script src="js/utils/ko.additional.js"></script>
     <script src="js/utils/util.js"></script>

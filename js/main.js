@@ -7,7 +7,8 @@
 
         var form = $('#file_upload'),
             button = form.find('.button'),
-            inputFile = form.find('input');
+            inputFile = form.find('input'),
+            $win = $(window);
 
         button.on('click', function () {
             inputFile.trigger('click');
@@ -21,6 +22,12 @@
         window.__trigger__click = function () {
             button.click();
         };
+
+        $win.on('resize',function(){
+            app.winWidth($win.width());
+            app.winHeight($win.height());
+            app.resizeBase();
+        });
 
         $(document).on('keypress', function (e) {
             if (e.keyCode == 27) {

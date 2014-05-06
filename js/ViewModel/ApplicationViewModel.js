@@ -4,6 +4,12 @@
 //147.svg - KARO
 
 var ApplicationViewModel = function () {
+    /* ====================== */
+
+    this.winWidth = ko.observable($(window).width());
+    this.winHeight = ko.observable($(window).height());
+    /* ====================== */
+
     var self = this,
         messages = {
             base: "Пожалуйста, введите Ваши данные,<br>\
@@ -13,12 +19,14 @@ var ApplicationViewModel = function () {
         uploadUrl = 'http://neonlab.studiovsemoe.com/upload.php',
         downloadUrl = 'http://neonlab.studiovsemoe.com/upload/',
         editor_holder = $('.editor_base'),
-        workrarea_width = editor_holder.width(),
-        workarea_height = editor_holder.height(),
+        workareaStartWidth = editor_holder.width(),
+        workareaStartHeight = editor_holder.height(),
+        workarea_width = workareaStartWidth,
+        workarea_height = workareaStartHeight,
         greedStep = 100,
-        user = (function(){
+        user = (function () {
             var data = getCookie('userInfo');
-            if(data){
+            if (data) {
                 data = decodeURIComponent(data);
                 data = JSON.parse(data);
             }
@@ -26,26 +34,61 @@ var ApplicationViewModel = function () {
         })();
 
     /* =============== */
-    this.canvas = Snap('#editor_svg').attr({
-        width: workrarea_width,
-        height: workarea_height
-    });
+    this.canvas = Snap('#editor_svg');
 
-    for (var i = greedStep; i <= workrarea_width; i += greedStep) {
-        self.canvas.line(i, 0, i, workarea_height).attr({"stroke-dasharray": "10 10", stroke: '#d7e2ec'});
+
+    for (var i = greedStep; i <= workarea_width*5; i += greedStep) {
+        self.canvas.line(i, 0, i, workarea_height*5).attr({"stroke-dasharray": "10 10", stroke: '#d7e2ec'});
     }
-    for (var i = greedStep; i <= workarea_height; i += greedStep) {
-        self.canvas.line(0, i, workrarea_width, i).attr({"stroke-dasharray": "10 10", stroke: '#d7e2ec'});
+    for (var i = greedStep; i <= workarea_height*10; i += greedStep) {
+        self.canvas.line(0, i, workarea_width*10, i).attr({"stroke-dasharray": "10 10", stroke: '#d7e2ec'});
     }
 
     this.workAreaReady = ko.observable(true);
+    this.workAreaFullScreen = ko.observable(false);
+    this.baseStyle = ko.computed(function(){
+        var s = self.workAreaFullScreen() ? self.winHeight()-36*4 : workareaStartHeight;
+        return 'height:'+s+'px';
+    },this).extend({throttle:10});
     this.svgObject = ko.observable();
     this.svgObjWidth = ko.observable(0);
     this.svgObjHeight = ko.observable(0);
     this.svgOrignHTML = ko.observable();
     this.svgStartunitType = 0;
-    this.svgScale = ko.observable(1);
     this.greedDeep = ko.observable();
+
+    /* =============== */
+
+    this.editMode = ko.observable('default');
+    this.setMode = function(mode){
+        mode = mode == self.editMode() ? 'default' : mode || 'default';
+
+        var c = self.canvas.select('svg');
+
+        switch (mode) {
+            case 'moveItem':
+                c && c.undrag();
+
+                var set = c.selectAll('rect');
+                $.each(set, function (k, el) {
+                    if (el.attr('fill') == 'rgb(0, 0, 0)') {
+                        el.drag();
+                    }
+                });
+
+                break;
+            case 'addItem':
+
+                break;
+            case 'removeItem':
+
+                break;
+            default :
+                c && c.drag();
+        }
+
+        self.editMode(mode);
+    };
 
     /* =============== */
     this.modalTypes = ['alert', 'info'];
@@ -66,13 +109,31 @@ var ApplicationViewModel = function () {
             }
         }
     ]);
+
+    this.resizeBase = function () {
+
+        workarea_width = self.workAreaFullScreen() ? editor_holder.width() : workareaStartWidth;
+        workarea_height = self.workAreaFullScreen() ? self.winHeight()-4*36 : workareaStartHeight;
+        console.log(workarea_width,'w');
+        console.log(workarea_height,'h');
+        this.canvas.attr({
+            width: workarea_width,
+            height: workarea_height
+        });
+    };
+
+    this.resizeBase();
     /* =============== */
 
     this.showStatusText = ko.observable(false);
     this.showDialog = ko.observable(false);
-    this.dialogCssTop = ko.computed(function(){
-        return $(window).scrollTop() + 40;
-    },this).extend({throttle:100});
+    this.dialogCssTop = ko.computed(function () {
+        var d = 0;
+        if (self.showDialog()) {
+            d = 40
+        }
+        return $(window).scrollTop() + d;
+    }, this).extend({throttle: 100});
     this.currentMessage = ko.observable(messages.base);
     this.rememberMe = ko.observable(true);
     this.userName = ko.observable('');
@@ -80,19 +141,30 @@ var ApplicationViewModel = function () {
     this.userPhone = ko.observable('');
     this.userPhoneMask = ko.observable('+7 (999) 999-99-99');
 
-    this.saveUserInfo = function(){
-//TODO create validation for field not empty
+    this.changeEditMode = function () {
+        var mode = !self.workAreaFullScreen();
+        if (mode) {
+
+        } else {
+
+        }
+        self.workAreaFullScreen(mode);
+        self.resizeBase();
+    };
+    this.saveUserInfo = function () {
         self.showDialog(false);
         var data = {
             userName: self.userName(),
             userEmail: self.userEmail(),
-            userPhone: self.userPhone()
+            userPhone: self.userPhone(),
+            projectNumber: self.projectNumber()
         };
-        setCookie('userInfo',encodeURIComponent(JSON.stringify(data)),{expires:new Date([2020])});
+        var exp = new Date([self.rememberMe() ? 2020 : 2002]);
+        setCookie('userInfo', encodeURIComponent(JSON.stringify(data)), {expires: exp});
     };
     /* =============== */
-    var defDiod = {h1: '60-100', name: '-', size: '0', luminous: '0', power: '0', distance: '0', price: '00', itemsCount:0},
-        defPowerSupply = {name: '-', characteristic:'-',power:'0' ,amperage:'0', cost:'0', itemsCount:0};
+    var defDiod = {h1: '60-100', name: '-', size: '0', luminous: '0', power: '0', distance: '0', price: '00', itemsCount: 0},
+        defPowerSupply = {name: '-', characteristic: '-', power: '0', amperage: '0', cost: '0', itemsCount: 0};
     this.diodInfo = [
         {h1: '60-100', name: 'X-Led Samsung 25', size: '20x9', luminous: '25', power: '0.6', distance: '100', price: '20'},
         {h1: '80-150', name: 'X-Led Samsung 50', size: '25x25', luminous: '50', power: '0.72', distance: '165', price: '32'},
@@ -100,11 +172,11 @@ var ApplicationViewModel = function () {
         {h1: '180-250', name: 'X-Led Samsung 120', size: '25x25', luminous: '120', power: '0.72', distance: '215', price: '60'}
     ];
     this.powerSuplyInfo = [
-        {name: 'Mean Well', characteristic:'20 Вт, 12 В, IP 67',power:'20' ,amperage:'0.11', price:'450'},
-        {name: 'Mean Well', characteristic:' 35 Вт, 12 В, IP 67',power:'35', amperage:'0.19', price:'620'},
-        {name: 'Mean Well', characteristic:' 60 Вт, 12 В, IP 67',power:'60', amperage:'0.33', price:'740'},
-        {name: 'Mean Well', characteristic:' 100 Вт, 12 В, IP 67',power:'100', amperage:'0.54', price:'1200'},
-        {name: 'Mean Well', characteristic:' 150 Вт, 12 В, IP 65',power:'150', amperage:'0.78', price:'2450'}
+        {name: 'Mean Well', characteristic: '20 Вт, 12 В, IP 67', power: '20', amperage: '0.11', price: '450'},
+        {name: 'Mean Well', characteristic: ' 35 Вт, 12 В, IP 67', power: '35', amperage: '0.19', price: '620'},
+        {name: 'Mean Well', characteristic: ' 60 Вт, 12 В, IP 67', power: '60', amperage: '0.33', price: '740'},
+        {name: 'Mean Well', characteristic: ' 100 Вт, 12 В, IP 67', power: '100', amperage: '0.54', price: '1200'},
+        {name: 'Mean Well', characteristic: ' 150 Вт, 12 В, IP 65', power: '150', amperage: '0.78', price: '2450'}
     ];
     this.usedDiodTypes = ko.observableArray([defDiod]);
     this.usedPowerSupplyTypes = ko.observableArray([defPowerSupply]);
@@ -113,16 +185,14 @@ var ApplicationViewModel = function () {
     this.diodTotalCost = ko.computed(function () {
         var res = 0,
             total = self.pointsCount();
-        $.each(self.usedDiodTypes(),function(k,v){
+        $.each(self.usedDiodTypes(), function (k, v) {
             res += (v.itemsCount | 0) * parseFloat(v.price || 0);
-            console.log(v.itemsCount, parseFloat(v.price || 0));
         });
-        console.log('1,',res);
         return res;
     }, this).extend({throttle: 100});
     this.powerSupplyTotalCost = ko.computed(function () {
         var res = 0;
-        $.each(self.usedPowerSupplyTypes(),function(k,v){
+        $.each(self.usedPowerSupplyTypes(), function (k, v) {
             res += (v.itemsCount | 0) * parseFloat(v.price || 0);
         });
         return res;
@@ -139,39 +209,39 @@ var ApplicationViewModel = function () {
             candidate = [],
             choice;
 
-        $.each(self.usedDiodTypes(),function(k,dt){
+        $.each(self.usedDiodTypes(), function (k, dt) {
             res += dt.itemsCount * parseFloat(dt.power);
         });
 
         resN = res * 1.15;
-        if(resN > 0){
-            $.each(self.powerSuplyInfo,function(k,pw){
+        if (resN > 0) {
+            $.each(self.powerSuplyInfo, function (k, pw) {
                 self.powerSuplyInfo[k].itemsCount = 0;
                 blocksPower[k] = {
-                    power: parseInt(pw.power,10),
-                    rate: pw.price/pw.power,
-                    idx:k
+                    power: parseInt(pw.power, 10),
+                    rate: pw.price / pw.power,
+                    idx: k
                 };
                 bestBPIdx = bestBPIdx || k;
-                if(blocksPower[k].rate < blocksPower[bestBPIdx].rate){
+                if (blocksPower[k].rate < blocksPower[bestBPIdx].rate) {
                     bestBPIdx = k;
                 }
             });
 
-            while(resN > blocksPower[bestBPIdx].power){
+            while (resN > blocksPower[bestBPIdx].power) {
                 self.powerSuplyInfo[bestBPIdx].itemsCount++;
                 resN -= blocksPower[bestBPIdx].power;
             }
 
-            $.each(blocksPower,function(k,pw){
-                if(pw.power > resN){
+            $.each(blocksPower, function (k, pw) {
+                if (pw.power > resN) {
                     candidate.push(pw);
                 }
             });
 
-            $.each(candidate,function(k,cd){
+            $.each(candidate, function (k, cd) {
                 choice = choice || cd;
-                if(cd.price < self.powerSuplyInfo[choice.idx].price){
+                if (cd.price < self.powerSuplyInfo[choice.idx].price) {
                     choice = cd;
                 }
             });
@@ -179,26 +249,27 @@ var ApplicationViewModel = function () {
             self.powerSuplyInfo[choice.idx].itemsCount++;
 
             self.usedPowerSupplyTypes([]);
-            $.each(self.powerSuplyInfo,function(k,pw){
-                if(pw.itemsCount > 0){
-                  self.usedPowerSupplyTypes.push(pw);
+            $.each(self.powerSuplyInfo, function (k, pw) {
+                if (pw.itemsCount > 0) {
+                    self.usedPowerSupplyTypes.push(pw);
                 }
             });
 
-        }else{
+        } else {
             self.usedPowerSupplyTypes([defPowerSupply]);
         }
 
         return Math.round(res);
     }, this).extend({throttle: 100});
 
-    this.size = ko.computed(function(){
-        return self.svgObjWidth()+'x'+self.svgObjHeight();
-    },this).extend({throttle:100});
-    this.perimetr = ko.computed(function(){
+    this.size = ko.computed(function () {
+        return self.svgObjWidth() + 'x' + self.svgObjHeight();
+    }, this).extend({throttle: 100});
+    this.perimetr = ko.computed(function () {
         return (self.svgObjWidth() + self.svgObjHeight()) * 2;
-    },this).extend({throttle:100});
-    this.luminousSumm = ko.computed(function(){},this).extend({throttle:100});
+    }, this).extend({throttle: 100});
+    this.luminousSumm = ko.computed(function () {
+    }, this).extend({throttle: 100});
 
     /* =============== */
 
@@ -249,17 +320,12 @@ var ApplicationViewModel = function () {
 
     /* =============== */
 
-    self.svgScale.subscribe(function (val) {
-        if (val && val > 0) {
-            self.svgObject().setAttribute('transform', 'scale(' + val + ')');
-        }
-    });
 
     self.greedDeep.subscribe(function (val) {
         var minHVal, maxHVal,
             selectedType = 0;
 
-        $.each(self.diodInfo,function(k,d){
+        $.each(self.diodInfo, function (k, d) {
             var h = d.h1.split('-'), hFrom = h[0], hTo = h[1];
             minHVal = minHVal || hFrom;
             maxHVal = maxHVal || hTo;
@@ -267,7 +333,7 @@ var ApplicationViewModel = function () {
             minHVal = Math.min(minHVal, hFrom);
             maxHVal = Math.max(maxHVal, hTo);
 
-            if(val >= hFrom && val <= hTo){
+            if (val >= hFrom && val <= hTo) {
                 selectedType = k;
             }
         });
@@ -285,9 +351,9 @@ var ApplicationViewModel = function () {
             error = true;
         }
         if (error) {
-            self.modalMessage('Введенная глубина конструкции<br> не попадает в диапазон от '+
-                minHVal+
-                ' мм<br> до '+maxHVal+
+            self.modalMessage('Введенная глубина конструкции<br> не попадает в диапазон от ' +
+                minHVal +
+                ' мм<br> до ' + maxHVal +
                 ' мм. Попробуйте еще раз!');
             self.modalButtons([
                 {
@@ -309,21 +375,32 @@ var ApplicationViewModel = function () {
     });
 
     this.removeFile = function () {
+        //TODO: important!!!
         self.showModal(false);
         self.uploadStatus('ready');
+        self.svgObject(false);
+        self.svgOrignHTML('');
+        self.canvas.select('svg').remove();
+        self.fileName('-');
+        self.svgObjHeight(0);
+        self.svgObjWidth(0);
+
+        self.usedDiodTypes([defDiod]);
+        self.usedPowerSupplyTypes([defPowerSupply]);
+
         console.log('VSE');
     };
 
     this.calculateDiod = function () {
-        if(!self.svgObject()){
+        if (!self.svgObject()) {
             return false;
         }
         var ifrm = document.createElement('IFRAME'),
             svgHtml = self.svgOrignHTML(),
             diod = self.usedDiodTypes()[0],
             diodWH = diod.size.split('x'),
-            dw = diodWH[0]*100,
-            dh = diodWH[1]*100;
+            dw = diodWH[0] * 100,
+            dh = diodWH[1] * 100;
 
         self.workAreaReady(false);
 
@@ -376,14 +453,14 @@ var ApplicationViewModel = function () {
 
                 //            self.setZoom('fit');
                 self.canvas.select('svg').attr({
-                    width: workrarea_width,
+                    width: workarea_width,
                     height: workarea_height
                 }).drag();
                 $(ifrm).remove();
                 self.workAreaReady(true);
 
                 setTimeout(function () {
-                    if(!self.userName() || !self.userEmail()){
+                    if (!self.userName() || !self.userEmail()) {
                         self.showDialog(true);
                     }
                 }, 1000);
@@ -448,40 +525,59 @@ var ApplicationViewModel = function () {
 
     this.setZoom = function (zoom) {
         zoom = zoom || 'fit';
-        var a = self.canvas.select('svg'),
-            svgWidth = parseFloat(a.attr('width')) / self.pixelUnitToMillimeterX,
-            svgHeight = parseFloat(a.attr('height')) / self.pixelUnitToMillimeterX,
-            kX = svgWidth / workrarea_width,
-            kY = svgHeight / workarea_height,
-            k = kX < kY ? kX : kY,
-            s = 1;
+        var pToMM = self.canvas.node.pixelUnitToMillimeterX,
+            a = self.canvas.select('svg'),
+            svgW = self.svgObjWidth(),
+            svgH = self.svgObjHeight(),
+            now_svgW = a.attr('width'),
+            now_svgH = a.attr('height'),
+            k1 = workarea_width / workarea_height,
+            k2 = svgW / svgH,
+            nx = 0, ny = 0;
 
         switch (zoom) {
             case 'fit':
-                k = kX > kY ? kX : kY;
-                s = 1 / k;
+                if (k1 > k2) {
+                    svgH = workarea_height;
+                    svgW = svgH * k2;
+                    nx = (workarea_width - svgW) / 2;
+                } else {
+                    svgW = workarea_width;
+                    svgH = workarea_width / k2;
+                    ny = (workarea_height - svgH) / 2
+                }
                 break;
             case 'height':
-                k = kX < kY ? kX : kY;
-                s = 1 / k;
+                svgH = workarea_height;
+                svgW = svgH * k2;
                 break;
             case 'zoomIn':
-                s = self.svgScale() + self.svgScale() * 0.05;
+                svgW = now_svgW * 1.10;
+                svgH = now_svgH * 1.10;
                 break;
             case 'zoomOut':
-                s = self.svgScale() - self.svgScale() * 0.05;
+                svgW = now_svgW * 0.90;
+                svgH = now_svgH * 0.90;
                 break;
             case '1:1':
-                s = 1;
+                svgW = svgW/pToMM;
+                svgH = svgH/pToMM;
                 break;
         }
 
-        self.svgScale(s);
+        if(a){
+            a.attr({
+                width: svgW,
+                height: svgH,
+                x: nx,
+                y: ny
+            });
+        }
     };
 
     this.changeInputFile = function (el, event) {
 
-        if(self.svgObject()){
+        if (self.svgObject()) {
             return false;
         }
 
@@ -495,15 +591,15 @@ var ApplicationViewModel = function () {
 
 //TODO check file extension in JavaScript before upload
         $.ajax({
-//            url: '/upload',
-            url: uploadUrl,
+            url: '/upload',
+//            url: uploadUrl,
             type: "POST",
             data: data,
             processData: false,  // tell jQuery not to process the data
             contentType: false,   // tell jQuery not to set contentType
             success: function (r) {
                 if (r.file) {
-//                    downloadUrl = '/upload/?f=';
+                    downloadUrl = '/upload/?f=';
                     $.get(downloadUrl + r.file, function (r) {
                         self.uploadStatus('success');
 
@@ -540,29 +636,10 @@ var ApplicationViewModel = function () {
                         self.canvas.append(svgDom);
                         self.svgObjWidth(parseInt(self.canvas.select('svg').attr('width'), 10));
                         self.svgObjHeight(parseInt(self.canvas.select('svg').attr('height'), 10));
-//TODO set ZOOM FIT
-                        var svgW = self.svgObjWidth(),
-                            svgH = self.svgObjHeight(),
-                            k1 = workrarea_width / workarea_height,
-                            k2 = svgW / svgH,
-                            nx = 0, ny = 0;
 
+                        self.setZoom('fit');
 
-                        if (k1 > k2) {
-                            svgH = workarea_height;
-                            svgW = svgH * k2;
-                            nx = (workrarea_width - svgW) / 2;
-                        } else {
-                            svgW = workrarea_width;
-                            svgH = workrarea_width / k2;
-                            ny = (workarea_height - svgH) / 2
-                        }
-                        self.canvas.select('svg').attr({
-                            width: svgW,
-                            height: svgH,
-                            x: nx,
-                            y: ny
-                        }).drag();
+                        self.canvas.select('svg').drag();
                     });
                 }
             },
@@ -585,18 +662,18 @@ var ApplicationViewModel = function () {
         xhr.open("POST", uploadUrl);
         xhr.onload = function () {
             //document.querySelector("#link").href = JSON.parse(xhr.responseText).upload.links.imgur_page;
-        }
+        };
 
 
         /* And now, we send the formdata */
         xhr.send(fd);
 
-    }
+    };
 
-    if(user){
-        for(var key in user){
+    if (user) {
+        for (var key in user) {
             self[key](user[key]);
-            console.log(key,user[key]);
+            console.log(key, user[key]);
         }
     }
 };
