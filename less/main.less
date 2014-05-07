@@ -377,7 +377,9 @@ a.selected {
         }
 
         i.selected {
-          box-shadow: inset 0px 2px 4px #cbcbcb;
+          -webkit-box-shadow: inset 0px 0px 3px 1px #cbcbcb;
+          -moz-box-shadow: inset 0px 0px 3px 1px #cbcbcb;
+          box-shadow: inset 0px 0px 3px 1px #cbcbcb;
         }
 
         .item_edit {
@@ -693,16 +695,17 @@ a.selected {
     }
 
     .sent_manager{
-      padding: 36px;
+      padding: 36px 58px 36px 36px;
       text-align: right;
 
       div{
-        width: 231px;
+        width: 271px;
         display: inline-block;
       }
 
       .fitalic{
         margin-top: 18px;
+        text-align: left;
       }
     }
 

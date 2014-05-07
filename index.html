@@ -53,11 +53,11 @@
         <div class="left_column">
             <h2>Загрузите фаил</h2>
             <form method="post" enctype="multipart/form-data" id="file_upload">
-                <input type="file" data-bind="event:{change:changeInputFile}">
+                <input type="file" data-bind="event:{change:File.changeInputFile}">
                 <div class="button yellow_button">Добавить</div>
-                <div class="blue_button_after " data-bind="css:statusClass">
-                    <div class="status_text" data-bind="if:statusText">
-                        <div class="status_text_message" data-bind="html:statusText"></div>
+                <div class="blue_button_after " data-bind="css:File.statusClass">
+                    <div class="status_text" data-bind="if:File.statusText">
+                        <div class="status_text_message" data-bind="html:File.statusText"></div>
                     </div>
                     <div class="click_area"></div>
                 </div>
@@ -67,44 +67,46 @@
                 <input type="text" id="deep" data-bind="value:greedDeep">
                 <div class="deep_size">мм</div>
             </div>
-            <div class="button blue_button" data-bind="click:calculateDiod">Рассчитать</div>
+            <div class="button blue_button" data-bind="click:WorkArea.calculateDiod">Рассчитать</div>
 
             <p class="comment">
                 Если Вас не устраивает общий результат, Вы можете отредактировать каждый объект.
             </p>
         </div>
         <div class="main_page">
-            <div class="editor" data-bind="css:{'full_screen':workAreaFullScreen}">
+            <div class="editor" data-bind="css:{'full_screen':WorkArea.fullScreen}">
                 <div class="editor_head">
 
                     <div class="instruments_holder">
-                        <i class="icon item_edit" data-bind="click:function(){$root.setMode('moveItem')},css:{selected:editMode() == 'moveItem'}"></i>
-                        <i class="icon item_add" data-bind="click:function(){$root.setMode('addItem')},css:{selected:editMode() == 'addItem'}"></i></i>
-                        <i class="icon item_remove" data-bind="click:function(){$root.setMode('removeItem')},css:{selected:editMode() == 'removeItem'}"></i></i>
+                        <i class="icon item_edit" data-bind="click:function(){$root.WorkArea.setMode('moveItem')},css:{selected:WorkArea.editMode() == 'moveItem'}"></i>
+                        <!-- ko if: WorkArea.fullScreen -->
+                        <i class="icon item_add" data-bind="click:function(){$root.WorkArea.setMode('addItem')},css:{selected:WorkArea.editMode() == 'addItem'}"></i></i>
+                        <i class="icon item_remove" data-bind="click:function(){$root.WorkArea.setMode('removeItem')},css:{selected:WorkArea.editMode() == 'removeItem'}"></i></i>
+                        <!-- /ko -->
                     </div>
 
-                    <div class="button darkgrey_button" data-bind="click:changeEditMode">
-                        <!-- ko ifnot: workAreaFullScreen -->
+                    <div class="button darkgrey_button" data-bind="click:WorkArea.changeEditMode">
+                        <!-- ko ifnot: WorkArea.fullScreen() -->
                         <i class="icon i-edit"></i><span>Редактировать</span>
                         <!-- /ko -->
-                        <!-- ko if: workAreaFullScreen -->
+                        <!-- ko if: WorkArea.fullScreen() -->
                         <span>Сохранить</span>
                         <!-- /ko -->
                     </div>
                 </div>
-                <div class="editor_base" data-bind="attr{style:baseStyle}">
+                <div class="editor_base" data-bind="attr{style:WorkArea.baseStyle}">
                     <!--ZOOM-->
                     <div class="zoom_pane">
-                        <div data-bind="click:function(){$root.setZoom('zoomIn')}" title="Увеличить"><i class="icon zoom_in"></i></div>
-                        <div data-bind="click:function(){$root.setZoom('zoomOut')}" title="Уменьшить"><i class="icon zoom_out"></i></div>
-                        <div data-bind="click:function(){$root.setZoom('fit')}"  title="Показать все "><i class="icon zoom_fit"></i></div>
-                        <div data-bind="click:function(){$root.setZoom('1:1')}"  title="Актуальный размер "><i class="icon zoom_full"></i></div>
+                        <div data-bind="click:function(){$root.WorkArea.SvgImage.setZoom('zoomIn')}" title="Увеличить"><i class="icon zoom_in"></i></div>
+                        <div data-bind="click:function(){$root.WorkArea.SvgImage.setZoom('zoomOut')}" title="Уменьшить"><i class="icon zoom_out"></i></div>
+                        <div data-bind="click:function(){$root.WorkArea.SvgImage.setZoom('fit')}"  title="Показать все "><i class="icon zoom_fit"></i></div>
+                        <div data-bind="click:function(){$root.WorkArea.SvgImage.setZoom('1:1')}"  title="Актуальный размер "><i class="icon zoom_full"></i></div>
                     </div>
                     <!--ZOOM-->
                     <svg id="editor_svg"></svg>
-                    <div class="big_loader" data-bind="css:{hidden:workAreaReady}"></div>
+                    <div class="big_loader" data-bind="css:{hidden:WorkArea.isReady}"></div>
                 </div>
-                <div class="editor_base_after" data-bind="if:workAreaFullScreen">
+                <div class="editor_base_after" data-bind="if:WorkArea.fullScreen">
                     <div>
                         <div class="after_left_column">
                             <h1>Технические показатели</h1>
@@ -194,7 +196,7 @@
                 </div>
                 <div class="result_text">
                     <h1>Технические показатели</h1>
-                    <div class="file_name">Фаил: <span data-bind="text:fileName"></span></div>
+                    <div class="file_name">Фаил: <span data-bind="text:File.fileName"></span></div>
                     <div class="text_block">
                         <div class="text_block_item">
                             <div>Размеры: <span data-bind="text:size">0</span><span> мм</span></div>
@@ -234,7 +236,7 @@
                     <div class="result_block">
                         <div class="top">Расчет №</div>
                         <div class="bottom">
-                            <span class="slim_digit" data-bind="text:projectNumber">0001</span>
+                            <span class="slim_digit" data-bind="text:User.projectNumber">0001</span>
                         </div>
                     </div>
                     <div class="result_block summ_result">
@@ -256,18 +258,18 @@
                         </div>
                     </div>
                     <div class="user_stick">
-                        <!-- ko if: userName() -->
-                        <div><span>Имя:</span><span data-bind="text:userName"></span></div>
-                        <div><span>Mail:</span><span data-bind="text:userEmail"></span></div>
-                        <div><span>Тел:</span><span data-bind="text:userPhone"></span></div>
+                        <!-- ko if: User.userName && User.userName() -->
+                        <div><span>Имя:</span><span data-bind="text:User.userName"></span></div>
+                        <div><span>Mail:</span><span data-bind="text:User.userEmail"></span></div>
+                        <div><span>Тел:</span><span data-bind="text:User.userPhone"></span></div>
                         <br>
                         <div>
-                            <a href="#" data-bind="click:function(){$root.showDialog(true)}">Изменить</a>
+                            <a href="#" data-bind="click:function(){$root.Dialog.showDialog(true)}">Изменить</a>
                         </div>
                         <!-- /ko -->
-                        <!-- ko ifnot: userName() -->
+                        <!-- ko ifnot: User.userName && User.userName() -->
                         <div>
-                            <a href="#" data-bind="click:function(){$root.showDialog(true)}">Отправить мне</a>
+                            <a href="#" data-bind="click:function(){$root.Dialog.showDialog(true)}">Отправить мне</a>
                         </div>
                         <div class="comment" style="margin-right: -20px">
                             Выслать результаты расчетов<br/> на почту.
@@ -308,48 +310,48 @@
            © ООО «НеонЛаб» &ndash; световая, наружная, светодиодная реклама, 2005-2014
         </div>
     </div>
-    <div class="hidden" data-bind="if:showModal, css:{'show_dialog':showModal,hidden:!showModal()}">
+    <div class="hidden" data-bind="if:Dialog.showModal, css:{'show_dialog':Dialog.showModal,hidden:!Dialog.showModal()}">
         <div class="modal_body">
             <div class="message" >
-                <i data-bind="css:modalType"></i>
-                <p data-bind="html:modalMessage"></p>
+                <i data-bind="css:Dialog.modalType"></i>
+                <p data-bind="html:Dialog.modalMessage"></p>
             </div>
-            <div class="buttons_holder" data-bind="if:modalButtons().length">
-                <div data-bind="foreach:modalButtons">
+            <div class="buttons_holder" data-bind="if:Dialog.modalButtons().length">
+                <div data-bind="foreach:Dialog.modalButtons">
                     <div class="button" data-bind="text:text,click:callback"></div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="hidden" data-bind="if:showDialog, css:{'show_dialog':showDialog,hidden:!showDialog()}">
+    <div class="hidden" data-bind="if:Dialog.showDialog, css:{'show_dialog':Dialog.showDialog,hidden:!Dialog.showDialog}">
         <div class="dialog_holder">&nbsp;</div>
         <div class="dialog_body" >
-            <div class="dialog_close" data-bind="click:function(){$__app.showDialog(false)}"></div>
+            <div class="dialog_close" data-bind="click:function(){$__app.Dialog.showDialog(false)}"></div>
             <div class="user_info_dialog">
                 <div class="img_holder">
                     <div class="img_svg" data-bind="html:getSvgImg"></div>
                     <div class="remember_me">
-                        <input type="checkbox" id="remember_me_" data-bind="checked:rememberMe">
+                        <input type="checkbox" id="remember_me_" data-bind="checked:User.rememberMe">
                         <label for="remember_me_">Запомнить меня</label>
                     </div>
                 </div>
-                <div class="state_message" data-bind="html:currentMessage"></div>
+                <div class="state_message" data-bind="html:User.currentMessage"></div>
                 <div class="form">
                     <div class="horisontal_form_element">
                         <div class="label">Имя<span>*</span></div>
-                        <input type="text" data-bind="value:userName,valueUpdate:'input'">
+                        <input type="text" data-bind="value:User.userName,valueUpdate:'input'">
                     </div>
                     <div class="horisontal_form_element">
                         <div class="label">Электронная почта<span>*</span></div>
-                        <input type="text" data-bind="value:userEmail,valueUpdate:'input'">
+                        <input type="text" data-bind="value:User.userEmail,valueUpdate:'input'">
                     </div>
                     <div class="horisontal_form_element">
                         <div class="label">Мобильный телефон <span>*</span></div>
-                        <input type="text" data-bind="masked: userPhone, mask: userPhoneMask(), attr:{placeholder:'+7 (___) ___-__-__'}">
+                        <input type="text" data-bind="masked: User.userPhone, mask: User.userPhoneMask(), attr:{placeholder:'+7 (___) ___-__-__'}">
                     </div>
                     <div class="horisontal_form_element">
                         <div class="label"></div>
-                        <div class="button blue_button" data-bind="click:$root.saveUserInfo">ПРОДОЛЖИТЬ</div>
+                        <div class="button blue_button" data-bind="click:$root.User.saveUserInfo">ПРОДОЛЖИТЬ</div>
                     </div>
                 </div>
                 <div class="clear"></div>
@@ -363,6 +365,11 @@
     <script src="js/utils/util.js"></script>
     <script src="js/libs/snap.svg-min.js"></script>
     <script src="js/libs/jquery.maskedinput.js"></script>
+    <script src="js/ViewModel/UserViewModel.js"></script>
+    <script src="js/ViewModel/WorkAreaViewModel.js"></script>
+    <script src="js/ViewModel/FileViewModel.js"></script>
+    <script src="js/ViewModel/SvgImageViewModel.js"></script>
+    <script src="js/ViewModel/DialogViewModel.js"></script>
     <script src="js/ViewModel/ApplicationViewModel.js"></script>
     <script src="js/main.js"></script>
 </body>

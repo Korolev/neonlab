@@ -466,7 +466,9 @@ a.selected {
   margin: 1px 0;
 }
 .main_page .editor .editor_head .instruments_holder i.selected {
-  box-shadow: inset 0px 2px 4px #cbcbcb;
+  -webkit-box-shadow: inset 0px 0px 3px 1px #cbcbcb;
+  -moz-box-shadow: inset 0px 0px 3px 1px #cbcbcb;
+  box-shadow: inset 0px 0px 3px 1px #cbcbcb;
 }
 .main_page .editor .editor_head .instruments_holder .item_edit {
   background-image: url('../img/canvas/edit.png');
@@ -757,15 +759,16 @@ a.selected {
   padding-bottom: 36px;
 }
 .main_page .result_out .sent_manager {
-  padding: 36px;
+  padding: 36px 58px 36px 36px;
   text-align: right;
 }
 .main_page .result_out .sent_manager div {
-  width: 231px;
+  width: 271px;
   display: inline-block;
 }
 .main_page .result_out .sent_manager .fitalic {
   margin-top: 18px;
+  text-align: left;
 }
 .main_page .result_out h1 {
   font-size: 21px;

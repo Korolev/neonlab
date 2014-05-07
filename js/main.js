@@ -19,45 +19,32 @@
 
         $__app = app;
 
+        var dialog = app.Dialog;
+
         window.__trigger__click = function () {
             button.click();
         };
 
-        $win.on('resize',function(){
-            app.winWidth($win.width());
-            app.winHeight($win.height());
-            app.resizeBase();
+        $win.on('resize', function () {
+            app.WorkArea.winWidth($win.width());
+            app.WorkArea.winHeight($win.height());
+            app.WorkArea.resizeBase();
         });
 
         $(document).on('keypress', function (e) {
             if (e.keyCode == 27) {
-                app.showDialog(false);
-                app.showStatusText(false);
+                dialog.hideDialogWindow();
+                app.File.showStatusText(false);
             }
         });
         $(document).on('click', function (e) {
             var $e = $(e.target),
                 cls = e.target.getAttribute('class'),
                 isClickArea = cls && cls.indexOf('click_area') > -1;
-            app.showStatusText(isClickArea);
+            app.File.showStatusText(isClickArea);
 
             if ($e.parent().hasClass('remove')) {
-                app.modalMessage('Вы действительно хотите удалить фаил: <b>' + app.fileName() + '</b> ?');
-                app.modalButtons([
-                    {
-                        text: 'Да',
-                        callback: function () {
-                            app.removeFile();
-                        }
-                    },
-                    {
-                        text: 'Отмена',
-                        callback: function () {
-                            app.showModal(false);
-                        }
-                    }
-                ]);
-                app.showModal(true);
+                app.File.removeFile()
             }
 
         });

@@ -12,7 +12,7 @@ ko.observableArray.fn.pushAll = function (valuesToPush) {
 
 ko.bindingHandlers.masked = {
     init: function(element, valueAccessor, allBindingsAccessor) {
-        var mask = allBindingsAccessor().mask || {};
+        var mask = allBindingsAccessor().mask;
         $(element).mask(mask);
         ko.utils.registerEventHandler(element, 'focusout', function() {
             var observable = valueAccessor();
