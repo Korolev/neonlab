@@ -10,6 +10,7 @@ var SvgImageViewModel = function(app,editor){
 
     this.canvas = Snap('#editor_svg');
     this.grid = this.canvas.g();
+    this.didoGroup = '';
 
     for (i = greedStep; i <= 2560; i += greedStep) {
         this.grid.add(self.canvas.line(i, 0, i, 1440).attr({"stroke-dasharray": "10 10", stroke: '#d7e2ec'}));
@@ -37,10 +38,11 @@ var SvgImageViewModel = function(app,editor){
         self.svgObjWidth(baseWidth);
         self.svgObjHeight(baseHeight);
         self.svgObject(svgDom);
-        self.svgOrignHTML(svgDom.outerHTML);
+        var serializer = new XMLSerializer(),
+            svg = serializer.serializeToString(svgDom);
+        self.svgOrignHTML(svg);
 
         var s = self.canvas.select('svg');
-console.log('QQQ');
         self.setZoom();
     };
 

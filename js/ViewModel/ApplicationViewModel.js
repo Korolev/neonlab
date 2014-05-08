@@ -1,10 +1,19 @@
 /**
  * Created by mk-sfdev on 4/17/14.
  */
+
 //147.svg - KARO
+
+    /*
+    Сила тока потребления = потребление блока на количество блоков
+    Световой поток
+    Отправка писем
+    Номер расчета
+     */
 
 var ApplicationViewModel = function () {
     this.isDev = false;
+    this.isSafari = navigator.vendor.indexOf('Apple') > -1;
     /* ====================== */
 
     var self = this;
@@ -67,6 +76,24 @@ var ApplicationViewModel = function () {
         return self.powerSupplyTotalCost() + self.diodTotalCost();
     }, this).extend({throttle: 100});
 
+    this.pointsWattCountNeeded = ko.observable(0);
+    this.powerSupplyTotalCount = ko.observable(0);
+    this.powerSupplyAmperageTotal = ko.computed(function () {
+        var res = 0;
+        $.each(self.usedPowerSupplyTypes(),function(k,d){
+            res += d.itemsCount * d.amperage;
+        });
+        return res.toFixed(2);
+    }, this).extend({throttle: 100});
+
+    this.luminousMax = ko.computed(function () {
+        var res = 0;
+        $.each(self.usedDiodTypes(),function(k,d){
+            res = Math.max(res, d.luminous);
+        });
+        return res;
+    }, this).extend({throttle: 100});
+
     this.pointsWattCount = ko.computed(function () {
         var res = 0,
             resN = 0,
@@ -74,13 +101,15 @@ var ApplicationViewModel = function () {
             blocksPower = {},
             total = self.pointsCount(),
             candidate = [],
-            choice;
+            choice,
+            powerSupplyTC = 0;
 
         $.each(self.usedDiodTypes(), function (k, dt) {
             res += dt.itemsCount * parseFloat(dt.power);
         });
 
         resN = res * 1.15;
+        self.pointsWattCountNeeded(Math.ceil(resN));
         if (resN > 0) {
             //TODO Use minimal count of PS
             $.each(self.powerSuplyInfo, function (k, pw) {
@@ -98,6 +127,7 @@ var ApplicationViewModel = function () {
 
             while (resN > blocksPower[bestBPIdx].power) {
                 self.powerSuplyInfo[bestBPIdx].itemsCount++;
+                powerSupplyTC++;
                 resN -= blocksPower[bestBPIdx].power;
             }
 
@@ -115,6 +145,7 @@ var ApplicationViewModel = function () {
             });
 
             self.powerSuplyInfo[choice.idx].itemsCount++;
+            powerSupplyTC++;
 
             self.usedPowerSupplyTypes([]);
             $.each(self.powerSuplyInfo, function (k, pw) {
@@ -123,6 +154,7 @@ var ApplicationViewModel = function () {
                 }
             });
 
+            self.powerSupplyTotalCount(powerSupplyTC);
         } else {
             self.usedPowerSupplyTypes([defPowerSupply]);
         }
@@ -132,10 +164,10 @@ var ApplicationViewModel = function () {
 
     /* =============== */
     this.size = ko.computed(function () {
-        return 0//self.svgObjWidth() + 'x' + self.svgObjHeight();
+        return self.WorkArea.SvgImage.svgObjWidth() + 'x' + self.WorkArea.SvgImage.svgObjHeight();
     }, this).extend({throttle: 100});
     this.perimetr = ko.computed(function () {
-        return 0//(self.svgObjWidth() + self.svgObjHeight()) * 2;
+        return (self.WorkArea.SvgImage.svgObjWidth() + self.WorkArea.SvgImage.svgObjHeight()) * 2;
     }, this).extend({throttle: 100});
 
     /* =============== */

@@ -38,10 +38,10 @@ var DialogViewModel = function(app){
     this.showDialog = ko.observable(false);
 
     this.showDialogWindow = function(){
-        self.showModal(true);
+        self.showDialog(true);
     };
 
     this.hideDialogWindow = function(){
-        self.showModal(false);
+        self.showDialog(false);
     };
 };
