@@ -197,7 +197,7 @@ var WorkAreaViewModel = function (app) {
 
                 try{
                     //TODO NS_ERROR_NOT_INITIALIZED: , 1000 / svg.FRAMERATE); canvg.js 2764
-                    //$(ifrm).remove();
+                    $(ifrm).remove();
                 }catch (e){
                     console.log(e);
                 }

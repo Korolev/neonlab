@@ -12,7 +12,7 @@
      */
 
 var ApplicationViewModel = function () {
-    this.isDev = false;
+    this.isDev = location.href.indexOf('localhost')>-1;
     this.isSafari = navigator.vendor.indexOf('Apple') > -1;
     /* ====================== */
 
@@ -78,6 +78,7 @@ var ApplicationViewModel = function () {
 
     this.pointsWattCountNeeded = ko.observable(0);
     this.powerSupplyTotalCount = ko.observable(0);
+
     this.powerSupplyAmperageTotal = ko.computed(function () {
         var res = 0;
         $.each(self.usedPowerSupplyTypes(),function(k,d){

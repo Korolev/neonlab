@@ -165,11 +165,14 @@
                                     <div>Общий периметр: <span data-bind="text:perimetr">0х 0</span><span> мм</span></div>
                                 </div>
 
+                                <!-- ko foreach: usedPowerSupplyTypes()-->
+
                                 <div class="info_block">
-                                    <div>Блок питания: <span data-bind="text:powerSupply"></span></div>
-                                    <div>Характеристики: <span>0х 0</span><span> мм</span></div>
+                                    <div>Блок питания: <span data-bind="text:name"></span></div>
+                                    <div>Характеристики: <span data-bind="text:characteristic"></span></div>
                                 </div>
 
+                                <!-- /ko -->
                                 <div class="info_block">
                                     <div>Поверхность: <span>Матовое стекло</span></div>
                                 </div>
