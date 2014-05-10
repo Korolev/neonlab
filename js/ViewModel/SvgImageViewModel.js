@@ -9,6 +9,7 @@ var SvgImageViewModel = function(app,editor){
         i;
 
     this.canvas = Snap('#editor_svg');
+    this.canvasZomRate = 1;
     this.grid = this.canvas.g();
     this.didoGroup = '';
 
@@ -113,6 +114,8 @@ var SvgImageViewModel = function(app,editor){
                 y: ny
             });
         }
+console.log(svgW);
+        self.canvasZomRate = self.svgObjWidth()/svgW;
     };
 
 };

@@ -2,6 +2,62 @@
  * Created by mk-sfdev on 5/6/14.
  */
 
+var Diod = function (data, info, app) {
+    var self = this;
+
+    this.app = app;
+    this.info = info || {};
+
+    this.x = data.x;
+    this.y = data.y;
+
+    this.setSize(info);
+
+};
+
+Diod.prototype.setInfo = function (data) {
+    this.info = data;
+};
+
+Diod.prototype.setSize = function (info) {
+    var size = info && info.size && info.size.split('x');
+    this.w = size ? size[0] * 100 | 0 : 0;
+    this.h = size ? size[1] * 100 | 0 : 0;
+};
+
+Diod.prototype.draw = function (canvas) {
+    var app = this.app,
+        self = this,
+        k = 0;
+    this.paper = canvas.rect(this.x, this.y, this.w, this.h);
+    this.paper.drag(function(dx,dy){
+       if(this.canDrag){
+           self.x = this.ox + dx * k *100;
+           self.y = this.oy + dy * k *100;
+           this.attr({
+               x:self.x,
+               y:self.y
+           })
+       }
+    },
+    function(){
+        this.canDrag = false;
+        if(app.WorkArea.editMode() == 'moveItem'){
+            k = app.WorkArea.SvgImage.canvasZomRate;
+            this.canDrag = true;
+            this.ox = self.x;
+            this.oy = self.y;
+        }else if(app.WorkArea.editMode() == 'removeItem'){
+            this.undrag();
+            this.remove();
+        }
+    },
+    function(){
+        //console.log('end',arguments);
+    });
+    return this.paper;
+};
+
 var WorkAreaViewModel = function (app) {
 
     var self = this,
@@ -10,6 +66,7 @@ var WorkAreaViewModel = function (app) {
         workareaStartWidth = editor_holder.width(),
         workareaStartHeight = editor_holder.height();
 
+    this.diodesArr = ko.observableArray([]);
 
     this.winWidth = ko.observable($(window).width());
     this.winHeight = ko.observable($(window).height());
@@ -98,14 +155,14 @@ var WorkAreaViewModel = function (app) {
         if (!app.File.fileName()) {
             console.log('load .cdr first');
             app.Dialog.showModalWindow({
-                message:"Загрузите фаил с исходными размерами конструкции в формате <b>.cdr</b> или <b>.plt</b>"
+                message: "Загрузите фаил с исходными размерами конструкции в формате <b>.cdr</b> или <b>.plt</b>"
             });
 
             return false;
         }
-        if(!app.greedDeep()){
+        if (!app.greedDeep()) {
             app.Dialog.showModalWindow({
-               message:"Задайте глубину вывески."
+                message: "Задайте глубину вывески."
             });
             return false;
         }
@@ -114,12 +171,9 @@ var WorkAreaViewModel = function (app) {
             svgHtml = self.SvgImage.svgOrignHTML(),
             svgWidth = self.SvgImage.svgObjWidth(),
             svgHeight = self.SvgImage.svgObjHeight(),
-            diod = app.usedDiodTypes()[0],
-            diodWH = diod.size.split('x'),
+            useDiodeType = app.usedDiodTypes()[0],
             waCanvas = self.SvgImage.canvas.select('svg'),
-            viewBox = waCanvas.attr('viewBox'),
-            dw = diodWH[0] * 100, //?
-            dh = diodWH[1] * 100; //?
+            viewBox = waCanvas.attr('viewBox');
 
         app.WorkArea.isReady(false);
 
@@ -161,10 +215,10 @@ var WorkAreaViewModel = function (app) {
                 while (x <= svgWidth) {
                     while (y <= svgHeight) {
                         if (ctx.getImageData(x, y, 1, 1).data[0] == 255) {
-                            points.push({
+                            points.push(new Diod({
                                 x: x * 100 + viewBox.x,
                                 y: y * 100 + viewBox.y
-                            })
+                            }, useDiodeType, app));
                         }
                         y += deep;
                     }
@@ -172,170 +226,35 @@ var WorkAreaViewModel = function (app) {
                     x += deep;
                 }
 
-                if(points.length){
-                    if(self.SvgImage.didoGroup){
+                if (points.length) {
+                    if (self.SvgImage.didoGroup) {
                         self.SvgImage.didoGroup.remove();
                     }
                     self.SvgImage.didoGroup = waCanvas.g();
+                    self.diodesArr(points);
                 }
+                console.log('DRAW!');
                 for (var i = 0; i < points.length; i++) {
-                    setTimeout(function(i){
-                        var p = waCanvas.rect(
-                            points[i].x,
-                            points[i].y,
-                            dw, dh);
+                    setTimeout(function (i) {
+                        var p = points[i].draw(waCanvas);
                         self.SvgImage.didoGroup.add(p);
-                        if(i == points.length -1){
+                        if (i == points.length - 1) {
                             app.WorkArea.isReady(true);
                             app.usedDiodTypes()[0].itemsCount = points.length;
                             app.pointsCount(points.length);
                         }
-                    },i*8,i);
+                    }, i * 9, i);
                 }
 
 
-
-                try{
+                try {
                     //TODO NS_ERROR_NOT_INITIALIZED: , 1000 / svg.FRAMERATE); canvg.js 2764
                     $(ifrm).remove();
-                }catch (e){
+                } catch (e) {
                     console.log(e);
                 }
 
             }});
-        });
-
-    };
-
-    this.calculateDiod_OLD = function () {
-        if (!app.File.fileName()) {
-            console.log('load .cdr first');
-            return false;
-        }
-        var ifrm = document.createElement('IFRAME'),
-            svgHtml = self.svgOrignHTML(),
-            diod = self.usedDiodTypes()[0],
-            diodWH = diod.size.split('x'),
-            dw = diodWH[0] * 100,
-            dh = diodWH[1] * 100;
-
-        self.isReady(false);
-
-        ifrm.setAttribute('src', location.origin + location.pathname + 'iframe.html');
-        ifrm.style.width = '300px';
-        ifrm.style.height = '300px';
-        document.body.appendChild(ifrm);
-        self.ifrm = ifrm;
-
-
-        var ifrmWin = ifrm.contentWindow,
-            ifrmDoc = ifrmWin.document;
-
-
-        $(ifrm).load(function () {
-            var _Snap = ifrmWin.Snap,
-                deep = self.greedDeep();
-
-            var b = _Snap(ifrmWin.document.body);
-            b.append(_Snap.parse(svgHtml));
-
-            var canvas = b.select('svg'),
-                canvasWidth = parseInt(canvas.attr('width'), 10),
-                canvasHeight = parseInt(canvas.attr('height'), 10),
-                svgBCR = canvas.node.getBoundingClientRect(),
-                bodyBCR = ifrmDoc.body.getBoundingClientRect(),
-                deepX = Math.ceil(deep + bodyBCR.left + svgBCR.left),
-                deepY = Math.ceil(deep + bodyBCR.top + svgBCR.top),
-                viewBox = canvas.attr('viewBox'),
-                pixelUnitToMillimeterX = canvas.node.pixelUnitToMillimeterX,
-                scrollX = 0,
-                scrollY = 0,
-                pointsCount = 0,
-                timerCount = 1,
-                totalCount = 0,
-                totalCountReverse = 0;
-
-            canvas.attr({
-                width: canvasWidth,
-                height: canvasHeight
-            });
-
-            var finishAction = function () {
-                self.canvas.select('svg').remove();
-                self.canvas.append(canvas.node);
-                diod.itemsCount = pointsCount;
-
-                self.pointsCount(pointsCount);
-
-
-                //            self.setZoom('fit');
-                self.canvas.select('svg').attr({
-                    width: workarea_width,
-                    height: workarea_height
-                }).drag();
-                $(ifrm).remove();
-                self.isReady(true);
-
-                setTimeout(function () {
-                    if (!self.userName() || !self.userEmail()) {
-                        self.showDialog(true);
-                    }
-                }, 1000);
-            };
-
-            self.pixelUnitToMillimeterX = pixelUnitToMillimeterX;
-
-            var coordHash = [],
-                chIdx = 0;
-
-            while (scrollY < canvasHeight) {
-                while (scrollX < canvasWidth) {
-                    coordHash[chIdx] = coordHash[chIdx] || [];
-                    coordHash[chIdx].push({
-                        deepX: deepX,
-                        deepY: deepY,
-                        scrollX: scrollX,
-                        scrollY: scrollY
-                    });
-
-                    totalCount += 1;
-                    scrollX += deep;
-                }
-                scrollX = 0;
-                scrollY += deep;
-                chIdx += 1;
-            }
-
-            totalCountReverse = totalCount;
-
-            for (var i = 0; i < coordHash.length; i++) {
-                for (var j = 0; j < coordHash[i].length; j++) {
-
-                    setTimeout(function (i, j) {
-                        var p = coordHash[i][j],
-                            f;
-                        ifrmWin.scrollTo(p.scrollX, p.scrollY);
-                        f = _Snap.getElementByPoint(p.deepX, p.deepY);
-                        p.type = f && f.type;
-                        p.fill = f && f.attr('fill');
-                        if (p.fill == "rgb(255, 255, 255)") {
-                            canvas.rect(
-                                (p.scrollX + deep) * 100 + viewBox.x,
-                                (p.scrollY + deep) * 100 + viewBox.y,
-                                dw, dh);
-                            pointsCount++;
-                        }
-                        totalCountReverse--;
-                        if (totalCountReverse == 0) {
-                            finishAction();
-                        }
-                    }, timerCount, i, j);
-                    timerCount++;
-                }
-            }
-
-            /*END PROCESS*/
-
         });
 
     };
