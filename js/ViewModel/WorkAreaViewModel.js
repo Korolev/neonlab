@@ -34,9 +34,6 @@ Diod.prototype.draw = function (canvas) {
 ////        fill: app.WorkArea.SvgImage['pattern'+this.info.size] || '#FFDE00'
 //    });
 
-    console.log(this);
-    console.log(this.info);
-
     this.paper = app.WorkArea.SvgImage['pattern'+this.info.size].use().attr({
         x:this.x,
         y:this.y
@@ -44,6 +41,7 @@ Diod.prototype.draw = function (canvas) {
 
     this.paper.drag(function(dx,dy){
         // move
+        dy = dy - window.scrollY;
        if(this.canDrag){
            self.x = this.ox + dx * k *100;
            self.y = this.oy + dy * k *100;
@@ -63,6 +61,7 @@ Diod.prototype.draw = function (canvas) {
             this.oy = self.y;
         }else if(app.WorkArea.editMode() == 'removeItem'){
             this.undrag();
+            app.WorkArea.diodesArr.remove(self);
             this.remove();
         }
     },
@@ -147,6 +146,11 @@ var WorkAreaViewModel = function (app) {
         }, 50);
 
     };
+
+    this.diodesArr.subscribe(function(points){
+        app.usedDiodTypes()[0].itemsCount = points.length;
+        app.pointsCount(points.length);
+    });
 
     this.resizeBase = function () {
         self.width(self.fullScreen() ? self.winWidth() : workareaStartWidth);
@@ -268,7 +272,11 @@ var WorkAreaViewModel = function (app) {
                         self.SvgImage.didoGroup.remove();
                     }
                     self.SvgImage.didoGroup = waCanvas.g();
-                    self.diodesArr(points);
+                }else{
+                    app.Dialog.showModalWindow({
+                        message:'Ниодного диода не удалось поставить, попробуйте сделать это вручную в режими редактирования.'
+                    });
+                    app.WorkArea.isReady(true);
                 }
                 console.log('DRAW!');
                 for (var i = 0; i < points.length; i++) {
@@ -277,8 +285,7 @@ var WorkAreaViewModel = function (app) {
                         self.SvgImage.didoGroup.add(p);
                         if (i == points.length - 1) {
                             app.WorkArea.isReady(true);
-                            app.usedDiodTypes()[0].itemsCount = points.length;
-                            app.pointsCount(points.length);
+                            self.diodesArr(points);
                         }
                     }, i * 9, i);
                 }

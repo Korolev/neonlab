@@ -46,10 +46,7 @@ var SvgImageViewModel = function (app, editor) {
             x = x - sX;
             y = y - sY;
 
-            self.didoGroup = self.didoGroup || s.group();
-            self.didoGroup.add(self.canvas.rect(x*k*r+viewBox.x,y*k*r+viewBox.y,2500,2500).attr({
-                fill:self.pattern25x25
-            }));
+            self.addDiode(x*k*r+viewBox.x,y*k*r+viewBox.y);
         }
     });
 
@@ -179,6 +176,20 @@ var SvgImageViewModel = function (app, editor) {
         self.canvasZoomRate = self.svgObjWidth() / svgW;
     };
 
+    this.addDiode = function(x,y){
+        console.log(x,y);
+        if(app.greedDeep()){
+            var usedDiodeType = app.usedDiodTypes()[0],
+                s = self.canvas.select('svg'),
+                diode = new Diod({x:x,y:y},usedDiodeType,app);
+
+            editor.diodesArr.push(diode);
+
+            diode = diode.draw(s);
+            self.didoGroup = self.didoGroup || s.group();
+            self.didoGroup.add(diode);
+        }
+    };
 
     this.drag = function () {
         var c = self.canvas.select('svg'),
