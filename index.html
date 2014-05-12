@@ -90,11 +90,11 @@
                         <i class="icon i-edit"></i><span>Редактировать</span>
                         <!-- /ko -->
                         <!-- ko if: $root.WorkArea.fullScreen() -->
-                        <span>Сохранить</span>
+                        <span>Закрыть</span>
                         <!-- /ko -->
                     </div>
                 </div>
-                <div class="editor_base" data-bind="attr{style:WorkArea.baseStyle}">
+                <div class="editor_base" data-bind="css:WorkArea.editMode,attr{style:WorkArea.baseStyle}">
                     <!--ZOOM-->
                     <div class="zoom_pane">
                         <div data-bind="click:function(){$root.WorkArea.SvgImage.setZoom('zoomIn')}" title="Увеличить"><i class="icon zoom_in"></i></div>

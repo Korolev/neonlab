@@ -38,6 +38,9 @@
             }
         });
         $(document).on('click', function (e) {
+            if(!!e.target || !e.target.getAttribute){
+                return;
+            }
             var $e = $(e.target),
                 cls = e.target.getAttribute('class'),
                 isClickArea = cls && cls.indexOf('click_area') > -1;

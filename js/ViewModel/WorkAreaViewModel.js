@@ -29,8 +29,18 @@ Diod.prototype.draw = function (canvas) {
     var app = this.app,
         self = this,
         k = 0;
-    this.paper = canvas.rect(this.x, this.y, this.w, this.h);
+    this.paper = canvas.rect(this.x, this.y, this.w, this.h).attr({
+        fill: '#FFDE00'
+//        fill: app.WorkArea.SvgImage['pattern'+this.info.size] || '#FFDE00'
+    });
+
+//    this.paper = app.WorkArea.SvgImage['pattern'+this.info.size].clone().attr({
+//        x:this.x,
+//        y:this.y
+//    }).clone().appendTo(canvas);
+
     this.paper.drag(function(dx,dy){
+        // move
        if(this.canDrag){
            self.x = this.ox + dx * k *100;
            self.y = this.oy + dy * k *100;
@@ -41,9 +51,10 @@ Diod.prototype.draw = function (canvas) {
        }
     },
     function(){
+        //start move
         this.canDrag = false;
         if(app.WorkArea.editMode() == 'moveItem'){
-            k = app.WorkArea.SvgImage.canvasZomRate;
+            k = app.WorkArea.SvgImage.canvasZoomRate;
             this.canDrag = true;
             this.ox = self.x;
             this.oy = self.y;
@@ -73,6 +84,8 @@ var WorkAreaViewModel = function (app) {
 
     this.width = ko.observable(workareaStartWidth);
     this.height = ko.observable(workareaStartHeight);
+    this.offsetLeft = ko.observable(0);
+    this.offsetTop = ko.observable(0);
 
     this.isReady = ko.observable(true);
     this.fullScreen = ko.observable(false);
@@ -88,11 +101,12 @@ var WorkAreaViewModel = function (app) {
 
     /* =============== */
     this.editMode = ko.observable('default');
+
     this.setMode = function (mode) {
         mode = mode == self.editMode() ? 'default' : mode || 'default';
-        var c = self.SvgImage.canvas.select('svg');
-        switch (mode) {
-            case 'moveItem':
+//        var c = self.SvgImage.canvas.select('svg');
+//        switch (mode) {
+//            case 'moveItem':
 //                c && c.undrag();
 //
 //                var set = c.selectAll('rect');
@@ -101,18 +115,17 @@ var WorkAreaViewModel = function (app) {
 //                        el.drag();
 //                    }
 //                });
-
-                break;
-            case 'addItem':
-
-                break;
-            case 'removeItem':
-
-                break;
-            default :
-                c && c.drag();
-        }
-
+//
+//                break;
+//            case 'addItem':
+//
+//                break;
+//            case 'removeItem':
+//
+//                break;
+//            default :
+//                c && c.drag();
+//        }
         self.editMode(mode);
     };
 
@@ -133,7 +146,6 @@ var WorkAreaViewModel = function (app) {
     };
 
     this.resizeBase = function () {
-
         self.width(self.fullScreen() ? self.winWidth() : workareaStartWidth);
         self.height(self.fullScreen() ? self.winHeight() - 4 * 36 : workareaStartHeight);
         self.SvgImage.canvas.attr({
@@ -145,6 +157,12 @@ var WorkAreaViewModel = function (app) {
         e.style.display = 'none';
         e.offsetHeight;
         e.style.display = 'block';
+
+//====
+        var boundingCR = editor_holder[0].getBoundingClientRect();
+        self.offsetLeft(boundingCR.left);
+        self.offsetTop(boundingCR.top);
+//====
 
         this.SvgImage.setZoom();
     };
@@ -172,6 +190,9 @@ var WorkAreaViewModel = function (app) {
             svgWidth = self.SvgImage.svgObjWidth(),
             svgHeight = self.SvgImage.svgObjHeight(),
             useDiodeType = app.usedDiodTypes()[0],
+            useDiodeTypeSize = useDiodeType.size.split('x'),
+            udtW = useDiodeTypeSize[0]|0,
+            udtH = useDiodeTypeSize[1]|0,
             waCanvas = self.SvgImage.canvas.select('svg'),
             viewBox = waCanvas.attr('viewBox');
 
@@ -208,13 +229,25 @@ var WorkAreaViewModel = function (app) {
                 self.__canvas = c;
                 self.__canvasCtx = ctx;
 
-                var x = 0, y = 0, points = [];
+                var x = 0, y = 0, points = [],
+                    xFrom, yFrom, xTo, yTo;
 
                 //ctx.getImageData(100,1903,1,1).data[0] == 255;
 
                 while (x <= svgWidth) {
                     while (y <= svgHeight) {
-                        if (ctx.getImageData(x, y, 1, 1).data[0] == 255) {
+
+                        xFrom = x-deep/5;
+                        yFrom = y-deep/5;
+                        xTo = x+udtW+deep/5;
+                        yTo = y+udtH+deep/5;
+
+                        if (ctx.getImageData(xFrom, yFrom, 1, 1).data[0] == 255
+                            && ctx.getImageData(xTo, yFrom, 1, 1).data[0] == 255
+                            && ctx.getImageData(xTo, yTo, 1, 1).data[0] == 255
+                            && ctx.getImageData(xFrom, yTo, 1, 1).data[0] == 255
+                            && ctx.getImageData(x, y, 1, 1).data[0] == 255
+                            && ctx.getImageData(x+udtW, y+udtH, 1, 1).data[0] == 255) {
                             points.push(new Diod({
                                 x: x * 100 + viewBox.x,
                                 y: y * 100 + viewBox.y
