@@ -29,15 +29,15 @@ Diod.prototype.draw = function (canvas) {
     var app = this.app,
         self = this,
         k = 0;
-    this.paper = canvas.rect(this.x, this.y, this.w, this.h).attr({
-        fill: '#FFDE00'
-//        fill: app.WorkArea.SvgImage['pattern'+this.info.size] || '#FFDE00'
-    });
+//    this.paper = canvas.rect(this.x, this.y, this.w, this.h).attr({
+//        fill: '#FFDE00'
+////        fill: app.WorkArea.SvgImage['pattern'+this.info.size] || '#FFDE00'
+//    });
 
-//    this.paper = app.WorkArea.SvgImage['pattern'+this.info.size].clone().attr({
-//        x:this.x,
-//        y:this.y
-//    }).clone().appendTo(canvas);
+    this.paper = app.WorkArea.SvgImage['pattern'+this.info.size].use().attr({
+        x:this.x,
+        y:this.y
+    }).appendTo(canvas);
 
     this.paper.drag(function(dx,dy){
         // move
