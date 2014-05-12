@@ -402,7 +402,7 @@ a.selected {
 }
 .left_column .blue_button_after.success {
   background-position: 7px 11px;
-  background-image: url("../img/icon_ok.png");
+  background-image: url("../img/iconok.png");
 }
 .left_column .blue_button_after.error {
   background-position: 4px -48px;
