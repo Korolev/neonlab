@@ -500,13 +500,13 @@ a.selected {
   z-index: 500;
 }
 .main_page .editor .editor_base.moveItem {
-  cursor: url("../img/canvas/edit_active.png") 7 2, pointer;
+  cursor: url("../img/canvas/edit_active.png") 5 2, pointer;
 }
 .main_page .editor .editor_base.addItem {
-  cursor: url("../img/canvas/edit_add_active.png") 7 2, pointer;
+  cursor: url("../img/canvas/edit_add_active.png") 5 2, pointer;
 }
 .main_page .editor .editor_base.removeItem {
-  cursor: url("../img/canvas/edit_rem_active.png") 7 2, pointer;
+  cursor: url("../img/canvas/edit_rem_active.png") 5 2, pointer;
 }
 .main_page .editor .editor_base.default {
   cursor: move;
@@ -622,6 +622,8 @@ a.selected {
   font-size: 20px;
 }
 .main_page .editor .editor_base_after > div .after_right_column .top_block .info_block span.digit_dark {
+  font-family: 'Conv_Pragmatica Bold', Sans-Serif;
+  font-weight: bold;
   color: #272e41;
 }
 .main_page .editor .editor_base_after > div .after_right_column .bottom_block {
