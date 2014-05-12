@@ -34,12 +34,13 @@ var SvgImageViewModel = function (app, editor) {
         var x = X - editor.offsetLeft(),
             y = Y - editor.offsetTop() - window.scrollY,
             s = self.canvas.select('svg'),
-            viewBox = s.attr('viewBox'),
+            viewBox,
             k = 100,
             r = self.canvasZoomRate,
             sX,sY;
 
         if(s && editor.editMode() == 'addItem'){
+            viewBox = s.attr('viewBox'),
             sX = parseInt(s.attr('x')||0);
             sY = parseInt(s.attr('y')||0);
             //TODO need fix diff
