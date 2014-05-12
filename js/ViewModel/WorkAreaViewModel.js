@@ -134,6 +134,7 @@ var WorkAreaViewModel = function (app) {
     this.changeEditMode = function () {
         var mode = !self.fullScreen();
         self.fullScreen(mode);
+        self.setMode();
 
         if (mode) {
 
