@@ -34,6 +34,9 @@ Diod.prototype.draw = function (canvas) {
 ////        fill: app.WorkArea.SvgImage['pattern'+this.info.size] || '#FFDE00'
 //    });
 
+    console.log(this);
+    console.log(this.info);
+
     this.paper = app.WorkArea.SvgImage['pattern'+this.info.size].use().attr({
         x:this.x,
         y:this.y
@@ -170,6 +173,7 @@ var WorkAreaViewModel = function (app) {
     this.resizeBase();
 
     this.calculateDiod = function () {
+        app.greedDeep.valueHasMutated();
         if (!app.File.fileName()) {
             console.log('load .cdr first');
             app.Dialog.showModalWindow({
