@@ -22,12 +22,17 @@ var UserViewModel = function (app) {
     this.userName = ko.observable('');
     this.userEmail = ko.observable('');
     this.userPhone = ko.observable('');
+    this.sentToManager = false;
     this.userPhoneMask = ko.observable('+7 (999) 999-99-99');
 
     this.projectNumber = ko.observable('0001');
 
+    this.isEmpty = ko.computed(function(){
+        return !self.userName() || !self.userEmail() || !self.userPhone();
+    },this).extend({throttle:1});
+
     this.saveUserInfo = function () {
-        self.showDialog(false);
+        app.Dialog.hideDialogWindow();
         var data = {
             userName: self.userName(),
             userEmail: self.userEmail(),
@@ -36,6 +41,9 @@ var UserViewModel = function (app) {
         };
         var exp = new Date([self.rememberMe() ? 2020 : 2002]);
         setCookie('userInfo', encodeURIComponent(JSON.stringify(data)), {expires: exp});
+        app.File.sentToServer(function(){
+            self.sentToManager = false;
+        });
     };
 
 

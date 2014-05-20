@@ -473,7 +473,7 @@ a.selected {
         z-index: 100;
         width: 100%;
         height: 100%;
-        background-image: url("../img/loader_big_white.gif");
+        background-image: url("../img/loading_ma.gif");
         background-position: center center;
         background-repeat: no-repeat;
         background-color: rgba(0, 0, 0, 0.15);
@@ -658,6 +658,12 @@ a.selected {
         height: 54px;
         font-size: 30px;
         line-height: 55px;
+
+        >span{
+          width: 46%;
+          display: inline-block;
+        }
+
         span.digit_dark {
           color: @default_dark_text_color;
           font-family: 'Conv_Pragmatica Bold', Sans-Serif;
@@ -687,10 +693,7 @@ a.selected {
 
           div {
             display: inline-block;
-            width: 55%;
-          }
-          div + div {
-            width: 30%;
+            width: 46%;
           }
 
         }
@@ -801,7 +804,7 @@ a.selected {
 
 .dialog_holder {
   position: fixed;
-  z-index: 50;
+  z-index: 500;
   height: 100%;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.4);
@@ -816,18 +819,18 @@ a.selected {
   margin-left: -375px;
 //  position: absolute;
   position: fixed;
-  z-index: 100;
+  z-index: 1000;
 
   .dialog_close {
     position: absolute;
-    right: -25px;
+    right: -30px;
     top: 3px;
     color: #ffffff;
     font-weight: bold;
     cursor: pointer;
     background-image: url("../img/closeDialog.png");
-    width: 16px;
-    height: 16px;
+    width: 24px;
+    height: 24px;
   }
 }
 
@@ -840,6 +843,11 @@ a.selected {
     .img_svg {
       min-height: 200px;
       text-align: center;
+
+      svg{
+        height: 300px;
+      }
+
     }
 
     .remember_me {

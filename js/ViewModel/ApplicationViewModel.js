@@ -54,6 +54,18 @@ var ApplicationViewModel = function () {
     ];
     /* =============== */
 
+    self.File.loadDiode(function(r){
+        if(r){
+            self.diodInfo = r
+        }
+    });
+
+    self.File.loadPower(function(r){
+        if(r){
+            self.powerSuplyInfo = r
+        }
+    });
+
     this.usedDiodTypes = ko.observableArray([defDiod]);
     this.usedPowerSupplyTypes = ko.observableArray([defPowerSupply]);
 
@@ -227,15 +239,15 @@ var ApplicationViewModel = function () {
         self.greedDeep(v);
     });
 
-    self.getSvgImg = ko.computed(function () {
-        var html = '';
-//            s = self.canvas.select('svg');
-//
-//
-//        if (self.svgObject()) {
-////            html = s.node.outerHTML
-//        }
-
-        return html;
-    }, this).extend({throttle: 100});
+    self.sentToManager = function(){
+        var summ = self.projectCost();
+        if(summ > 0){
+            self.User.sentToManager = true;
+            self.Dialog.showDialogWindow();
+        }else{
+            self.Dialog.showModalWindow({
+               message:"Ошибка! Невозможно отправить нулевой расчет."
+            });
+        }
+    };
 };

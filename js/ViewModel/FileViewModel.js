@@ -5,8 +5,11 @@
 var FileViewModel = function (app) {
 
     var self = this,
-        uploadUrl = app.isDev ? '/upload' : 'http://neonlab.studiovsemoe.com/upload.php',
-        downloadUrl = app.isDev ? '/upload/?f=' : 'http://neonlab.studiovsemoe.com/upload/',
+        uploadUrl = app.isDev ? '/upload' : '/upload.php',
+        downloadUrl = app.isDev ? '/upload/?f=' : '/upload/',
+        diodesUrl = app.isDev ? '/upload/diode.php' : '/diode.php',
+        powerUrl = app.isDev ? '/upload/power.php' : '/power.php',
+        finishUrl = app.isDev ? '/upload/finish.php' : '/finish.php',
         dialog = app.Dialog;
 
 
@@ -33,8 +36,23 @@ var FileViewModel = function (app) {
     };
 
     this.uploadStatus = ko.observable('ready');
+    this.fileId = ko.observable('');
     this.fileName = ko.observable('');
     this.showStatusText = ko.observable(false);
+
+    this.fileId.subscribe(function(val){
+        if(val){
+            var s = val+'',
+                l = s.length;
+            while(l<4){
+                s = '0' + s;
+                l = s.length;
+            }
+        }else{
+            s = '0001';
+        }
+        app.User.projectNumber(s);
+    });
 
     this.statusClass = ko.computed(function () {
         var st = self.fileUploadStatus[self.uploadStatus()];
@@ -152,6 +170,9 @@ var FileViewModel = function (app) {
                         app.WorkArea.setSvg(svgDom);
                     });
                 }
+                if(r.id){
+                    self.fileId(r.id);
+                }
             },
             error: function (r) {
                 self.uploadStatus('error');
@@ -179,4 +200,56 @@ var FileViewModel = function (app) {
 //        xhr.send(fd);
 
     };
+
+    this.loadDiode = function(callback){
+        $.ajax({
+            url: diodesUrl,
+            success: function(r){
+                callback && callback(r.diode);
+            },
+            error : function(r){
+                callback && callback(false);
+            }
+        });
+    };
+
+    this.loadPower = function(callback){
+        $.ajax({
+            url: powerUrl,
+            success: function(r){
+                callback && callback(r.power);
+            },
+            error : function(r){
+                callback && callback(false);
+            }
+        });
+    };
+
+    this.sentToServer = function (callback) {
+        if (app.WorkArea.isReady()) {
+            var data = {
+                id: self.fileId(),
+                svg: app.WorkArea.getSvgImg(),
+                name: app.User.userName(),
+                email: app.User.userEmail(),
+                phone: app.User.userPhone(),
+                manager: app.User.sentToManager,
+                data:{
+                    diode:app.usedDiodTypes(),
+                    power:app.usedPowerSupplyTypes()
+                }
+            };
+            $.ajax({
+                url: finishUrl,
+                type: 'POST',
+                data: data,
+                success: function (r) {
+                    callback && callback(r);
+                },
+                error: function (r) {
+                    callback && callback(false);
+                }
+            });
+        }
+    }
 };

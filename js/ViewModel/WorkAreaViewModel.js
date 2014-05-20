@@ -97,6 +97,28 @@ var WorkAreaViewModel = function (app) {
 
     this.SvgImage = new SvgImageViewModel(app, self);
 
+    self.getSvgImg = ko.computed(function () {
+        var html = '',
+            s = self.SvgImage.canvas.select('svg'),
+            clone,
+            sObj = self.SvgImage.svgObject(),
+            diodes = self.diodesArr();
+//
+        if (s) {
+            clone = s.clone();
+            clone.attr({
+                x:0,
+                y:0,
+                width: 600,
+                height: 200
+            });
+            html = clone.toString();
+            clone.remove();
+        }
+
+        return html;
+    }, this).extend({throttle: 100});
+
     this.setSvg = function (svg) {
         self.SvgImage.setSvg(svg);
     };
@@ -241,8 +263,26 @@ var WorkAreaViewModel = function (app) {
                 var x = 0, y = 0, points = [],
                     xFrom, yFrom, xTo, yTo;
 
-                //ctx.getImageData(100,1903,1,1).data[0] == 255;
+//TODO need better algorithm
+//                var step = svgHeight,
+//                    posiblepoints = [],
+//                    blocks = [];
+//
+//                var TimeStart = new Date().getTime();
+//                while (x <= svgWidth) {
+//                    while (y <= svgHeight) {
+//                        blocks.push(ctx.getImageData(x,y,step,step));
+//                        y+= step;
+//                    }
+//                    y = 0;
+//                    x+= step;
+//                }
+//
+//                console.log(new Date().getTime() - TimeStart);
+//                console.log(blocks);
 
+
+                // OLD working CODE
                 while (x <= svgWidth) {
                     while (y <= svgHeight) {
 
