@@ -233,12 +233,17 @@ var FileViewModel = function (app) {
                 name: app.User.userName(),
                 email: app.User.userEmail(),
                 phone: app.User.userPhone(),
-                manager: app.User.sentToManager,
-                data:{
-                    diode:app.usedDiodTypes(),
-                    power:app.usedPowerSupplyTypes()
-                }
-            };
+                manager: app.User.sentToManager
+                },
+                additionalData = {
+                    items: app.usedItemsList(),
+                    perimeter: app.perimetr,
+                    dimension: app.size,
+                    depth: app.deep,
+                    total: app.projectCost
+                };
+            data.data = JSON.stringify(additionalData);
+            console.log(data);
             $.ajax({
                 url: finishUrl,
                 type: 'POST',

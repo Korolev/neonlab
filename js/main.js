@@ -31,6 +31,11 @@
             app.WorkArea.resizeBase();
         });
 
+        $win.on('scroll',function(){
+            if(!dialog.showDialog())
+            dialog.cssTop($win.scrollTop()+20);
+        });
+
         $(document).on('keypress', function (e) {
             if (e.keyCode == 27) {
                 dialog.hideDialogWindow();

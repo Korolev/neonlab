@@ -68,6 +68,37 @@ var ApplicationViewModel = function () {
 
     this.usedDiodTypes = ko.observableArray([defDiod]);
     this.usedPowerSupplyTypes = ko.observableArray([defPowerSupply]);
+    this.usedItemsList = ko.computed(function(){
+        var d = self.usedDiodTypes(),
+            p = self.usedPowerSupplyTypes(),
+            res = [];
+
+        $.each(d,function(k,d){
+            if(d.name != '-')
+            res.push({
+                desc:"Светодиодный модуль",
+                name: d.name,
+                data: '('+d.luminous+' Лм, '+ d.size+' мм, '+ d.distance+' мм)',
+                count: d.itemsCount,
+                price: parseFloat(d.price).toFixed(2),
+                total: (parseFloat(d.price) * d.itemsCount).toFixed(2)
+            })
+        });
+
+        $.each(p,function(k,d){
+            if(d.name != '-')
+            res.push({
+                desc:"Блок питания",
+                name: d.name,
+                data: '('+d.characteristic+')',
+                count: d.itemsCount,
+                price: parseFloat(d.price).toFixed(2),
+                total: (parseFloat(d.price) * d.itemsCount).toFixed(2)
+            })
+        });
+
+        return res;
+    },this).extend({throttle:1});
 
     /* =============== */
     this.pointsCount = ko.observable(0);
@@ -190,8 +221,11 @@ var ApplicationViewModel = function () {
     /* =============== */
 
     this.resetData = function(){
-        self.usedDiodTypes([defDiod]);
         self.usedPowerSupplyTypes([defPowerSupply]);
+        self.usedDiodTypes([defDiod]);
+        self.pointsCount(0);
+        self.pointsWattCountNeeded = ko.observable(0);
+        self.powerSupplyTotalCount = ko.observable(0);
     };
 
     self.greedDeep.subscribe(function (val) {
@@ -247,6 +281,16 @@ var ApplicationViewModel = function () {
         }else{
             self.Dialog.showModalWindow({
                message:"Ошибка! Невозможно отправить нулевой расчет."
+            });
+        }
+    };
+    self.sentToUser = function(){
+        var summ = self.projectCost();
+        if(summ > 0){
+            self.Dialog.showDialogWindow();
+        }else{
+            self.Dialog.showModalWindow({
+                message:"Ошибка! Невозможно отправить нулевой расчет."
             });
         }
     };

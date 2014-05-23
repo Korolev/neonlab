@@ -66,6 +66,10 @@ html.test {
   box-sizing: border-box;
 }
 
+.greyc{
+  color: @link_color_active;
+}
+
 body {
   background-image: url("../img/grey_bg.png");
   background-repeat: repeat-x;
@@ -592,8 +596,8 @@ a.selected {
   }
 
   .result_out {
-    width: 668px;
-    margin-left: 84px;
+    width: 668 + 84px;
+//    margin-left: 84px;
 
     .background_dash_image {
       background-image: url("../img/blue_dash.png");
@@ -605,40 +609,16 @@ a.selected {
       height: 108px;
       .background_dash_image;
       position: relative;
-
-      .user_stick {
-        position: absolute;
-        left: -321px;
-        top: 10px;
-        padding: 5px 35px 35px;
-        width: 231px;
-        .box_sizing_border_box;
-        font-size: 12px;
-
-        div {
-
-          span {
-            display: inline-block;
-            min-width: 40px;
-          }
-          span + span {
-            color: @default_dark_text_color;
-          }
-        }
-
-        .comment{
-          .fitalic;
-          margin: 10px 0;
-        }
-      }
-
     }
+
 
     .result_block {
       height: 108px;
-      width: 334px;
+      width: 334+42px;
       float: left;
       font-size: 17px;
+      padding-left: 50px;
+      .box_sizing_border_box;
       //block1:
       //font1: 10px b6c1c6 uppercase
       //font2: 30px 272e41
@@ -660,7 +640,7 @@ a.selected {
         line-height: 55px;
 
         >span{
-          width: 46%;
+          width: 40%;
           display: inline-block;
         }
 
@@ -677,34 +657,71 @@ a.selected {
       }
     }
 
-    .summ_result {
-      height: 206px;
+    .table_left_bar_info{
+      position: absolute;
+      left: -275px;
+      top: 0px;
+      padding: 0;
+      width: 231px;
+      .box_sizing_border_box;
 
-      .separate_result {
-        display: block;
-        height: 108px;
-        border-bottom: 1px solid @link_color;
-        color: @default_dark_text_color;
-        font-size: 14px;
-        padding: 40px 0 0 5px;
-        .box_sizing_border_box;
-
-        .result_line {
-
-          div {
-            display: inline-block;
-            width: 46%;
-          }
-
+      .result_block{
+        padding: 10px 0 0 0;
+        width: auto;
+        margin: 0;
+        height: 90px;
+        float: none;
+        .top{
+          height: 20px;
+          line-height: 20px;
+          padding: 0;
+          margin: 0;
+        }
+        .bottom{
+          height: 40px;
+          line-height: 40px;
+          padding: 0;
+          margin: 0;
         }
       }
 
-      .top {
-        height: 35px;
-        padding-top: 18px;
+      .user_stick {
+        font-size: 12px;
+
+        div {
+
+          span {
+            display: inline-block;
+            min-width: 40px;
+          }
+          span + span {
+            color: @default_dark_text_color;
+          }
+        }
+
+        .comment{
+          .fitalic;
+          margin: 10px 0;
+        }
       }
+
+    }
+
+    .summ_result {
+      background-image: none;
       .bottom {
         line-height: 40px;
+        height: 40px;
+        padding-top: 20px;
+
+        span.slim_digit{
+          color: @yellow_button_text !important;
+        }
+      }
+      .afterbottom{
+        color: @link_color_active;
+        font-size: 14px;
+        line-height: 20px;
       }
     }
 
@@ -712,19 +729,23 @@ a.selected {
       .background_dash_image;
       font-size: 14px;
       padding-bottom: 36px;
+      padding-left: 50px;
     }
 
     .sent_manager{
-      padding: 36px 58px 36px 36px;
+      padding: 10px 0px 30px 50px;
       text-align: right;
 
-      div{
-        width: 271px;
-        display: inline-block;
+      >div {
+        padding-bottom: 15px;
+        div {
+          width: 271px;
+          display: inline-block;
+        }
       }
 
       .fitalic{
-        margin-top: 18px;
+        margin-top: 15px;
         text-align: left;
       }
     }
@@ -750,9 +771,73 @@ a.selected {
 
         div {
           span {
-            color: @default_dark_text_color;
-            font-family: 'Conv_Pragmatica Bold', Sans-Serif;
+            color: @yellow_button_text;
+//            font-family: 'Conv_Pragmatica Bold', Sans-Serif;
           }
+        }
+      }
+    }
+
+    .text-table{
+      width: 100%;
+      color: @yellow_button_text;
+      position: relative;
+
+      .tcell{
+        display: block;
+        min-height: 60px;
+        line-height: 60px;
+        float: left;
+        padding: 0 5px;
+        .box_sizing_border_box;
+      }
+      .cell1{
+        width: 6.65%;
+        text-align: center;
+      }
+
+      .cell2{
+        width: 42.35%;
+      }
+
+      .cell3{
+        width: 17%;
+      }
+
+      .cell4{
+        width: 17%;
+      }
+
+      .cell5{
+        width: 17%;
+      }
+
+      .thead{
+        .background_dash_image;
+        width: 100%;
+        height: 60px;
+
+      }
+      .tbody{
+        .background_dash_image;
+        padding-bottom: 10px;
+
+        .trow{
+          margin: 20px 0 0px 0;
+        }
+
+        .cell2{
+          span{
+            display: block;
+            line-height: 20px;
+          }
+        }
+
+        .cell3,
+        .cell4,
+        .cell5{
+          .fbold;
+          color: @default_dark_text_color;
         }
       }
     }
@@ -814,13 +899,13 @@ a.selected {
 
 .dialog_body {
   background-color: #ffffff;
-  width: 706px;
+  width: 610px;
   min-height: 200px;
-  top: 40px;
+  top: 20px;
   left: 50%;
-  margin-left: -375px;
-//  position: absolute;
-  position: fixed;
+  margin-left: -305px;
+  position: absolute;
+//  position: fixed;
   z-index: 1000;
 
   .dialog_close {
@@ -837,26 +922,30 @@ a.selected {
 }
 
 .user_info_dialog {
-  padding-bottom: 80px;
+  padding-bottom: 60px;
 
   .img_holder {
     background-color: @editor_background;
+    height: 210px;
+    border-bottom: #d5dcea;
 
     .img_svg {
-      min-height: 200px;
+      min-height: 180px;
       text-align: center;
 
       svg{
-        height: 300px;
+        height: 170px;
       }
 
     }
 
     .remember_me {
       text-align: right;
-      padding: 0 72px 18px;
+      padding: 0 50px 5px;
+      height: 30px;
       input {
         visibility: hidden;
+        height: auto;
       }
       label {
         position: relative;
@@ -883,18 +972,18 @@ a.selected {
   }
 
   .state_message {
-    padding: 30px 100px;
+    padding: 20px 60px;
     text-align: center;
     color: @default_text_color;
   }
 
   .form {
-    padding: 20px 0 0 103px;
+    padding: 20px 0 0 63px;
     .horisontal_form_element {
       min-height: 30px;
       height: 65px;
-      width: 228px;
-      margin: 6px 36px 0 0;
+      width: 227px;
+      margin: 6px 30px 0 0;
       float: left;
       .box_sizing_border_box;
       position: relative;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <!-- vseMoe 8h -->
-<!-- 5h 5h 5h 4h 8h 6h 2h 8h 2h 3h 3h -->
+<!-- 5h 5h 5h 4h 8h 6h 2h 8h 2h 3h 3h 1h -->
 <!-- eval("{TIME_STR}".replace(new RegExp('h','gi'),'+')+'0') -->
 <head>
     <title>«Calculed» — световая, наружная реклама, изготовление световых вывесок в Москве</title>
@@ -210,84 +210,106 @@
                         </div>
 
                     </div>
-                    <div class="text_block">
-                        <div data-bind="foreach:usedDiodTypes">
-                            <div class="text_block_item">
-                                <div>Светодиоды: <span data-bind="text:name">-</span></div>
-                                <div>Расстояние между центрами<br>
-                                    светодиодов: <span data-bind="text:distance">0</span><span> мм</span></div>
-                                <div>Размер светодиода: <span data-bind="text:size">0</span><span> мм</span></div>
-                                <div>Глубина: <span data-bind="text:$root.greedDeep() || '0'">0</span><span> мм</span></div>
-                                <div>Поверхность: <span> Матовая </span></div>
-                                <div>Количество: <span data-bind="text:itemsCount">0</span><span> Шт</span></div>
-                                <div>Световой поток: <span data-bind="text:luminous">0</span><span> Лм</span></div>
+                    <!--<div class="text_block">-->
+                        <!--<div data-bind="foreach:usedDiodTypes">-->
+                            <!--<div class="text_block_item">-->
+                                <!--<div>Светодиоды: <span data-bind="text:name">-</span></div>-->
+                                <!--<div>Расстояние между центрами<br>-->
+                                    <!--светодиодов: <span data-bind="text:distance">0</span><span> мм</span></div>-->
+                                <!--<div>Размер светодиода: <span data-bind="text:size">0</span><span> мм</span></div>-->
+                                <!--<div>Глубина: <span data-bind="text:$root.greedDeep() || '0'">0</span><span> мм</span></div>-->
+                                <!--<div>Поверхность: <span> Матовая </span></div>-->
+                                <!--<div>Количество: <span data-bind="text:itemsCount">0</span><span> Шт</span></div>-->
+                                <!--<div>Световой поток: <span data-bind="text:luminous">0</span><span> Лм</span></div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div data-bind="foreach:usedPowerSupplyTypes">-->
+                            <!--<div class="text_block_item">-->
+                                <!--<div>Блок питания: <span data-bind="text:name">-</span></div>-->
+                                <!--<div>Характеристики: <span data-bind="text:characteristic">-</span></div>-->
+                                <!--<div>Необходимая мощность<br>-->
+                                    <!--блока питания: <span data-bind="text:power">0</span><span> Вт</span></div>-->
+                                <!--&lt;!&ndash;<div>Глубина: <span>0</span><span> мм</span></div>&ndash;&gt;-->
+                                <!--<div>Количество: <span data-bind="text:itemsCount">0</span><span> Шт</span></div>-->
+                                <!--<div>Сила тока потребления: <span data-bind="text:(amperage * itemsCount).toFixed(2)">0</span><span> А</span></div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <div class="clear"></div>
+                </div>
+                <div class="text-table">
+                    <div class="table_left_bar_info" data-bind="if:usedItemsList().length">
+                        <div class="result_block">
+                            <div class="top">Расчет №</div>
+                            <div class="bottom">
+                                <span class="slim_digit" data-bind="text:User.projectNumber">0001</span>
                             </div>
                         </div>
-                        <div data-bind="foreach:usedPowerSupplyTypes">
-                            <div class="text_block_item">
-                                <div>Блок питания: <span data-bind="text:name">-</span></div>
-                                <div>Характеристики: <span data-bind="text:characteristic">-</span></div>
-                                <div>Необходимая мощность<br>
-                                    блока питания: <span data-bind="text:power">0</span><span> Вт</span></div>
-                                <!--<div>Глубина: <span>0</span><span> мм</span></div>-->
-                                <div>Количество: <span data-bind="text:itemsCount">0</span><span> Шт</span></div>
-                                <div>Сила тока потребления: <span data-bind="text:(amperage * itemsCount).toFixed(2)">0</span><span> А</span></div>
+                        <div class="user_stick">
+                            <!-- ko ifnot: User.isEmpty && User.isEmpty() -->
+                            <div><span>Имя:</span><span data-bind="text:User.userName"></span></div>
+                            <div><span>Mail:</span><span data-bind="text:User.userEmail"></span></div>
+                            <div><span>Тел:</span><span data-bind="text:User.userPhone"></span></div>
+                            <br>
+                            <div>
+                                <a href="#" data-bind="click:function(){$root.Dialog.showDialog(true)}">Изменить</a>
                             </div>
+                            <!-- /ko -->
                         </div>
                     </div>
-                    <div class="clear"></div>
+                    <div class="thead">
+                        <div class="tcell cell1">№</div>
+                        <div class="tcell cell2">Наименование</div>
+                        <div class="tcell cell3">Кол-во, шт</div>
+                        <div class="tcell cell4">Цена, руб/шт</div>
+                        <div class="tcell cell5">Стоимость, руб</div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="" data-bind="foreach:usedItemsList,css:{tbody:usedItemsList().length}">
+                        <div class="trow">
+                            <div class="tcell cell1" data-bind="text:$index()+1"></div>
+                            <div class="tcell cell2">
+                                <span data-bind="text:desc"></span>
+                                <span data-bind="text:name"></span>
+                                <span data-bind="text:data" class="greyc"></span>
+                            </div>
+                            <div class="tcell cell3" data-bind="text:count"></div>
+                            <div class="tcell cell4" data-bind="text:price"></div>
+                            <div class="tcell cell5" data-bind="text:total"></div>
+                            <div class="clear"></div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
                 </div>
                 <div class="result_block_holder summ_result">
                     <div class="result_block">
-                        <div class="top">Расчет №</div>
                         <div class="bottom">
-                            <span class="slim_digit" data-bind="text:User.projectNumber">0001</span>
+                            <span class="slim_digit">Итого</span>
                         </div>
+                        <div class="afterbottom">Стоимость подсветки (с НДС 18%)</div>
                     </div>
                     <div class="result_block summ_result">
-                        <div class="separate_result">
-                            <div class="result_line">
-                                <div>Светодиоды</div>
-                                <div class="fbold"><span data-bind="digitext: diodTotalCost"></span> р.</div>
-                            </div>
-                            <div class="result_line">
-                                <div>Блоки питания</div>
-                                <div class="fbold"><span data-bind="digitext: powerSupplyTotalCost"></span> р.</div>
-                            </div>
-                        </div>
-                        <div class="top"></div>
-                        <div class="bottom">
-                            <span >Итог   </span>
-                            <span>
+                        <div class="bottom" style="text-align: right;">
+                            <span style="width: 100%;">
                                 <span class="slim_digit" data-bind="digitext:projectCost">0</span>
                                 <span class="slim_digit"> р.</span>
                             </span>
                         </div>
                     </div>
-                    <div class="user_stick">
-                        <!-- ko ifnot: User.isEmpty && User.isEmpty() -->
-                        <div><span>Имя:</span><span data-bind="text:User.userName"></span></div>
-                        <div><span>Mail:</span><span data-bind="text:User.userEmail"></span></div>
-                        <div><span>Тел:</span><span data-bind="text:User.userPhone"></span></div>
-                        <br>
-                        <div>
-                            <a href="#" data-bind="click:function(){$root.Dialog.showDialog(true)}">Изменить</a>
-                        </div>
-                        <!-- /ko -->
-                        <!-- ko if: User.isEmpty && User.isEmpty() -->
-                        <div>
-                            <a href="#" data-bind="click:function(){$root.Dialog.showDialog(true)}">Отправить мне</a>
-                        </div>
-                        <div class="comment" style="margin-right: -20px">
-                            Выслать результаты расчетов<br/> на почту.
-                        </div>
-                        <!-- /ko -->
-                    </div>
                 </div>
-                <div class="sent_manager">
+                <div class="sent_manager" data-bind="if:usedItemsList().length">
+
+                    <div>
+                    <div>
+                        <div class="blue_button button" data-bind="click:$root.sentToUser">Отправить мне</div>
+                        <div class="fitalic">Выслать результаты расчетов на почту.</div>
+                    </div>
+                    </div>
+                    <div>
                     <div>
                         <div class="blue_button button" data-bind="click:$root.sentToManager">Отправить менеджеру</div>
                         <div class="fitalic">Отправить заказ менеджеру в производство.</div>
+                    </div>
                     </div>
                 </div>
                 <div class="stick">
@@ -330,7 +352,7 @@
     </div>
     <div class="hidden" data-bind="if:Dialog.showDialog, css:{'show_dialog':Dialog.showDialog,hidden:!Dialog.showDialog}">
         <div class="dialog_holder">&nbsp;</div>
-        <div class="dialog_body" >
+        <div class="dialog_body" data-bind="attr:{style:'top:'+ Dialog.cssTop()+'px;'}">
             <div class="dialog_close" data-bind="click:function(){$__app.Dialog.showDialog(false)}"></div>
             <div class="user_info_dialog">
                 <div class="img_holder">

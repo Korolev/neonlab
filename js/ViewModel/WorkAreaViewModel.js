@@ -109,8 +109,8 @@ var WorkAreaViewModel = function (app) {
             clone.attr({
                 x:0,
                 y:0,
-                width: 600,
-                height: 200
+                width: 400,
+                height: 150
             });
             html = clone.toString();
             clone.remove();

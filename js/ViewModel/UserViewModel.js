@@ -4,7 +4,11 @@ var UserViewModel = function (app) {
         messages = {
             base: "Пожалуйста, введите Ваши данные,<br>\
             технический расчет будет отправлен на Ваш электронный адрес<br>\
-                и Вы всегда сможете вернуться к нему."
+                и Вы всегда сможете вернуться к нему.",
+            error:"<span style='color: red'>Пожалуйста, заполните данные корректно,<br>\
+            технический расчет будет отправлен на Ваш электронный адрес<br>\
+                и Вы всегда сможете вернуться к нему.</span>",
+            confirm:"<img src='img/pokerface.png'><br><span style='font-size: 17px'>Ваш расчет отправлен на почту.<br> Спасибо!</span>"
         };
 
     var user = (function () {
@@ -28,22 +32,33 @@ var UserViewModel = function (app) {
     this.projectNumber = ko.observable('0001');
 
     this.isEmpty = ko.computed(function(){
+        self.currentMessage(messages.base);
         return !self.userName() || !self.userEmail() || !self.userPhone();
     },this).extend({throttle:1});
 
     this.saveUserInfo = function () {
-        app.Dialog.hideDialogWindow();
-        var data = {
-            userName: self.userName(),
-            userEmail: self.userEmail(),
-            userPhone: self.userPhone(),
-            projectNumber: self.projectNumber()
-        };
-        var exp = new Date([self.rememberMe() ? 2020 : 2002]);
-        setCookie('userInfo', encodeURIComponent(JSON.stringify(data)), {expires: exp});
-        app.File.sentToServer(function(){
-            self.sentToManager = false;
-        });
+        if(self.isEmpty()){
+            self.currentMessage(messages.error);
+            return false;
+        }else{
+            var data = {
+                userName: self.userName(),
+                userEmail: self.userEmail(),
+                userPhone: self.userPhone(),
+                projectNumber: self.projectNumber()
+            };
+            var exp = new Date([self.rememberMe() ? 2020 : 2002]);
+            setCookie('userInfo', encodeURIComponent(JSON.stringify(data)), {expires: exp});
+            app.File.sentToServer(function(){
+                self.sentToManager = false;
+                self.currentMessage(messages.confirm);
+                setTimeout(function(){
+                    self.currentMessage(messages.base);
+                    app.Dialog.hideDialogWindow();
+                },1000);
+
+            });
+        }
     };
 
 
