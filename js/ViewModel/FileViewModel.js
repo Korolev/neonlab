@@ -40,15 +40,15 @@ var FileViewModel = function (app) {
     this.fileName = ko.observable('');
     this.showStatusText = ko.observable(false);
 
-    this.fileId.subscribe(function(val){
-        if(val){
-            var s = val+'',
+    this.fileId.subscribe(function (val) {
+        if (val) {
+            var s = val + '',
                 l = s.length;
-            while(l<4){
+            while (l < 4) {
                 s = '0' + s;
                 l = s.length;
             }
-        }else{
+        } else {
             s = '0001';
         }
         app.User.projectNumber(s);
@@ -170,7 +170,7 @@ var FileViewModel = function (app) {
                         app.WorkArea.setSvg(svgDom);
                     });
                 }
-                if(r.id){
+                if (r.id) {
                     self.fileId(r.id);
                 }
             },
@@ -201,25 +201,25 @@ var FileViewModel = function (app) {
 
     };
 
-    this.loadDiode = function(callback){
+    this.loadDiode = function (callback) {
         $.ajax({
             url: diodesUrl,
-            success: function(r){
+            success: function (r) {
                 callback && callback(r.diode);
             },
-            error : function(r){
+            error: function (r) {
                 callback && callback(false);
             }
         });
     };
 
-    this.loadPower = function(callback){
+    this.loadPower = function (callback) {
         $.ajax({
             url: powerUrl,
-            success: function(r){
+            success: function (r) {
                 callback && callback(r.power);
             },
-            error : function(r){
+            error: function (r) {
                 callback && callback(false);
             }
         });
@@ -228,19 +228,19 @@ var FileViewModel = function (app) {
     this.sentToServer = function (callback) {
         if (app.WorkArea.isReady()) {
             var data = {
-                id: self.fileId(),
-                svg: app.WorkArea.getSvgImg(),
-                name: app.User.userName(),
-                email: app.User.userEmail(),
-                phone: app.User.userPhone(),
-                manager: app.User.sentToManager
+                    id: self.fileId(),
+                    svg: app.WorkArea.getSvgImg(),
+                    name: app.User.userName(),
+                    email: app.User.userEmail(),
+                    phone: app.User.userPhone(),
+                    manager: app.User.sentToManager
                 },
                 additionalData = {
                     items: app.usedItemsList(),
-                    perimeter: app.perimetr,
-                    dimension: app.size,
-                    depth: app.deep,
-                    total: app.projectCost
+                    perimeter: app.perimetr(),
+                    dimension: app.size(),
+                    depth: app.deep(),
+                    total: app.projectCost()
                 };
             data.data = JSON.stringify(additionalData);
             console.log(data);
