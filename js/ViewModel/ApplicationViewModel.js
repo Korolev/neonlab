@@ -46,11 +46,11 @@ var ApplicationViewModel = function () {
         {h1: '180-250', name: 'X-Led Samsung 120', size: '25x25', luminous: '120', power: '0.72', distance: '215', price: '60'}
     ];
     this.powerSuplyInfo = [
-        {name: 'Mean Well', characteristic: '20 Вт, 12 В, IP 67', power: '20', amperage: '0.11', price: '450'},
-        {name: 'Mean Well', characteristic: ' 35 Вт, 12 В, IP 67', power: '35', amperage: '0.19', price: '620'},
-        {name: 'Mean Well', characteristic: ' 60 Вт, 12 В, IP 67', power: '60', amperage: '0.33', price: '740'},
-        {name: 'Mean Well', characteristic: ' 100 Вт, 12 В, IP 67', power: '100', amperage: '0.54', price: '1200'},
-        {name: 'Mean Well', characteristic: ' 150 Вт, 12 В, IP 65', power: '150', amperage: '0.78', price: '2450'}
+        {name: 'Mean Well LPV-20-12', characteristic: '20 Вт, 12 В, IP 67', power: '20', amperage: '0.11', price: '450'},
+        {name: 'Mean Well LPV-35-12', characteristic: ' 35 Вт, 12 В, IP 67', power: '35', amperage: '0.19', price: '620'},
+        {name: 'Mean Well LPV-60-12', characteristic: ' 60 Вт, 12 В, IP 67', power: '60', amperage: '0.33', price: '740'},
+        {name: 'Mean Well LPV-100-12', characteristic: ' 100 Вт, 12 В, IP 67', power: '100', amperage: '0.54', price: '1200'},
+        {name: 'Mean Well LPV-150-12', characteristic: ' 150 Вт, 12 В, IP 65', power: '150', amperage: '0.78', price: '2450'}
     ];
     /* =============== */
 

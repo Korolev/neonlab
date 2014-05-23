@@ -808,19 +808,16 @@ a.selected {
   font-family: 'Conv_Pragmatica Bold', Sans-Serif;
 }
 .stick {
-  position: absolute;
-  left: 0;
-  top: 780px;
   background-color: #f7f7f7;
   padding: 55px 35px 35px;
   border: 1px solid #e0e5ef;
-  width: 231px;
-  margin-left: 29px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -o-box-sizing: border-box;
   box-sizing: border-box;
   font-size: 12px;
+  line-height: 20px;
+  position: relative;
 }
 .stick i.mark {
   background-position: -2px -340px;
@@ -829,8 +826,12 @@ a.selected {
   position: absolute;
 }
 .stick .stick_link {
-  margin-top: 13px;
-  font-size: 11px;
+  font-size: 14px;
+  text-align: right;
+  margin-top: -20px;
+}
+.stick .stick_link span {
+  margin: 0 5px;
 }
 .footer {
   color: #3e4758;
@@ -1006,4 +1007,17 @@ POPUP
             color: 424c58
             stroke: e5e5e5
             14px uppercase
+*/
+/*
+d5dcea
+5 5 shadow 75% d5dcea
+
+- Область захвата диодов
+- Тултипы на иконках
+- новые диоды
+- придумать с блоками может скролл
+- скрол формы вконтактов
+
+- после удаления обнулить все общее количество светодиодов
+- по кнопке назад закрыть окно а не идти назад
 */
