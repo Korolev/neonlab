@@ -241,7 +241,9 @@ var FileViewModel = function (app) {
                     perimeter: app.perimetr(),
                     dimension: app.size(),
                     depth: app.greedDeep(),
-                    total: app.projectCost()
+                    total: app.projectCost(),
+                    itemsCount: app.pointsCount(),
+                    totalPower: app.pointsWattCount()
                 };
             data.data = JSON.stringify(additionalData);
             $.ajax({
