@@ -12,23 +12,23 @@ var SvgImageViewModel = function (app, editor) {
     this.pattern25x25 = '';
     this.pattern20x9 = '';
 
-    var c = self.canvas,
+    var createDiodePattern = function(c){
+        var p = c.group();
+
+        p.add(c.rect(0, 0, 2500, 2500).attr({fill: '#DDDDDD', stroke: '#000000', 'stroke-with': '40'}));
+        p.add(c.rect(300, 500, 500, 200).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
+        p.add(c.rect(1600, 500, 500, 200).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
+        p.add(c.circle(1250, 1250, 300, 300).attr({fill: '#FFFFFF', stroke: '#000000', 'stroke-with': '20'}));
+        self.pattern25x25  = p.toDefs();
+
         p = c.group();
+        p.add(c.rect(0, 0, 2000, 900).attr({fill: '#DDDDDD', stroke: '#000000', 'stroke-with': '40'}));
+        p.add(c.rect(550, 300, 900, 300).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
 
-    p.add(c.rect(0, 0, 2500, 2500).attr({fill: '#DDDDDD', stroke: '#000000', 'stroke-with': '40'}));
-    p.add(c.rect(300, 500, 500, 200).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
-    p.add(c.rect(1600, 500, 500, 200).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
-    p.add(c.circle(1250, 1250, 300, 300).attr({fill: '#FFFFFF', stroke: '#000000', 'stroke-with': '20'}));
+        self.pattern20x9 = p.toDefs();
+    };
 
-//    this.pattern25x25 = p.pattern(0,0,2500,2500);
-    this.pattern25x25  = p.toDefs();
 
-    p = c.group();
-    p.add(c.rect(0, 0, 2000, 900).attr({fill: '#DDDDDD', stroke: '#000000', 'stroke-with': '40'}));
-    p.add(c.rect(550, 300, 900, 300).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
-
-//    this.pattern20x9 = p.pattern(0,0,2000,900);
-    this.pattern20x9 = p.toDefs();
 
     this.canvas.click(function (e, X, Y) {
         var x = X - editor.offsetLeft(),
@@ -87,7 +87,7 @@ var SvgImageViewModel = function (app, editor) {
         var s = self.canvas.select('svg'),
             d = s.select('defs');
 
-
+        createDiodePattern(s);
 
         self.setZoom();
         self.drag();

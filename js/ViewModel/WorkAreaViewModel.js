@@ -99,11 +99,12 @@ var WorkAreaViewModel = function (app) {
 
     self.getSvgImg = ko.computed(function () {
         var html = '',
-            s = self.SvgImage.canvas.select('svg'),
+            c = self.SvgImage.canvas,
+            s = c.select('svg'),
             clone,
             sObj = self.SvgImage.svgObject(),
             diodes = self.diodesArr();
-//
+
         if (s) {
             clone = s.clone();
             clone.attr({

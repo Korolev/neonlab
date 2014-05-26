@@ -150,6 +150,7 @@ var FileViewModel = function (app) {
                         var svgDom = r.firstChild;
 
                         var recusiveWalk = function (node) {
+
                             if (node.childNodes && node.childNodes.length) {
                                 $.each(node.childNodes, function (i, _node) {
                                     if (_node.getAttribute && _node.tagName) {
@@ -239,11 +240,10 @@ var FileViewModel = function (app) {
                     items: app.usedItemsList(),
                     perimeter: app.perimetr(),
                     dimension: app.size(),
-                    depth: app.deep(),
+                    depth: app.greedDeep(),
                     total: app.projectCost()
                 };
             data.data = JSON.stringify(additionalData);
-            console.log(data);
             $.ajax({
                 url: finishUrl,
                 type: 'POST',
