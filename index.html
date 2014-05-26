@@ -204,9 +204,9 @@
                     <div class="file_name">Фаил: <span data-bind="text:File.fileName"></span></div>
                     <div class="text_block">
                         <div class="text_block_item">
-                            <div>Размеры: <span data-bind="text:size">0</span><span> мм</span></div>
-                            <div>Общий периметр: <span data-bind="text:perimetr">0</span><span> мм</span></div>
-                            <div>Общая глубина: <span data-bind="text:greedDeep() || '0'">0</span><span> мм</span></div>
+                            <div>Размеры:&nbsp;<span data-bind="text:size">0</span><span> мм</span></div>
+                            <div>Общий периметр:&nbsp;<span data-bind="text:perimetr">0</span><span> мм</span></div>
+                            <div>Общая глубина:&nbsp;<span data-bind="text:greedDeep() || '0'">0</span><span> мм</span></div>
                         </div>
 
                     </div>
@@ -312,11 +312,10 @@
                     </div>
                     </div>
                 </div>
+                <!-- ko if: usedItemsList().length-->
                 <div class="stick">
                     <i class="mark icon"></i>
-                    Передумали расставлять
-                    светодиоды, позвоните
-                    нам по телефонам:
+                    Если Вас не устраивает данный результат, Вы можете  позвонить нам по телефонам:
                     <br>
                     <b>Москва:</b>
                     +7 (495) 980-01-67,
@@ -330,6 +329,7 @@
                         <a href="http://calculed.reformal.ru">Поддержка</a>
                     </div>
                 </div>
+                <!-- /ko -->
             </div>
         </div>
         <div class="clear"></div>

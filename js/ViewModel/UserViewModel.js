@@ -8,7 +8,9 @@ var UserViewModel = function (app) {
             error:"<span style='color: red'>Пожалуйста, заполните данные корректно,<br>\
             технический расчет будет отправлен на Ваш электронный адрес<br>\
                 и Вы всегда сможете вернуться к нему.</span>",
-            confirm:"<img src='img/pokerface.png'><br><span style='font-size: 17px'>Ваш расчет отправлен на почту.<br> Спасибо!</span>"
+            confirm:"<img src='img/pokerface.png'><br><span style='font-size: 17px'>Ваш расчет отправлен на почту.<br> Спасибо!</span>",
+            confirmManager: "<img src='img/pokerface.png'><br><span style='font-size: 17px'>Ваш заказ будет от будет отправлен менеджеру в производство." +
+                "<br> Спасибо!</span>"
         };
 
     var user = (function () {

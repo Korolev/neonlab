@@ -710,7 +710,6 @@ a.selected {
   line-height: 55px;
 }
 .main_page .result_out .result_block .bottom > span {
-  width: 40%;
   display: inline-block;
 }
 .main_page .result_out .result_block .bottom span.digit_dark {
@@ -722,7 +721,7 @@ a.selected {
 }
 .main_page .result_out .table_left_bar_info {
   position: absolute;
-  left: -275px;
+  left: -235px;
   top: 0px;
   padding: 0;
   width: 231px;
@@ -889,7 +888,7 @@ a.selected {
 }
 .stick {
   background-color: #f7f7f7;
-  padding: 55px 35px 35px;
+  padding: 55px 35px 35px 50px;
   border: 1px solid #e0e5ef;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -902,7 +901,7 @@ a.selected {
 .stick i.mark {
   background-position: -2px -340px;
   top: 24px;
-  left: 30px;
+  left: 43px;
   position: absolute;
 }
 .stick .stick_link {
@@ -919,7 +918,7 @@ a.selected {
   text-align: left;
   height: 40px;
   padding-top: 80px;
-  padding-left: 350px;
+  padding-left: 315px;
 }
 .show_dialog {
   width: 100%;
@@ -965,11 +964,12 @@ a.selected {
   border-bottom: #d5dcea;
 }
 .user_info_dialog .img_holder .img_svg {
-  min-height: 180px;
+  padding-top: 20px;
+  min-height: 162px;
   text-align: center;
 }
 .user_info_dialog .img_holder .img_svg svg {
-  height: 170px;
+  height: 150px;
 }
 .user_info_dialog .img_holder .remember_me {
   text-align: right;
@@ -1096,6 +1096,7 @@ POPUP
 d5dcea
 5 5 shadow 75% d5dcea
 
+- Ашан достает до верха
 - Область захвата диодов
 - Тултипы на иконках
 - новые диоды
