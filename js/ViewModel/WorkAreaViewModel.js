@@ -112,8 +112,8 @@ var WorkAreaViewModel = function (app) {
             clone.attr({
                 x:0,
                 y:0,
-                width: vb.width,
-                height: vb.height
+                width: vb.width/100,
+                height: vb.height/100
             });
             self.fullSizeSVG(clone.toString());
             clone.attr({
