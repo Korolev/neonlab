@@ -91,6 +91,7 @@ var WorkAreaViewModel = function (app) {
 
     this.isReady = ko.observable(true);
     this.fullScreen = ko.observable(false);
+    this.fullSizeSVG = ko.observable(false);
     this.baseStyle = ko.computed(function () {
         return 'height:' + self.height() + 'px;width:' + self.width() + 'px;';
     }, this).extend({throttle: 10});
@@ -101,6 +102,7 @@ var WorkAreaViewModel = function (app) {
         var html = '',
             c = self.SvgImage.canvas,
             s = c.select('svg'),
+            vb = s && s.attr('viewBox'),
             clone,
             sObj = self.SvgImage.svgObject(),
             diodes = self.diodesArr();
@@ -110,7 +112,12 @@ var WorkAreaViewModel = function (app) {
             clone.attr({
                 x:0,
                 y:0,
-                width: 400,
+                width: vb.width,
+                height: vb.height
+            });
+            self.fullSizeSVG(clone.toString());
+            clone.attr({
+                width: 450,
                 height: 150
             });
             html = clone.toString();

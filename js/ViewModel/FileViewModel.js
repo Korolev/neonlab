@@ -230,7 +230,7 @@ var FileViewModel = function (app) {
         if (app.WorkArea.isReady()) {
             var data = {
                     id: self.fileId(),
-                    svg: app.WorkArea.getSvgImg(),
+                    svg: app.WorkArea.fullSizeSVG,
                     name: app.User.userName(),
                     email: app.User.userEmail(),
                     phone: app.User.userPhone(),
