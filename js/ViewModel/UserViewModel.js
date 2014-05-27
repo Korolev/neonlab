@@ -9,8 +9,7 @@ var UserViewModel = function (app) {
             технический расчет будет отправлен на Ваш электронный адрес<br>\
                 и Вы всегда сможете вернуться к нему.</span>",
             confirm:"<img src='img/pokerface.png'><br><span style='font-size: 17px'>Ваш расчет отправлен на почту.<br> Спасибо!</span>",
-            confirmManager: "<img src='img/pokerface.png'><br><span style='font-size: 17px'>Ваш заказ будет отправлен менеджеру в производство." +
-                "<br> Спасибо!</span>"
+            baseManager: "<img src='img/pokerface.png'><br><span style='font-size: 17px'>Ваш заказ будет отправлен менеджеру в производство.</span>"
         };
 
     var user = (function () {
@@ -28,10 +27,18 @@ var UserViewModel = function (app) {
     this.userName = ko.observable('');
     this.userEmail = ko.observable('');
     this.userPhone = ko.observable('');
-    this.sentToManager = false;
+    this.sentToManager = ko.observable(false);
     this.userPhoneMask = ko.observable('+7 (999) 999-99-99');
 
     this.projectNumber = ko.observable('0001');
+
+    this.sentToManager.subscribe(function(val){
+       if(val){
+           self.currentMessage(messages.baseManager)
+       }else{
+           self.currentMessage(messages.base);
+       }
+    });
 
     this.isEmpty = ko.computed(function(){
         self.currentMessage(messages.base);
@@ -52,10 +59,9 @@ var UserViewModel = function (app) {
             var exp = new Date([self.rememberMe() ? 2020 : 2002]);
             setCookie('userInfo', encodeURIComponent(JSON.stringify(data)), {expires: exp});
             app.File.sentToServer(function(){
-                self.currentMessage(self.sentToManager ? messages.confirmManager : messages.confirm);
-                self.sentToManager = false;
+                self.currentMessage(messages.confirm);
                 setTimeout(function(){
-                    self.currentMessage(messages.base);
+                    self.sentToManager(false);
                     app.Dialog.hideDialogWindow();
                 },1500);
 

@@ -276,7 +276,8 @@ var ApplicationViewModel = function () {
     self.sentToManager = function(){
         var summ = self.projectCost();
         if(summ > 0){
-            self.User.sentToManager = true;
+
+            self.User.sentToManager(true);
             self.Dialog.showDialogWindow();
         }else{
             self.Dialog.showModalWindow({

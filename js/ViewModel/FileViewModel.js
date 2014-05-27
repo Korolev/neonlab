@@ -234,7 +234,7 @@ var FileViewModel = function (app) {
                     name: app.User.userName(),
                     email: app.User.userEmail(),
                     phone: app.User.userPhone(),
-                    manager: app.User.sentToManager
+                    manager: app.User.sentToManager()
                 },
                 additionalData = {
                     items: app.usedItemsList(),

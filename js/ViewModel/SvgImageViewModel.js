@@ -83,17 +83,24 @@ var SvgImageViewModel = function (app, editor) {
             svg = serializer.serializeToString(svgDom);
         self.svgOrignHTML(svg);
 
-        var s = self.canvas.select('svg');
+        var s = self.canvas.select('svg'),
+            viewBox = s.attr('viewBox');
 
         createDiodePattern(s);
 
 
         $.each(s.node.children, function (k, el) {
-            var bb = el.getBoundingClientRect();
-            console.log('-->',self.svgObjWidth());
-            console.log(self.svgObjHeight());
-            console.log(bb.width);
-            console.log('<--',bb.height);
+            var bb = el.getBoundingClientRect(),
+                nodeName,
+                nodeClass,
+                g;
+            if(bb.width){
+                nodeName = el.nodeName;
+                nodeClass = el.getAttribute('class');
+                g = s.select(nodeClass ? nodeName+'.'+nodeClass : nodeName);
+                //TODO maybe remove this rect before sent SVG
+                self.canvas.rect(viewBox.x,viewBox.y,bb.width*100,bb.height*100).attr({fill:'#cccccc','opacity':'0.01'}).prependTo(g);
+            }
         });
 
         self.setZoom();
