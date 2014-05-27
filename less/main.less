@@ -398,6 +398,9 @@ a.selected {
         .item_remove {
           background-image: url('../img/canvas/edit_rem_active.png');
         }
+        .item_move {
+          background-image: url('../img/canvas/move_active.png');
+        }
 
       }
 
@@ -438,7 +441,8 @@ a.selected {
     }
 
     .editor_base.default {
-      cursor: move;
+//      cursor: move;
+      cursor: url("../img/canvas/move_active.png") 5 2,pointer;
     }
 
     .editor_base {

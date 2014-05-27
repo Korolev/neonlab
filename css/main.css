@@ -483,6 +483,9 @@ a.selected {
 .main_page .editor .editor_head .instruments_holder .item_remove {
   background-image: url('../img/canvas/edit_rem_active.png');
 }
+.main_page .editor .editor_head .instruments_holder .item_move {
+  background-image: url('../img/canvas/move_active.png');
+}
 .main_page .editor .editor_head .button {
   width: 170px;
   height: 30px;
@@ -512,7 +515,7 @@ a.selected {
   cursor: url("../img/canvas/edit_rem_active.png") 5 2, pointer;
 }
 .main_page .editor .editor_base.default {
-  cursor: move;
+  cursor: url("../img/canvas/move_active.png") 5 2, pointer;
 }
 .main_page .editor .editor_base {
   width: 750px;

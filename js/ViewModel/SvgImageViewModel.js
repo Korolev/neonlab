@@ -12,14 +12,14 @@ var SvgImageViewModel = function (app, editor) {
     this.pattern25x25 = '';
     this.pattern20x9 = '';
 
-    var createDiodePattern = function(c){
+    var createDiodePattern = function (c) {
         var p = c.group();
 
         p.add(c.rect(0, 0, 2500, 2500).attr({fill: '#DDDDDD', stroke: '#000000', 'stroke-with': '40'}));
         p.add(c.rect(300, 500, 500, 200).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
         p.add(c.rect(1600, 500, 500, 200).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
         p.add(c.circle(1250, 1250, 300, 300).attr({fill: '#FFFFFF', stroke: '#000000', 'stroke-with': '20'}));
-        self.pattern25x25  = p.toDefs();
+        self.pattern25x25 = p.toDefs();
 
         p = c.group();
         p.add(c.rect(0, 0, 2000, 900).attr({fill: '#DDDDDD', stroke: '#000000', 'stroke-with': '40'}));
@@ -29,7 +29,6 @@ var SvgImageViewModel = function (app, editor) {
     };
 
 
-
     this.canvas.click(function (e, X, Y) {
         var x = X - editor.offsetLeft(),
             y = Y - editor.offsetTop() - window.scrollY,
@@ -37,17 +36,17 @@ var SvgImageViewModel = function (app, editor) {
             viewBox,
             k = 100,
             r = self.canvasZoomRate,
-            sX,sY;
+            sX, sY;
 
-        if(s && editor.editMode() == 'addItem'){
+        if (s && editor.editMode() == 'addItem') {
             viewBox = s.attr('viewBox'),
-            sX = parseInt(s.attr('x')||0);
-            sY = parseInt(s.attr('y')||0);
+                sX = parseInt(s.attr('x') || 0);
+            sY = parseInt(s.attr('y') || 0);
             //TODO need fix diff
             x = x - sX;
             y = y - sY;
 
-            self.addDiode(x*k*r+viewBox.x,y*k*r+viewBox.y);
+            self.addDiode(x * k * r + viewBox.x, y * k * r + viewBox.y);
         }
     });
 
@@ -84,10 +83,18 @@ var SvgImageViewModel = function (app, editor) {
             svg = serializer.serializeToString(svgDom);
         self.svgOrignHTML(svg);
 
-        var s = self.canvas.select('svg'),
-            d = s.select('defs');
+        var s = self.canvas.select('svg');
 
         createDiodePattern(s);
+
+
+        $.each(s.node.children, function (k, el) {
+            var bb = el.getBoundingClientRect();
+            console.log('-->',self.svgObjWidth());
+            console.log(self.svgObjHeight());
+            console.log(bb.width);
+            console.log('<--',bb.height);
+        });
 
         self.setZoom();
         self.drag();
@@ -177,12 +184,12 @@ var SvgImageViewModel = function (app, editor) {
         self.canvasZoomRate = self.svgObjWidth() / svgW;
     };
 
-    this.addDiode = function(x,y){
-        console.log(x,y);
-        if(app.greedDeep()){
+    this.addDiode = function (x, y) {
+        console.log(x, y);
+        if (app.greedDeep()) {
             var usedDiodeType = app.usedDiodTypes()[0],
                 s = self.canvas.select('svg'),
-                diode = new Diod({x:x,y:y},usedDiodeType,app);
+                diode = new Diod({x: x, y: y}, usedDiodeType, app);
 
             editor.diodesArr.push(diode);
 
