@@ -609,8 +609,10 @@ a.selected {
   -moz-box-sizing: border-box;
   -o-box-sizing: border-box;
   box-sizing: border-box;
+  overflow: auto;
 }
 .main_page .editor .editor_base_after > div .after_right_column .top_block {
+  min-width: 870px;
   text-align: justify;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
