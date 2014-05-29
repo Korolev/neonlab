@@ -10,6 +10,9 @@ var Diod = function (data, info, app) {
 
     this.x = data.x;
     this.y = data.y;
+    this.isHighlight = false;
+    this.defaultPatternId = false;
+    this.selectedPatternId = false;
 
     this.setSize(info);
 
@@ -25,16 +28,38 @@ Diod.prototype.setSize = function (info) {
     this.h = size ? size[1] * 100 | 0 : 0;
 };
 
+Diod.prototype.highlight = function(val){
+    var app = this.app,
+        self = this,
+        defId = self.defaultPatternId ,
+        selId = self.selectedPatternId;
+
+    if(self.isHighlight == val){
+        return false;
+    }
+    self.isHighlight = val;
+    if(self.paper){
+        if(val){
+            self.paper.attr('href',selId);
+        }else{
+            self.paper.attr('href',defId);
+        }
+    }
+};
+
 Diod.prototype.draw = function (canvas) {
     var app = this.app,
         self = this,
-        k = 0;
-//    this.paper = canvas.rect(this.x, this.y, this.w, this.h).attr({
-//        fill: '#FFDE00'
-////        fill: app.WorkArea.SvgImage['pattern'+this.info.size] || '#FFDE00'
-//    });
+        size = self.info.size,
+        k = 0,
+        pDef = app.WorkArea.SvgImage['pattern'+size] ,
+        pHl = app.WorkArea.SvgImage['pattern'+size+'hl'];
 
-    this.paper = app.WorkArea.SvgImage['pattern'+this.info.size].use().attr({
+    this.defaultPatternId = '#'+pDef.id;
+    this.selectedPatternId = '#'+pHl.id;
+
+    pHl.attr('id',pHl.id);
+    this.paper = pDef.use().attr({
         x:this.x,
         y:this.y
     }).appendTo(canvas);
@@ -79,7 +104,10 @@ var WorkAreaViewModel = function (app) {
         workareaStartWidth = editor_holder.width(),
         workareaStartHeight = editor_holder.height();
 
+//    var diodeSettingsWindow = $('<div class="diode_settings"><div class="pointer-item"></div><div class="content-block"></div></div>').appendTo(editor_holder);
+
     this.diodesArr = ko.observableArray([]);
+    this.selectedDiodes = ko.observableArray([]);
 
     this.winWidth = ko.observable($(window).width());
     this.winHeight = ko.observable($(window).height());
@@ -136,28 +164,12 @@ var WorkAreaViewModel = function (app) {
 
     this.setMode = function (mode) {
         mode = mode == self.editMode() ? 'default' : mode || 'default';
-//        var c = self.SvgImage.canvas.select('svg');
-//        switch (mode) {
-//            case 'moveItem':
-//                c && c.undrag();
-//
-//                var set = c.selectAll('rect');
-//                $.each(set, function (k, el) {
-//                    if (el.attr('fill') == 'rgb(0, 0, 0)') {
-//                        el.drag();
-//                    }
-//                });
-//
-//                break;
-//            case 'addItem':
-//
-//                break;
-//            case 'removeItem':
-//
-//                break;
-//            default :
-//                c && c.drag();
-//        }
+        if(self.selectedDiodes().length){
+            $.each(self.selectedDiodes(),function(k,d){
+                d.highlight(false);
+                self.selectedDiodes([]);
+            });
+        }
         self.editMode(mode);
     };
 

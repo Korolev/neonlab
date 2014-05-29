@@ -9,6 +9,10 @@ html {
 
 }
 
+  use.selected{
+    fill:#00ff00;
+  }
+
 .fbold,
 b {
   font-family: 'Conv_Pragmatica Bold', Sans-Serif;
@@ -401,6 +405,10 @@ a.selected {
         .item_move {
           background-image: url('../img/canvas/move_active.png');
         }
+        .item_select {
+          background-image: url('../img/canvas/select.png');
+        }
+
 
       }
 
@@ -438,6 +446,9 @@ a.selected {
     }
     .editor_base.removeItem {
       cursor: url("../img/canvas/edit_rem_active.png") 5 2,pointer;
+    }
+    .editor_base.selectItem {
+      cursor: url('../img/canvas/select.png') 0 15,pointer;
     }
 
     .editor_base.default {
@@ -1068,6 +1079,35 @@ a.selected {
     }
   }
 
+}
+
+.diode_settings{
+  position: absolute;
+  top: 50px;
+  left: 50px;
+
+  .pointer-item{
+    position: absolute;
+    width: 23px;
+    height: 30px;
+    z-index: 100;
+    top: 18px;
+    left: 2px;
+    background-image: url("../img/canvas/pointer.png");
+    background-position: right center;
+    background-repeat: no-repeat;
+  }
+
+  .content-block{
+    margin-left: 23px;
+    width: 243px;
+    height: 300px;
+    background-color: @editor_background;
+    border: 1px solid #b4bac0;
+    -moz-box-shadow: 1px 1px 3px #b4bac0;
+    -webkit-box-shadow: 1px 1px 3px #b4bac0;
+    box-shadow: 1px 1px 3px #b4bac0;
+  }
 }
 
 /*
