@@ -104,8 +104,6 @@ var WorkAreaViewModel = function (app) {
         workareaStartWidth = editor_holder.width(),
         workareaStartHeight = editor_holder.height();
 
-//    var diodeSettingsWindow = $('<div class="diode_settings"><div class="pointer-item"></div><div class="content-block"></div></div>').appendTo(editor_holder);
-
     this.diodesArr = ko.observableArray([]);
     this.selectedDiodes = ko.observableArray([]);
 

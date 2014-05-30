@@ -17,7 +17,7 @@ var SvgImageViewModel = function (app, editor) {
     var createDiodePattern = function (c) {
         var p = c.group();
 
-        p.add(c.circle(1250, 1250, 3000, 3000).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1'}));
+        p.add(c.circle(1250, 1250, 3000, 3000).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1', opacity:'0.1'}));
         p.add(c.rect(0, 0, 2500, 2500).attr({fill: '#DDDDDD', stroke: '#000000', 'stroke-with': '40'}));
         p.add(c.rect(300, 500, 500, 200).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
         p.add(c.rect(1600, 500, 500, 200).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
@@ -25,18 +25,18 @@ var SvgImageViewModel = function (app, editor) {
         self.pattern25x25 = p.toDefs();
 
         p = c.group();
-        p.add(c.circle(1250, 1250, 3000, 3000).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1'}));
+        p.add(c.circle(1250, 1250, 3000, 3000).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1', opacity:'0.1'}));
         p.add(c.rect(0, 0, 2500, 2500).attr({fill: '#00FF00', stroke: '#000000', 'stroke-with': '40'}));
         self.pattern25x25hl = p.toDefs();
 
         p = c.group();
-        p.add(c.circle(1000, 450, 2500, 2500).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1'}));
+        p.add(c.circle(1000, 450, 2500, 2500).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1', opacity:'0.1'}));
         p.add(c.rect(0, 0, 2000, 900).attr({fill: '#DDDDDD', stroke: '#000000', 'stroke-with': '40'}));
         p.add(c.rect(550, 300, 900, 300).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
         self.pattern20x9 = p.toDefs();
 
         p = c.group();
-        p.add(c.circle(1000, 450, 2500, 2500).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1'}));
+        p.add(c.circle(1000, 450, 2500, 2500).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1', opacity:'0.1'}));
         p.add(c.rect(0, 0, 2000, 900).attr({fill: '#00FF00', stroke: '#000000', 'stroke-with': '40'}));
         self.pattern20x9hl = p.toDefs();
     };
@@ -148,6 +148,8 @@ var SvgImageViewModel = function (app, editor) {
             r = self.canvasZoomRate,
             sX, sY, x, y,
             selElems = [];
+
+        app.settingsPosition('left:'+(x2-50)+'px;top:'+y2/2+'px;');
 
         self.selectRect.attr({opacity: 0});
         if (editor.editMode() == 'selectItem' && s) {

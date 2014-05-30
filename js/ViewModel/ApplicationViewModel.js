@@ -66,6 +66,9 @@ var ApplicationViewModel = function () {
         }
     });
 
+    this.additionalDiode = ko.observable(self.diodInfo[0]);
+    this.settingsPosition = ko.observable('left:20px;top:10px');
+
     this.usedDiodTypes = ko.observableArray([defDiod]);
     this.usedPowerSupplyTypes = ko.observableArray([defPowerSupply]);
     this.usedItemsList = ko.computed(function(){

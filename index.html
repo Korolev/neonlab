@@ -58,7 +58,7 @@
                 <input type="file" data-bind="event:{change:File.changeInputFile}">
                 <div class="button yellow_button">Добавить</div>
                 <div class="blue_button_after " data-bind="css:File.statusClass">
-                    <div class="status_text" data-bind="if:File.statusText">
+                    <div class="status_text hidden" data-bind="if:File.statusText, css:{'hidden':false}">
                         <div class="status_text_message" data-bind="html:File.statusText"></div>
                     </div>
                     <div class="click_area"></div>
@@ -99,6 +99,27 @@
                     </div>
                 </div>
                 <div class="editor_base" data-bind="css:WorkArea.editMode,attr{style:WorkArea.baseStyle}">
+                    <!--SETTINGS-->
+                        <div class="diode_settings hidden" data-bind="if:WorkArea.selectedDiodes().length,attr:{style:settingsPosition},css:{'hidden':false}">
+                            <div class="pointer-item"></div>
+                            <div class="content-block">
+                                <label>Задайте глубину</label>
+                                <div class="form_row_input">
+                                    <input type="text" data-bind="">
+                                    <div class="inp_comment">мм</div>
+                                </div>
+                                <label>Определите тип светодиода</label>
+                                <div class="form_row_input">
+                                    <input type="hidden" data-bind="select:{
+                                        options:diodInfo,
+                                        optionText:'name',
+                                        value:additionalDiode,
+                                        css:{width: '100%',left:'0px'}
+                                        }">
+                                </div>
+                            </div>
+                        </div>
+                    <!--SETTINGS-->
                     <!--ZOOM-->
                     <div class="zoom_pane">
                         <div data-bind="click:function(){$root.WorkArea.SvgImage.setZoom('zoomIn')}" title="Увеличить"><i class="icon zoom_in"></i></div>
