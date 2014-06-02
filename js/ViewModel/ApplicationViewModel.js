@@ -86,7 +86,7 @@ var ApplicationViewModel = function () {
 
     this.additionalDiode.subscribe(function(val){
       if(val){
-          
+
       }
     });
 

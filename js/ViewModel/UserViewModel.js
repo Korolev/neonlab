@@ -10,7 +10,8 @@ var UserViewModel = function (app) {
                 и Вы всегда сможете вернуться к нему.</span>",
             confirm:"<img src='img/pokerface.png'><br><span style='font-size: 17px'>Ваш расчет отправлен на почту.<br> Спасибо!</span>",
 //            baseManager: "<img src='img/pokerface.png'><br><span style='font-size: 17px'>Ваш заказ будет отправлен менеджеру в производство.</span>"
-            baseManager: "Ваш заказ будет отправлен менеджеру в производство.</span>"
+            baseManager: "Ваш заказ будет отправлен менеджеру в производство.</span>",
+            serverError: "Что-то пошло не так, и сервер не ответил, попробуйте еще раз посже."
         };
 
     var user = (function () {
@@ -65,15 +66,14 @@ var UserViewModel = function (app) {
             var exp = new Date([self.rememberMe() ? 2020 : 2002]);
             setCookie('userInfo', encodeURIComponent(JSON.stringify(data)), {expires: exp});
             self.disabledButton(true);
-            app.File.sentToServer(function(){
-                self.currentMessage(messages.confirm);
+            app.File.sentToServer(function(r){
+                self.currentMessage(r ? messages.confirm : messages.serverError);
                 setTimeout(function(){
                     self.sentToManager(false);
                     self.disabledButton(false);
                     app.Dialog.hideDialogWindow();
                     self.currentMessage(messages.base);
                 },1500);
-
             });
         }
         return true;
