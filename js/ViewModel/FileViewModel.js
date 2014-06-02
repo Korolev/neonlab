@@ -138,6 +138,11 @@ var FileViewModel = function (app) {
             processData: false,  // tell jQuery not to process the data
             contentType: false,   // tell jQuery not to set contentType
             success: function (r) {
+                if(r.status == 0){
+                    self.uploadStatus('error');
+                    self.showStatusText(true);
+                    return false;
+                }
                 if (r.file) {
                     $.get(downloadUrl + r.file, function (r) {
                         self.uploadStatus('success');
@@ -174,6 +179,7 @@ var FileViewModel = function (app) {
                 if (r.id) {
                     self.fileId(r.id);
                 }
+
             },
             error: function (r) {
                 self.uploadStatus('error');
