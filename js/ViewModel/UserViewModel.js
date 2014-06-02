@@ -9,7 +9,8 @@ var UserViewModel = function (app) {
             технический расчет будет отправлен на Ваш электронный адрес<br>\
                 и Вы всегда сможете вернуться к нему.</span>",
             confirm:"<img src='img/pokerface.png'><br><span style='font-size: 17px'>Ваш расчет отправлен на почту.<br> Спасибо!</span>",
-            baseManager: "<img src='img/pokerface.png'><br><span style='font-size: 17px'>Ваш заказ будет отправлен менеджеру в производство.</span>"
+//            baseManager: "<img src='img/pokerface.png'><br><span style='font-size: 17px'>Ваш заказ будет отправлен менеджеру в производство.</span>"
+            baseManager: "Ваш заказ будет отправлен менеджеру в производство.</span>"
         };
 
     var user = (function () {
@@ -30,6 +31,8 @@ var UserViewModel = function (app) {
     this.sentToManager = ko.observable(false);
     this.userPhoneMask = ko.observable('+7 (999) 999-99-99');
 
+    this.disabledButton = ko.observable(false);
+
     this.projectNumber = ko.observable('0001');
 
     this.sentToManager.subscribe(function(val){
@@ -46,6 +49,9 @@ var UserViewModel = function (app) {
     },this).extend({throttle:1});
 
     this.saveUserInfo = function () {
+        if(self.disabledButton()){
+            return false;
+        }
         if(self.isEmpty()){
             self.currentMessage(messages.error);
             return false;
@@ -58,15 +64,19 @@ var UserViewModel = function (app) {
             };
             var exp = new Date([self.rememberMe() ? 2020 : 2002]);
             setCookie('userInfo', encodeURIComponent(JSON.stringify(data)), {expires: exp});
+            self.disabledButton(true);
             app.File.sentToServer(function(){
                 self.currentMessage(messages.confirm);
                 setTimeout(function(){
                     self.sentToManager(false);
+                    self.disabledButton(false);
                     app.Dialog.hideDialogWindow();
+                    self.currentMessage(messages.base);
                 },1500);
 
             });
         }
+        return true;
     };
 
 

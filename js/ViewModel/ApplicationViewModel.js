@@ -65,9 +65,67 @@ var ApplicationViewModel = function () {
             self.powerSuplyInfo = r
         }
     });
-
-    this.additionalDiode = ko.observable(self.diodInfo[0]);
+//**** PARTIAL DIODES CHANGE
+    this.additionalDeep = ko.observable();
+    this.additionalDiode = ko.observable();
     this.settingsPosition = ko.observable('left:20px;top:10px');
+
+    this.diodInfoFiltered = ko.computed(function(){
+        var res = [],
+            deep = self.additionalDeep();
+
+        $.each(self.diodInfo, function (k, d) {
+            var h = d.h1.split('-'), hFrom = h[0], hTo = h[1];
+
+            if(deep >= hFrom && deep <= hTo){
+                res.push(d);
+            }
+        });
+        return res;
+    },this).extend({throttle:50});
+
+    this.additionalDiode.subscribe(function(val){
+      if(val){
+          
+      }
+    });
+
+    this.additionalDeep.subscribe(function(val){
+        var minHVal, maxHVal;
+
+        $.each(self.diodInfo, function (k, d) {
+            var h = d.h1.split('-'), hFrom = h[0], hTo = h[1];
+            minHVal = minHVal || hFrom;
+            maxHVal = maxHVal || hTo;
+
+            minHVal = Math.min(minHVal, hFrom);
+            maxHVal = Math.max(maxHVal, hTo);
+
+        });
+
+        var v = parseInt(val, 10),
+            error = false;
+        if (isNaN(v) || v < minHVal) {
+            v = minHVal;
+            error = true;
+        } else if (v > maxHVal) {
+            v = maxHVal;
+            error = true;
+        }
+        if (error) {
+            setTimeout(function () {
+                dialog.hideModalWindow();
+            }, 4000);
+            dialog.showModalWindow({
+                message : 'Введенная глубина конструкции<br> не попадает в диапазон от ' +
+                    minHVal +
+                    ' мм<br> до ' + maxHVal +
+                    ' мм. Попробуйте еще раз!'
+            });
+        }
+        self.additionalDeep(v);
+    });
+//**** PARTIAL DIODES CHANGE
 
     this.usedDiodTypes = ko.observableArray([defDiod]);
     this.usedPowerSupplyTypes = ko.observableArray([defPowerSupply]);

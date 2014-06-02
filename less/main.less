@@ -89,6 +89,10 @@ b {
   font-family: "Conv_Pragmatica Bold";
 }
 
+.disabled{
+  opacity: 0.4;
+}
+
 .hidden {
   display: none;
 }
@@ -441,7 +445,7 @@ a.selected {
       cursor: url("../img/canvas/edit_active.png") 5 2, pointer;
     }
     .editor_base.addItem {
-      cursor: url("../img/canvas/edit_add_active.png") 5 2, pointer;
+//      cursor: url("../img/canvas/edit_add_active.png") 5 2, pointer;
     }
     .editor_base.removeItem {
       cursor: url("../img/canvas/edit_rem_active.png") 5 2, pointer;
@@ -906,10 +910,10 @@ a.selected {
 
 .dialog_holder {
   position: fixed;
-  z-index: 500;
   height: 100%;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.4);
+  z-index: 10000;
 }
 
 .dialog_body {
@@ -921,7 +925,7 @@ a.selected {
   margin-left: -305px;
   position: absolute;
   //  position: fixed;
-  z-index: 1000;
+  z-index: 10000;
 
   .dialog_close {
     position: absolute;
@@ -942,7 +946,7 @@ a.selected {
   .img_holder {
     background-color: @editor_background;
     height: 210px;
-    border-bottom: #d5dcea;
+    border-bottom:1px solid #d5dcea;
 
     .img_svg {
       padding-top: 20px;
@@ -1035,6 +1039,7 @@ a.selected {
   top: 40%;
   margin-left: -139px;
   box-shadow: 2px 2px 2px #ccc;
+  z-index: 10001;
 
   .message {
     padding-left: 30px;
@@ -1232,12 +1237,12 @@ POPUP
 d5dcea
 5 5 shadow 75% d5dcea
 
-- Ашан достает до верха
-- Область захвата диодов
++ Ашан достает до верха
++ Область захвата диодов
 - Тултипы на иконках
 - новые диоды
 - придумать с блоками может скролл
-- скрол формы вконтактов
++ скрол формы вконтактов
 
 - после удаления обнулить все общее количество светодиодов
 - по кнопке назад закрыть окно а не идти назад

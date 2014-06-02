@@ -105,13 +105,13 @@
                             <div class="content-block">
                                 <label>Задайте глубину</label>
                                 <div class="form_row_input">
-                                    <input type="text" data-bind="">
+                                    <input type="text" data-bind="value:additionalDeep">
                                     <div class="inp_comment">мм</div>
                                 </div>
                                 <label>Определите тип светодиода</label>
                                 <div class="form_row_input">
                                     <input type="hidden" data-bind="select:{
-                                        options:diodInfo,
+                                        options:diodInfoFiltered,
                                         optionText:'name',
                                         value:additionalDiode,
                                         css:{width: '100%',left:'0px'}
@@ -402,7 +402,7 @@
                     </div>
                     <div class="horisontal_form_element">
                         <div class="label"></div>
-                        <div class="button blue_button" data-bind="click:$root.User.saveUserInfo">ПРОДОЛЖИТЬ</div>
+                        <div class="button blue_button" data-bind="click:$root.User.saveUserInfo, css:{'disabled':User.disabledButton}">ПРОДОЛЖИТЬ</div>
                     </div>
                 </div>
                 <div class="clear"></div>
