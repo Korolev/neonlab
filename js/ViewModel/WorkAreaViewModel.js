@@ -20,6 +20,8 @@ var Diod = function (data, info, app) {
 
 Diod.prototype.setInfo = function (data) {
     this.info = data;
+    this.setSize(data);
+    this.redraw();
 };
 
 Diod.prototype.setSize = function (info) {
@@ -47,6 +49,35 @@ Diod.prototype.highlight = function(val){
     }
 };
 
+
+Diod.prototype.remove = function(){
+    try{
+        var self = this;
+        self.paper.undrag();
+        self.app.WorkArea.diodesArr.remove(self);
+        self.paper.remove();
+    }catch (e){
+        console && console.log("Can't remove. Reason: "+ e.message,e);
+    }
+};
+
+Diod.prototype.redraw = function(){
+    var app = this.app,
+        self = this,
+        size = self.info.size,
+        k = 0,
+        pDef = app.WorkArea.SvgImage['pattern'+size] ,
+        pHl = app.WorkArea.SvgImage['pattern'+size+'hl'];
+
+    this.defaultPatternId = '#'+pDef.id;
+    this.selectedPatternId = '#'+pHl.id;
+
+    pHl.attr('id',pHl.id);
+    pDef.attr('id',pDef.id);
+
+    self.paper.attr('href',self.defaultPatternId);
+};
+
 Diod.prototype.draw = function (canvas) {
     var app = this.app,
         self = this,
@@ -64,35 +95,33 @@ Diod.prototype.draw = function (canvas) {
         y:this.y
     }).appendTo(canvas);
 
-    this.paper.drag(function(dx,dy){
-        // move
-        dy = dy - window.scrollY;
-       if(this.canDrag){
-           self.x = this.ox + dx * k *100;
-           self.y = this.oy + dy * k *100;
-           this.attr({
-               x:self.x,
-               y:self.y
-           })
-       }
-    },
-    function(){
-        //start move
-        this.canDrag = false;
-        if(app.WorkArea.editMode() == 'moveItem'){
-            k = app.WorkArea.SvgImage.canvasZoomRate;
-            this.canDrag = true;
-            this.ox = self.x;
-            this.oy = self.y;
-        }else if(app.WorkArea.editMode() == 'removeItem'){
-            this.undrag();
-            app.WorkArea.diodesArr.remove(self);
-            this.remove();
-        }
-    },
-    function(){
-        //console.log('end',arguments);
-    });
+    this.paper.drag(function (dx, dy) {
+            // move
+            dy = dy - window.scrollY;
+            if (this.canDrag) {
+                self.x = this.ox + dx * k * 100;
+                self.y = this.oy + dy * k * 100;
+                this.attr({
+                    x: self.x,
+                    y: self.y
+                })
+            }
+        },
+        function () {
+            //start move
+            this.canDrag = false;
+            if (app.WorkArea.editMode() == 'moveItem') {
+                k = app.WorkArea.SvgImage.canvasZoomRate;
+                this.canDrag = true;
+                this.ox = self.x;
+                this.oy = self.y;
+            } else if (app.WorkArea.editMode() == 'removeItem') {
+                self.remove();
+            }
+        },
+        function () {
+            //console.log('end',arguments);
+        });
     return this.paper;
 };
 
@@ -189,7 +218,17 @@ var WorkAreaViewModel = function (app) {
     };
 
     this.diodesArr.subscribe(function(points){
-        app.usedDiodTypes()[0].itemsCount = points.length;
+        var diodeTypes = app.usedDiodTypes();
+        $.each(diodeTypes,function(i,t){
+            t.itemsCount = 0;
+        });
+        $.each(points,function(k,p){
+            $.each(diodeTypes,function(i,t){
+                if(p.info.name == t.name){
+                    t.itemsCount++;
+                }
+            });
+        });
         app.pointsCount(points.length);
     });
 
@@ -309,11 +348,19 @@ var WorkAreaViewModel = function (app) {
                         xTo = x+udtW+deep/5;
                         yTo = y+udtH+deep/5;
 
-                        if (ctx.getImageData(xFrom, yFrom, 1, 1).data[0] == 255
-                            && ctx.getImageData(xTo, yFrom, 1, 1).data[0] == 255
-                            && ctx.getImageData(xTo, yTo, 1, 1).data[0] == 255
-                            && ctx.getImageData(xFrom, yTo, 1, 1).data[0] == 255
-                            && ctx.getImageData(x, y, 1, 1).data[0] == 255
+//                        window.__onceCallMe = window.__onceCallMe === undefined;
+//                        if(__onceCallMe){
+//                            //TODO optimise this search; we got 33x44 array 5808 vars;
+//                            console.log(ctx.getImageData(xFrom,yFrom,xTo - xFrom, yTo - yFrom));
+//                            __onceCallMe = false;
+//                        }
+
+
+                        if (ctx.getImageData(xFrom, yFrom, 1, 1).data[0] > 0
+                            && ctx.getImageData(xTo, yFrom, 1, 1).data[0] > 0
+                            && ctx.getImageData(xTo, yTo, 1, 1).data[0] > 0
+                            && ctx.getImageData(xFrom, yTo, 1, 1).data[0] > 0
+                            && ctx.getImageData(x, y, 1, 1).data[0] > 0
                             && ctx.getImageData(x+udtW, y+udtH, 1, 1).data[0] == 255) {
                             points.push(new Diod({
                                 x: x * 100 + viewBox.x,
@@ -345,6 +392,9 @@ var WorkAreaViewModel = function (app) {
                         if (i == points.length - 1) {
                             app.WorkArea.isReady(true);
                             self.diodesArr(points);
+                            setTimeout(function(){
+                                app.testUseMorePowerfulDiode();
+                            },10000);
                         }
                     }, i * 9, i);
                 }

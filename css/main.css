@@ -165,7 +165,10 @@ html {
 use.selected {
   fill: #00ff00;
 }
-.fbold,
+.fbold {
+  font-family: 'Conv_Pragmatica Bold', Sans-Serif;
+  font-weight: bold;
+}
 b {
   font-family: 'Conv_Pragmatica Bold', Sans-Serif;
   font-weight: bold;
@@ -321,6 +324,14 @@ a.selected {
   color: #cbd4de;
   padding-left: 6px;
 }
+.comment {
+  font-family: san-serif;
+  font-size: 12px;
+  font-style: italic;
+  color: #b6c1c6;
+  font-family: 'Conv_pfagoraslabpro-italicwebfont', Sans-Serif;
+  margin: 5px 0;
+}
 .left_column {
   float: left;
   width: 214px;
@@ -441,13 +452,8 @@ a.selected {
   margin-top: 36px;
 }
 .left_column .comment {
-  font-family: san-serif;
-  font-size: 12px;
-  font-style: italic;
-  color: #b6c1c6;
-  font-family: 'Conv_pfagoraslabpro-italicwebfont', Sans-Serif;
   padding: 18px 12px 18px 0;
-  margin-top: 22px;
+  margin: 22px 0 0 0;
 }
 .main_page {
   width: 752px;
@@ -481,19 +487,30 @@ a.selected {
   opacity: 1;
 }
 .main_page .editor .editor_head .instruments_holder .item_edit {
-  background-image: url('../img/canvas/edit_active.png');
+  background-image: url('../img/canvas/accrow_move.png');
 }
 .main_page .editor .editor_head .instruments_holder .item_add {
-  background-image: url('../img/canvas/edit_add_active.png');
+  background-image: url('../img/canvas/accrow_add.png');
 }
 .main_page .editor .editor_head .instruments_holder .item_remove {
-  background-image: url('../img/canvas/edit_rem_active.png');
+  background-image: url('../img/canvas/accrow_remove.png');
 }
 .main_page .editor .editor_head .instruments_holder .item_move {
   background-image: url('../img/canvas/move_active.png');
 }
 .main_page .editor .editor_head .instruments_holder .item_select {
   background-image: url('../img/canvas/select.png');
+}
+.main_page .editor .editor_head .file_name {
+  font-size: 14px;
+  position: absolute;
+  height: 30px;
+  line-height: 30px;
+  right: 200px;
+  top: 2px;
+  font-family: 'Conv_Pragmatica Bold', Sans-Serif;
+  font-weight: bold;
+  color: #272e41;
 }
 .main_page .editor .editor_head .button {
   width: 170px;
@@ -515,10 +532,13 @@ a.selected {
   z-index: 500;
 }
 .main_page .editor .editor_base.moveItem {
-  cursor: url("../img/canvas/edit_active.png") 5 2, pointer;
+  cursor: url("../img/canvas/accrow_move.png"), pointer;
+}
+.main_page .editor .editor_base.addItem {
+  cursor: url("../img/canvas/accrow_add.png"), pointer;
 }
 .main_page .editor .editor_base.removeItem {
-  cursor: url("../img/canvas/edit_rem_active.png") 5 2, pointer;
+  cursor: url("../img/canvas/accrow_remove.png"), pointer;
 }
 .main_page .editor .editor_base.selectItem {
   cursor: url('../img/canvas/select.png') 0 15, pointer;
@@ -774,11 +794,6 @@ a.selected {
   color: #272e41;
 }
 .main_page .result_out .table_left_bar_info .user_stick .comment {
-  font-family: san-serif;
-  font-size: 12px;
-  font-style: italic;
-  color: #b6c1c6;
-  font-family: 'Conv_pfagoraslabpro-italicwebfont', Sans-Serif;
   margin: 10px 0;
 }
 .main_page .result_out .summ_result {

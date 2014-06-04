@@ -4,19 +4,19 @@
 
 //147.svg - KARO
 
-    /*
-    - цена общая выравнивание по правому краю, а Итого по левому
-    - Имя файла в большом окне
-    - Номер расчета
-    - Кнопка Отмена в развернутом варианте ТЗ2 стр 20
-    - Разобраться с несколькими видами блоков в большом окне
-    - Поддержка нескольких видов диодов
-    - Массовое выделение
-    - Отправка писем
-     */
+/*
+ - цена общая выравнивание по правому краю, а Итого по левому
+ - Имя файла в большом окне
+ - Номер расчета
+ - Кнопка Отмена в развернутом варианте ТЗ2 стр 20
+ - Разобраться с несколькими видами блоков в большом окне
+ - Поддержка нескольких видов диодов
+ - Массовое выделение
+ - Отправка писем
+ */
 
 var ApplicationViewModel = function () {
-    this.isDev = location.href.indexOf('localhost')>-1;
+    this.isDev = location.href.indexOf('localhost') > -1;
     this.isSafari = navigator.vendor.indexOf('Apple') > -1;
     /* ====================== */
 
@@ -54,14 +54,14 @@ var ApplicationViewModel = function () {
     ];
     /* =============== */
 
-    self.File.loadDiode(function(r){
-        if(r){
+    self.File.loadDiode(function (r) {
+        if (r) {
             self.diodInfo = r
         }
     });
 
-    self.File.loadPower(function(r){
-        if(r){
+    self.File.loadPower(function (r) {
+        if (r) {
             self.powerSuplyInfo = r
         }
     });
@@ -70,27 +70,143 @@ var ApplicationViewModel = function () {
     this.additionalDiode = ko.observable();
     this.settingsPosition = ko.observable('left:20px;top:10px');
 
-    this.diodInfoFiltered = ko.computed(function(){
-        var res = [],
-            deep = self.additionalDeep();
-
+    var diodeSearch = function(deep){
+        var res = [];
         $.each(self.diodInfo, function (k, d) {
             var h = d.h1.split('-'), hFrom = h[0], hTo = h[1];
 
-            if(deep >= hFrom && deep <= hTo){
+            if (deep >= hFrom && deep <= hTo) {
                 res.push(d);
             }
         });
         return res;
-    },this).extend({throttle:50});
+    };
 
-    this.additionalDiode.subscribe(function(val){
-      if(val){
+    this.diodInfoFiltered = ko.computed(function () {
+      return diodeSearch(self.additionalDeep());
+    }, this).extend({throttle: 50});
 
-      }
+    this.additionalDiode.subscribe(function (val) {
+        if (val) {
+            var workArea = self.WorkArea,
+                waCanvas = workArea.SvgImage.canvas.select('svg'),
+                viewBox = waCanvas.attr('viewBox'),
+                selectedDiodesList = workArea.selectedDiodes(),
+                selectBoxCords = workArea.SvgImage.selectBoxCoords,
+                x1 = (selectBoxCords.x1 - viewBox.x)/100 | 0,
+                y1 = (selectBoxCords.y1 - viewBox.y)/100 | 0,
+                x2 = (selectBoxCords.x2 - viewBox.x)/100 | 0,
+                y2 = (selectBoxCords.y2 - viewBox.y)/100 | 0;
+
+            workArea.selectedDiodes([]);
+
+            var ifrm = document.createElement('IFRAME'),
+                svgHtml = workArea.SvgImage.svgOrignHTML(),
+                svgWidth = workArea.SvgImage.svgObjWidth(),
+                svgHeight = workArea.SvgImage.svgObjHeight(),
+                useDiodeTypeSize = val.size.split('x'),
+                udtW = useDiodeTypeSize[0] | 0,
+                udtH = useDiodeTypeSize[1] | 0;
+
+            workArea.isReady(false);
+
+            ifrm.setAttribute('src', location.origin + location.pathname + 'iframe.html');
+            ifrm.style.width = '100px';
+            ifrm.style.height = '100px';
+            document.body.appendChild(ifrm);
+
+            var ifrmWin = ifrm.contentWindow,
+                ifrmDoc = ifrmWin.document;
+
+
+            $(ifrm).load(function () {
+                var _Snap = ifrmWin.Snap,
+                    deep = self.additionalDeep();
+
+                var
+                    canvasId = 'wr_canvas',
+                    c = document.createElement('canvas');
+
+                c.width = svgWidth;
+                c.height = svgHeight;
+                ifrmWin.$('body').append(c);
+                if (typeof FlashCanvas != "undefined") {
+                    FlashCanvas.initElement(c);
+                }
+                ifrmWin.canvg(c, svgHtml, { renderCallback: function (dom) {
+                    var ctx = c.getContext('2d');
+
+                    var x = x1, y = y1, points = [],
+                        xFrom, yFrom, xTo, yTo;
+
+                    while (x <= x2) {
+                        while (y <= y2) {
+
+                            xFrom = x - deep / 5;
+                            yFrom = y - deep / 5;
+                            xTo = x + udtW + deep / 5;
+                            yTo = y + udtH + deep / 5;
+
+                            if (ctx.getImageData(xFrom, yFrom, 1, 1).data[0] > 0
+                                && ctx.getImageData(xTo, yFrom, 1, 1).data[0] > 0
+                                && ctx.getImageData(xTo, yTo, 1, 1).data[0] > 0
+                                && ctx.getImageData(xFrom, yTo, 1, 1).data[0] > 0
+                                && ctx.getImageData(x, y, 1, 1).data[0] > 0
+                                && ctx.getImageData(x + udtW, y + udtH, 1, 1).data[0] == 255) {
+                                points.push(new Diod({
+                                    x: x * 100 + viewBox.x,
+                                    y: y * 100 + viewBox.y
+                                },val,self));
+                            }
+                            y += deep;
+                        }
+                        y = y1;
+                        x += deep;
+                    }
+
+                    if (points.length) {
+                        self.usedDiodTypes.push(val);
+                    } else {
+                        self.Dialog.showModalWindow({
+                            message: 'Ниодного диода не удалось поставить, попробуйте сделать это вручную в режими редактирования.'
+                        });
+                        workArea.isReady(true);
+                    }
+
+                    for (var j = 0; j < selectedDiodesList.length; j++) {
+                        setTimeout(function (i) {
+                            selectedDiodesList[i].remove();
+                            if (i == selectedDiodesList.length - 1) {
+                                selectedDiodesList = [];
+                            }
+                        }, j * 10, j);
+                    }
+
+                    for (var i = 0; i < points.length; i++) {
+                        setTimeout(function (i) {
+                            var p = points[i].draw(waCanvas);
+                            workArea.SvgImage.didoGroup.add(p);
+                            if (i == points.length - 1) {
+                                workArea.isReady(true);
+                                workArea.diodesArr.pushAll(points);
+                            }
+                        }, i * 10, i);
+                    }
+
+                    try {
+                        //TODO NS_ERROR_NOT_INITIALIZED: , 1000 / svg.FRAMERATE); canvg.js 2764
+                        $(ifrm).remove();
+                    } catch (e) {
+                        console.log(e);
+                    }
+
+                }});
+            });
+
+        }
     });
 
-    this.additionalDeep.subscribe(function(val){
+    this.additionalDeep.subscribe(function (val) {
         var minHVal, maxHVal;
 
         $.each(self.diodInfo, function (k, d) {
@@ -117,7 +233,7 @@ var ApplicationViewModel = function () {
                 dialog.hideModalWindow();
             }, 4000);
             dialog.showModalWindow({
-                message : 'Введенная глубина конструкции<br> не попадает в диапазон от ' +
+                message: 'Введенная глубина конструкции<br> не попадает в диапазон от ' +
                     minHVal +
                     ' мм<br> до ' + maxHVal +
                     ' мм. Попробуйте еще раз!'
@@ -127,39 +243,40 @@ var ApplicationViewModel = function () {
     });
 //**** PARTIAL DIODES CHANGE
 
+    this.useBetter = false;
     this.usedDiodTypes = ko.observableArray([defDiod]);
     this.usedPowerSupplyTypes = ko.observableArray([defPowerSupply]);
-    this.usedItemsList = ko.computed(function(){
+    this.usedItemsList = ko.computed(function () {
         var d = self.usedDiodTypes(),
             p = self.usedPowerSupplyTypes(),
             res = [];
 
-        $.each(d,function(k,d){
-            if(d.name != '-')
-            res.push({
-                desc:"Светодиодный модуль",
-                name: d.name,
-                data: '('+d.luminous+' Лм, '+ d.size+' мм, '+ d.distance+' мм)',
-                count: d.itemsCount,
-                price: parseFloat(d.price).toFixed(2),
-                total: (parseFloat(d.price) * d.itemsCount).toFixed(2)
-            })
+        $.each(d, function (k, d) {
+            if (d.name != '-')
+                res.push({
+                    desc: "Светодиодный модуль",
+                    name: d.name,
+                    data: '(' + d.luminous + ' Лм, ' + d.size + ' мм, ' + d.distance + ' мм)',
+                    count: d.itemsCount,
+                    price: parseFloat(d.price).toFixed(2),
+                    total: (parseFloat(d.price) * d.itemsCount).toFixed(2)
+                })
         });
 
-        $.each(p,function(k,d){
-            if(d.name != '-')
-            res.push({
-                desc:"Блок питания",
-                name: d.name,
-                data: '('+d.characteristic+')',
-                count: d.itemsCount,
-                price: parseFloat(d.price).toFixed(2),
-                total: (parseFloat(d.price) * d.itemsCount).toFixed(2)
-            })
+        $.each(p, function (k, d) {
+            if (d.name != '-')
+                res.push({
+                    desc: "Блок питания",
+                    name: d.name,
+                    data: '(' + d.characteristic + ')',
+                    count: d.itemsCount,
+                    price: parseFloat(d.price).toFixed(2),
+                    total: (parseFloat(d.price) * d.itemsCount).toFixed(2)
+                })
         });
 
         return res;
-    },this).extend({throttle:1});
+    }, this).extend({throttle: 1});
 
     /* =============== */
     this.pointsCount = ko.observable(0);
@@ -189,7 +306,7 @@ var ApplicationViewModel = function () {
 
     this.powerSupplyAmperageTotal = ko.computed(function () {
         var res = 0;
-        $.each(self.usedPowerSupplyTypes(),function(k,d){
+        $.each(self.usedPowerSupplyTypes(), function (k, d) {
             res += d.itemsCount * d.amperage;
         });
         return res.toFixed(2);
@@ -197,7 +314,7 @@ var ApplicationViewModel = function () {
 
     this.luminousMax = ko.computed(function () {
         var res = 0;
-        $.each(self.usedDiodTypes(),function(k,d){
+        $.each(self.usedDiodTypes(), function (k, d) {
             res = Math.max(res, d.luminous);
         });
         return res;
@@ -280,8 +397,47 @@ var ApplicationViewModel = function () {
     }, this).extend({throttle: 100});
 
     /* =============== */
+    this.testUseMorePowerfulDiode = function(){
+      var deep = self.greedDeep(),
+          dTypes = self.usedDiodTypes(),
+          useAnother;
+        if(dTypes.length == 1){
+            useAnother = diodeSearch(deep);
+            if(useAnother.length > 1){
+                self.Dialog.showModalWindow({
+                    type:'info',
+                    message: 'Сделать конструкцию более яркой?<div class="comment">' +
+                        '(по умолчанию расчет предлагается на оптимальных светодиодных модулях ' +
+                        'по соотношению яркость/стоимость подсветки)' +
+                        '</div>',
+                        buttons:[{
+                        text:'Да',
+                        callback: function(){
+                            self.useBetter = true;
+                            self.greedDeep.valueHasMutated();
+                            self.pointsCount.valueHasMutated();
 
-    this.resetData = function(){
+                            self.Dialog.hideModalWindow();
+                            var info = self.usedDiodTypes()[0];
+                            if(self.WorkArea.diodesArr().length){
+                                $.each(self.WorkArea.diodesArr(),function(k,d){
+                                    d.setInfo(info);
+                                });
+                            }
+                        }
+                    },{
+                        text:'Отмена',
+                        callback: function(){
+                            self.Dialog.hideModalWindow();
+                        }
+                    }]
+                })
+            }
+        }
+    };
+    /* =============== */
+
+    this.resetData = function () {
         self.usedPowerSupplyTypes([defPowerSupply]);
         self.usedDiodTypes([defDiod]);
         self.pointsCount(0);
@@ -301,9 +457,16 @@ var ApplicationViewModel = function () {
             minHVal = Math.min(minHVal, hFrom);
             maxHVal = Math.max(maxHVal, hTo);
 
-            if (val <= hTo && selectedType === undefined) {
-                selectedType = k;
+            if(self.useBetter){
+                if (val <= hTo && val >= hFrom) {
+                    selectedType = k;
+                }
+            }else{
+                if (val <= hTo && selectedType === undefined) {
+                    selectedType = k;
+                }
             }
+
         });
 
         var v = parseInt(val, 10),
@@ -320,39 +483,39 @@ var ApplicationViewModel = function () {
                 dialog.hideModalWindow();
             }, 4000);
             dialog.showModalWindow({
-                message : 'Введенная глубина конструкции<br> не попадает в диапазон от ' +
+                message: 'Введенная глубина конструкции<br> не попадает в диапазон от ' +
                     minHVal +
                     ' мм<br> до ' + maxHVal +
                     ' мм. Попробуйте еще раз!'
             });
         }
-        if(selectedType !== undefined){
+        if (selectedType !== undefined) {
             self.usedDiodTypes([]);
-            self.diodInfo[selectedType].itemsCount = self.diodInfo[selectedType].itemsCount || 0;
+            self.diodInfo[selectedType].itemsCount = self.diodInfo[selectedType].itemsCount || self.pointsCount();
             self.usedDiodTypes.push(self.diodInfo[selectedType]);
         }
         self.greedDeep(v);
     });
 
-    self.sentToManager = function(){
+    self.sentToManager = function () {
         var summ = self.projectCost();
-        if(summ > 0){
+        if (summ > 0) {
 
             self.User.sentToManager(true);
             self.Dialog.showDialogWindow();
-        }else{
+        } else {
             self.Dialog.showModalWindow({
-               message:"Ошибка! Невозможно отправить нулевой расчет."
+                message: "Ошибка! Невозможно отправить нулевой расчет."
             });
         }
     };
-    self.sentToUser = function(){
+    self.sentToUser = function () {
         var summ = self.projectCost();
-        if(summ > 0){
+        if (summ > 0) {
             self.Dialog.showDialogWindow();
-        }else{
+        } else {
             self.Dialog.showModalWindow({
-                message:"Ошибка! Невозможно отправить нулевой расчет."
+                message: "Ошибка! Невозможно отправить нулевой расчет."
             });
         }
     };

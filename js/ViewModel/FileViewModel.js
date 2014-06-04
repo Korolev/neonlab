@@ -155,7 +155,7 @@ var FileViewModel = function (app) {
                         var svgDom = r.firstChild;
 
                         var recusiveWalk = function (node) {
-
+//TODO move recursive Walk to SvgImage class
                             if (node.childNodes && node.childNodes.length) {
                                 $.each(node.childNodes, function (i, _node) {
                                     if (_node.getAttribute && _node.tagName) {
@@ -164,7 +164,7 @@ var FileViewModel = function (app) {
                                             if (fill != 'none') {
                                                 _node.setAttribute('fill', '#ffffff');
                                             }
-                                            _node.setAttribute('stroke', '#000000');
+                                            _node.setAttribute('stroke', '#555555');
                                             _node.setAttribute('stroke-width', '100');
                                         }
                                     }

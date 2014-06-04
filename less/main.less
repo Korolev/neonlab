@@ -12,10 +12,13 @@ use.selected {
   fill: #00ff00;
 }
 
-.fbold,
-b {
+.fbold{
   font-family: 'Conv_Pragmatica Bold', Sans-Serif;
   font-weight: bold;
+}
+
+b{
+  .fbold;
 }
 
 .fnormal {
@@ -209,6 +212,11 @@ a.selected {
   }
 }
 
+.comment {
+  .fitalic;
+  margin: 5px 0;
+}
+
 .left_column {
   float: left;
   width: 214px;
@@ -355,11 +363,9 @@ a.selected {
   .blue_button {
     margin-top: 36px;
   }
-
   .comment {
-    .fitalic;
     padding: 18px 12px 18px 0;
-    margin-top: 22px;
+    margin: 22px 0 0 0;
   }
 }
 
@@ -398,13 +404,13 @@ a.selected {
         }
 
         .item_edit {
-          background-image: url('../img/canvas/edit_active.png');
+          background-image: url('../img/canvas/accrow_move.png');
         }
         .item_add {
-          background-image: url('../img/canvas/edit_add_active.png');
+          background-image: url('../img/canvas/accrow_add.png');
         }
         .item_remove {
-          background-image: url('../img/canvas/edit_rem_active.png');
+          background-image: url('../img/canvas/accrow_remove.png');
         }
         .item_move {
           background-image: url('../img/canvas/move_active.png');
@@ -413,6 +419,17 @@ a.selected {
           background-image: url('../img/canvas/select.png');
         }
 
+      }
+
+      .file_name{
+        font-size: 14px;
+        position: absolute;
+        height: 30px;
+        line-height: 30px;
+        right: 200px;
+        top:2px;
+        .fbold;
+        color: @default_dark_text_color;
       }
 
       .button {
@@ -442,13 +459,13 @@ a.selected {
       }
     }
     .editor_base.moveItem {
-      cursor: url("../img/canvas/edit_active.png") 5 2, pointer;
+      cursor: url("../img/canvas/accrow_move.png"), pointer;
     }
     .editor_base.addItem {
-//      cursor: url("../img/canvas/edit_add_active.png") 5 2, pointer;
+      cursor: url("../img/canvas/accrow_add.png"), pointer;
     }
     .editor_base.removeItem {
-      cursor: url("../img/canvas/edit_rem_active.png") 5 2, pointer;
+      cursor: url("../img/canvas/accrow_remove.png"), pointer;
     }
     .editor_base.selectItem {
       cursor: url('../img/canvas/select.png') 0 15, pointer;
@@ -719,7 +736,6 @@ a.selected {
         }
 
         .comment {
-          .fitalic;
           margin: 10px 0;
         }
       }
