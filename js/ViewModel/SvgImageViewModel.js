@@ -16,7 +16,7 @@ var SvgImageViewModel = function (app, editor) {
 
     var createDiodePattern = function (c) {
         var p = c.group(),
-            selectedColor = "#00aa11";
+            selectedColor = "#ff6900";
 
         p.add(c.circle(1250, 1250, 3000, 3000).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1', opacity: '0.1'}));
         p.add(c.rect(0, 0, 2500, 2500).attr({fill: '#DDDDDD', stroke: '#000000', 'stroke-with': '40'}));
@@ -127,8 +127,8 @@ var SvgImageViewModel = function (app, editor) {
                 dX = x - selRectX, dY = y - selRectY,
                 abs = Math.abs,
                 opts = {
-                    width: dX,
-                    height: dY
+                    width: dX || 0,
+                    height: dY || 0
                 };
             if (dX < 0) {
                 opts.x = x;
@@ -195,6 +195,10 @@ var SvgImageViewModel = function (app, editor) {
             $.each(selElems, function (k, d) {
                 d.highlight(true);
             });
+            if(selElems[0]){
+                app.additionalDeep(selElems[0].deep);
+                app.additionalDiode(selElems[0].info);
+            }
             editor.selectedDiodes(selElems);
         }
     });

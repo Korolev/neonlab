@@ -86,8 +86,10 @@ var ApplicationViewModel = function () {
       return diodeSearch(self.additionalDeep());
     }, this).extend({throttle: 50});
 
-    this.additionalDiode.subscribe(function (val) {
-        if (val) {
+//    this.additionalDiode.subscribe(function (val) {
+    this.calculatePartial = function(){
+        var val = self.additionalDiode();
+        if (val && self.WorkArea.selectedDiodes().length) {
             var workArea = self.WorkArea,
                 waCanvas = workArea.SvgImage.canvas.select('svg'),
                 viewBox = waCanvas.attr('viewBox'),
@@ -155,7 +157,8 @@ var ApplicationViewModel = function () {
                                 && ctx.getImageData(x + udtW, y + udtH, 1, 1).data[0] == 255) {
                                 points.push(new Diod({
                                     x: x * 100 + viewBox.x,
-                                    y: y * 100 + viewBox.y
+                                    y: y * 100 + viewBox.y,
+                                    deep:deep
                                 },val,self));
                             }
                             y += deep;
@@ -204,7 +207,8 @@ var ApplicationViewModel = function () {
             });
 
         }
-    });
+    };
+//    );
 
     this.additionalDeep.subscribe(function (val) {
         var minHVal, maxHVal;
@@ -420,8 +424,16 @@ var ApplicationViewModel = function () {
                             self.Dialog.hideModalWindow();
                             var info = self.usedDiodTypes()[0];
                             if(self.WorkArea.diodesArr().length){
-                                $.each(self.WorkArea.diodesArr(),function(k,d){
-                                    d.setInfo(info);
+                                var diodesArr = self.WorkArea.diodesArr(),
+                                    diodesArrLength = diodesArr.length;
+                                self.WorkArea.isReady(false);
+                                $.each(diodesArr,function(k,d){
+                                    setTimeout(function(i){
+                                        diodesArr[i].setInfo(info);
+                                        if(k == diodesArrLength-1){
+                                            self.WorkArea.isReady(true);
+                                        }
+                                    },k*9,k)
                                 });
                             }
                         }

@@ -10,6 +10,7 @@ var Diod = function (data, info, app) {
 
     this.x = data.x;
     this.y = data.y;
+    this.deep = data.deep;
     this.isHighlight = false;
     this.defaultPatternId = false;
     this.selectedPatternId = false;
@@ -69,13 +70,15 @@ Diod.prototype.redraw = function(){
         pDef = app.WorkArea.SvgImage['pattern'+size] ,
         pHl = app.WorkArea.SvgImage['pattern'+size+'hl'];
 
-    this.defaultPatternId = '#'+pDef.id;
-    this.selectedPatternId = '#'+pHl.id;
+    if(pDef.id !== this.defaultPatternId){
+        this.defaultPatternId = '#'+pDef.id;
+        this.selectedPatternId = '#'+pHl.id;
 
-    pHl.attr('id',pHl.id);
-    pDef.attr('id',pDef.id);
+        pHl.attr('id',pHl.id);
+        pDef.attr('id',pDef.id);
 
-    self.paper.attr('href',self.defaultPatternId);
+        self.paper.attr('href',self.defaultPatternId);
+    }
 };
 
 Diod.prototype.draw = function (canvas) {
@@ -364,7 +367,8 @@ var WorkAreaViewModel = function (app) {
                             && ctx.getImageData(x+udtW, y+udtH, 1, 1).data[0] == 255) {
                             points.push(new Diod({
                                 x: x * 100 + viewBox.x,
-                                y: y * 100 + viewBox.y
+                                y: y * 100 + viewBox.y,
+                                deep: deep
                             }, useDiodeType, app));
                         }
                         y += deep;
