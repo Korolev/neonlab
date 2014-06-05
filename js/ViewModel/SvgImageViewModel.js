@@ -164,7 +164,7 @@ var SvgImageViewModel = function (app, editor) {
         app.settingsPosition('left:' + settingsLeft + 'px;top:' + settingsTop + 'px;');
 
         self.selectRect.attr({opacity: 0});
-        if (editor.editMode() == 'selectItem' && s) {
+        if (editor.editMode() == 'selectItem' && s && !editor.selectedDiodes().length) {
             viewBox = s.attr('viewBox');
             sX = parseInt(s.attr('x') || 0);
             sY = parseInt(s.attr('y') || 0);
