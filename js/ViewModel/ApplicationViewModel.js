@@ -433,7 +433,7 @@ var ApplicationViewModel = function () {
                                         if(k == diodesArrLength-1){
                                             self.WorkArea.isReady(true);
                                         }
-                                    },k*9,k)
+                                    },k*10,k)
                                 });
                             }
                         }
