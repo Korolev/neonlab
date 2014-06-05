@@ -195,6 +195,7 @@ var ApplicationViewModel = function () {
                             }
                         }, i * 10, i);
                     }
+                    //TODO Duplicated DiodesInfo
 
                     try {
                         //TODO NS_ERROR_NOT_INITIALIZED: , 1000 / svg.FRAMERATE); canvg.js 2764
