@@ -181,7 +181,9 @@ var ApplicationViewModel = function () {
                             selectedDiodesList[i].remove();
                             if (i == selectedDiodesList.length - 1) {
                                 selectedDiodesList = [];
+                                workArea.diodesArr.valueHasMutated();
                             }
+
                         }, j * 10, j);
                     }
 

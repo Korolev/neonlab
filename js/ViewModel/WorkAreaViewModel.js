@@ -221,17 +221,31 @@ var WorkAreaViewModel = function (app) {
     };
 
     this.diodesArr.subscribe(function (points) {
-        var diodeTypes = app.usedDiodTypes();
-        $.each(diodeTypes, function (i, t) {
+        var diodeTypes = app.usedDiodTypes(),
+            dInfo = app.diodInfo,
+            used = [];
+
+        $.each(dInfo, function (i, t) {
             t.itemsCount = 0;
-        });
-        $.each(points, function (k, p) {
-            $.each(diodeTypes, function (i, t) {
+            $.each(points, function (k, p) {
                 if (p.info.name == t.name) {
                     t.itemsCount++;
                 }
             });
         });
+//        $.each(points, function (k, p) {
+//            $.each(diodeTypes, function (i, t) {
+//                if (p.info.name == t.name) {
+//                    t.itemsCount++;
+//                }
+//            });
+//        });
+        $.each(dInfo, function (i, t) {
+           if(t.itemsCount > 0){
+               used.push(t);
+           }
+        });
+        app.usedDiodTypes(used);
         app.pointsCount(points.length);
     });
 
