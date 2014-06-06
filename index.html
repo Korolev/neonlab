@@ -140,7 +140,9 @@
                     </div>
                     <!--ZOOM-->
                     <svg id="editor_svg"></svg>
-                    <div class="big_loader" data-bind="css:{hidden:WorkArea.isReady}"></div>
+                    <div class="big_loader" data-bind="css:{hidden:WorkArea.isReady}">
+                        <div id="complete_process"></div>
+                    </div>
                 </div>
                 <div class="editor_base_after" data-bind="if:WorkArea.fullScreen">
                     <div>

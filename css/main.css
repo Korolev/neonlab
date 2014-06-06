@@ -584,6 +584,19 @@ a.selected {
   background-repeat: no-repeat;
   background-color: rgba(0, 0, 0, 0.15);
 }
+.main_page .editor .editor_base .big_loader #complete_process {
+  font-size: 8px;
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  line-height: 40px;
+  text-align: center;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  margin: -20px 0 0 -18px;
+}
 .main_page .editor .editor_base_after > div {
   height: 108px;
   background-color: #ffffff;

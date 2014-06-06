@@ -31,53 +31,53 @@ Diod.prototype.setSize = function (info) {
     this.h = size ? size[1] * 100 | 0 : 0;
 };
 
-Diod.prototype.highlight = function(val){
+Diod.prototype.highlight = function (val) {
     var app = this.app,
         self = this,
         defId = self.defaultPatternId ,
         selId = self.selectedPatternId;
 
-    if(self.isHighlight == val){
+    if (self.isHighlight == val) {
         return false;
     }
     self.isHighlight = val;
-    if(self.paper){
-        if(val){
-            self.paper.attr('href',selId);
-        }else{
-            self.paper.attr('href',defId);
+    if (self.paper) {
+        if (val) {
+            self.paper.attr('href', selId);
+        } else {
+            self.paper.attr('href', defId);
         }
     }
 };
 
 
-Diod.prototype.remove = function(){
-    try{
+Diod.prototype.remove = function () {
+    try {
         var self = this;
         self.paper.undrag();
         self.app.WorkArea.diodesArr.remove(self);
         self.paper.remove();
-    }catch (e){
-        console && console.log("Can't remove. Reason: "+ e.message,e);
+    } catch (e) {
+        console && console.log("Can't remove. Reason: " + e.message, e);
     }
 };
 
-Diod.prototype.redraw = function(){
+Diod.prototype.redraw = function () {
     var app = this.app,
         self = this,
         size = self.info.size,
         k = 0,
-        pDef = app.WorkArea.SvgImage['pattern'+size] ,
-        pHl = app.WorkArea.SvgImage['pattern'+size+'hl'];
+        pDef = app.WorkArea.SvgImage['pattern' + size] ,
+        pHl = app.WorkArea.SvgImage['pattern' + size + 'hl'];
 
-    if(pDef.id !== this.defaultPatternId){
-        this.defaultPatternId = '#'+pDef.id;
-        this.selectedPatternId = '#'+pHl.id;
+    if (pDef.id !== this.defaultPatternId) {
+        this.defaultPatternId = '#' + pDef.id;
+        this.selectedPatternId = '#' + pHl.id;
 
-        pHl.attr('id',pHl.id);
-        pDef.attr('id',pDef.id);
+        pHl.attr('id', pHl.id);
+        pDef.attr('id', pDef.id);
 
-        self.paper.attr('href',self.defaultPatternId);
+        self.paper.attr('href', self.defaultPatternId);
     }
 };
 
@@ -86,16 +86,16 @@ Diod.prototype.draw = function (canvas) {
         self = this,
         size = self.info.size,
         k = 0,
-        pDef = app.WorkArea.SvgImage['pattern'+size] ,
-        pHl = app.WorkArea.SvgImage['pattern'+size+'hl'];
+        pDef = app.WorkArea.SvgImage['pattern' + size] ,
+        pHl = app.WorkArea.SvgImage['pattern' + size + 'hl'];
 
-    this.defaultPatternId = '#'+pDef.id;
-    this.selectedPatternId = '#'+pHl.id;
+    this.defaultPatternId = '#' + pDef.id;
+    this.selectedPatternId = '#' + pHl.id;
 
-    pHl.attr('id',pHl.id);
+    pHl.attr('id', pHl.id);
     this.paper = pDef.use().attr({
-        x:this.x,
-        y:this.y
+        x: this.x,
+        y: this.y
     }).appendTo(canvas);
 
     this.paper.drag(function (dx, dy) {
@@ -168,10 +168,10 @@ var WorkAreaViewModel = function (app) {
         if (s) {
             clone = s.clone();
             clone.attr({
-                x:0,
-                y:0,
-                width: vb.width/100,
-                height: vb.height/100
+                x: 0,
+                y: 0,
+                width: vb.width / 100,
+                height: vb.height / 100
             });
             self.fullSizeSVG(clone.toString());
             clone.attr({
@@ -194,8 +194,8 @@ var WorkAreaViewModel = function (app) {
 
     this.setMode = function (mode) {
         mode = mode == self.editMode() ? 'default' : mode || 'default';
-        if(self.selectedDiodes().length){
-            $.each(self.selectedDiodes(),function(k,d){
+        if (self.selectedDiodes().length) {
+            $.each(self.selectedDiodes(), function (k, d) {
                 d.highlight(false);
                 self.selectedDiodes([]);
             });
@@ -220,14 +220,14 @@ var WorkAreaViewModel = function (app) {
 
     };
 
-    this.diodesArr.subscribe(function(points){
+    this.diodesArr.subscribe(function (points) {
         var diodeTypes = app.usedDiodTypes();
-        $.each(diodeTypes,function(i,t){
+        $.each(diodeTypes, function (i, t) {
             t.itemsCount = 0;
         });
-        $.each(points,function(k,p){
-            $.each(diodeTypes,function(i,t){
-                if(p.info.name == t.name){
+        $.each(points, function (k, p) {
+            $.each(diodeTypes, function (i, t) {
+                if (p.info.name == t.name) {
                     t.itemsCount++;
                 }
             });
@@ -282,10 +282,11 @@ var WorkAreaViewModel = function (app) {
             svgHeight = self.SvgImage.svgObjHeight(),
             useDiodeType = app.usedDiodTypes()[0],
             useDiodeTypeSize = useDiodeType.size.split('x'),
-            udtW = useDiodeTypeSize[0]|0,
-            udtH = useDiodeTypeSize[1]|0,
+            udtW = useDiodeTypeSize[0] | 0,
+            udtH = useDiodeTypeSize[1] | 0,
             waCanvas = self.SvgImage.canvas.select('svg'),
-            viewBox = waCanvas.attr('viewBox');
+            viewBox = waCanvas.attr('viewBox'),
+            $complete_process = $('#complete_process');
 
         app.WorkArea.isReady(false);
 
@@ -324,85 +325,123 @@ var WorkAreaViewModel = function (app) {
                     xFrom, yFrom, xTo, yTo;
 
 //TODO need better algorithm
-//                var step = svgHeight,
-//                    posiblepoints = [],
-//                    blocks = [];
-//
-//                var TimeStart = new Date().getTime();
-//                while (x <= svgWidth) {
-//                    while (y <= svgHeight) {
-//                        blocks.push(ctx.getImageData(x,y,step,step));
-//                        y+= step;
-//                    }
-//                    y = 0;
-//                    x+= step;
-//                }
-//
-//                console.log(new Date().getTime() - TimeStart);
-//                console.log(blocks);
+
+                if (window.Worker) {
+                    var worker = new Worker('js/workers/analiser.js'); // Создаём новый worker
+                    worker.postMessage({
+                        // Передача ImageData в worker
+                        imagedata: ctx.getImageData(0, 0, svgWidth, svgHeight),
+                        width: svgWidth,
+                        height: svgHeight,
+                        deep: deep,
+                        dW:udtW,
+                        dH:udtH
+                    });
+
+                    worker.onmessage = function (event) {
+                        if (event.data.status == 'complite') // Если фильтр выполнил работу
+                        {
+                            // Переместить принятую Image Data в контекст canvas
+                            //ctx.putImageData(event.data.imagedata,0,0);
+                            $.each(event.data.points, function (k, p) {
+                                points.push(new Diod({
+                                    x: p.x * 100 + viewBox.x,
+                                    y: p.y * 100 + viewBox.y,
+                                    deep: deep
+                                }, useDiodeType, app));
+                            });
+
+                            if (points.length) {
+                                if (self.SvgImage.didoGroup) {
+                                    self.SvgImage.didoGroup.remove();
+                                }
+                                self.SvgImage.didoGroup = waCanvas.g();
+                            } else {
+                                app.Dialog.showModalWindow({
+                                    message: 'Ниодного диода не удалось поставить, попробуйте сделать это вручную в режими редактирования.'
+                                });
+                                app.WorkArea.isReady(true);
+                            }
+                            $complete_process.text('');
+                            console.log('DRAW!',points.length);
+                            for (var i = 0; i < points.length; i++) {
+                                setTimeout(function (i) {
+                                    var p = points[i].draw(waCanvas);
+                                    self.SvgImage.didoGroup.add(p);
+                                    if (i == points.length - 1) {
+                                        app.WorkArea.isReady(true);
+                                        self.diodesArr(points);
+                                        setTimeout(function () {
+                                            app.testUseMorePowerfulDiode();
+                                        }, 10000);
+                                    }
+                                }, i * 9, i);
+                            }
+                        }else {
+                            //show current complete level
+                            var progress = event.data.progress > 100 ? 100 : event.data.progress;
+                            $complete_process.text(progress + "%");
+                        }
+                    }
+                }
+                else {
+                    alert('Ваш браузер не поддерживает Web Workers!');
+                }
 
 
                 // OLD working CODE
-                while (x <= svgWidth) {
-                    while (y <= svgHeight) {
-
-                        xFrom = x-deep/5;
-                        yFrom = y-deep/5;
-                        xTo = x+udtW+deep/5;
-                        yTo = y+udtH+deep/5;
-
-//                        window.__onceCallMe = window.__onceCallMe === undefined;
-//                        if(__onceCallMe){
-//                            //TODO optimise this search; we got 33x44 array 5808 vars;
-//                            console.log(ctx.getImageData(xFrom,yFrom,xTo - xFrom, yTo - yFrom));
-//                            __onceCallMe = false;
+//                while (x <= svgWidth) {
+//                    while (y <= svgHeight) {
+//
+//                        xFrom = x-deep/5;
+//                        yFrom = y-deep/5;
+//                        xTo = x+udtW+deep/5;
+//                        yTo = y+udtH+deep/5;
+//
+//                        if (ctx.getImageData(xFrom, yFrom, 1, 1).data[0] > 0
+//                            && ctx.getImageData(xTo, yFrom, 1, 1).data[0] > 0
+//                            && ctx.getImageData(xTo, yTo, 1, 1).data[0] > 0
+//                            && ctx.getImageData(xFrom, yTo, 1, 1).data[0] > 0
+//                            && ctx.getImageData(x, y, 1, 1).data[0] > 0
+//                            && ctx.getImageData(x+udtW, y+udtH, 1, 1).data[0] == 255) {
+//                            points.push(new Diod({
+//                                x: x * 100 + viewBox.x,
+//                                y: y * 100 + viewBox.y,
+//                                deep: deep
+//                            }, useDiodeType, app));
 //                        }
-
-
-                        if (ctx.getImageData(xFrom, yFrom, 1, 1).data[0] > 0
-                            && ctx.getImageData(xTo, yFrom, 1, 1).data[0] > 0
-                            && ctx.getImageData(xTo, yTo, 1, 1).data[0] > 0
-                            && ctx.getImageData(xFrom, yTo, 1, 1).data[0] > 0
-                            && ctx.getImageData(x, y, 1, 1).data[0] > 0
-                            && ctx.getImageData(x+udtW, y+udtH, 1, 1).data[0] == 255) {
-                            points.push(new Diod({
-                                x: x * 100 + viewBox.x,
-                                y: y * 100 + viewBox.y,
-                                deep: deep
-                            }, useDiodeType, app));
-                        }
-                        y += deep;
-                    }
-                    y = 0;
-                    x += deep;
-                }
-
-                if (points.length) {
-                    if (self.SvgImage.didoGroup) {
-                        self.SvgImage.didoGroup.remove();
-                    }
-                    self.SvgImage.didoGroup = waCanvas.g();
-                }else{
-                    app.Dialog.showModalWindow({
-                        message:'Ниодного диода не удалось поставить, попробуйте сделать это вручную в режими редактирования.'
-                    });
-                    app.WorkArea.isReady(true);
-                }
-                console.log('DRAW!');
-                for (var i = 0; i < points.length; i++) {
-                    setTimeout(function (i) {
-                        var p = points[i].draw(waCanvas);
-                        self.SvgImage.didoGroup.add(p);
-                        if (i == points.length - 1) {
-                            app.WorkArea.isReady(true);
-                            self.diodesArr(points);
-                            setTimeout(function(){
-                                app.testUseMorePowerfulDiode();
-                            },10000);
-                        }
-                    }, i * 9, i);
-                }
-
+//                        y += deep;
+//                    }
+//                    y = 0;
+//                    x += deep;
+//                }
+                //DRAW SVG OBJECTS BY POINTS
+//                if (points.length) {
+//                    if (self.SvgImage.didoGroup) {
+//                        self.SvgImage.didoGroup.remove();
+//                    }
+//                    self.SvgImage.didoGroup = waCanvas.g();
+//                }else{
+//                    app.Dialog.showModalWindow({
+//                        message:'Ниодного диода не удалось поставить, попробуйте сделать это вручную в режими редактирования.'
+//                    });
+//                    app.WorkArea.isReady(true);
+//                }
+//                console.log('DRAW!');
+//                for (var i = 0; i < points.length; i++) {
+//                    setTimeout(function (i) {
+//                        var p = points[i].draw(waCanvas);
+//                        self.SvgImage.didoGroup.add(p);
+//                        if (i == points.length - 1) {
+//                            app.WorkArea.isReady(true);
+//                            self.diodesArr(points);
+//                            setTimeout(function(){
+//                                app.testUseMorePowerfulDiode();
+//                            },10000);
+//                        }
+//                    }, i * 9, i);
+//                }
+//
 
                 try {
                     //TODO NS_ERROR_NOT_INITIALIZED: , 1000 / svg.FRAMERATE); canvg.js 2764
