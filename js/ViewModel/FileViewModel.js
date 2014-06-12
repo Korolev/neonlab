@@ -152,7 +152,7 @@ var FileViewModel = function (app) {
                             self.uploadStatus('remove');
                         }, 5000);
 
-                        var svgDom = r.firstChild;
+                        var svgDom = r.querySelector('svg');
 
                         var recusiveWalk = function (node) {
 //TODO move recursive Walk to SvgImage class
@@ -257,7 +257,11 @@ var FileViewModel = function (app) {
                 type: 'POST',
                 data: data,
                 success: function (r) {
-                    callback && callback(r);
+                    if(r.status && r.status == 1){
+                        callback && callback(r);
+                    }else{
+                        callback(false);
+                    }
                 },
                 error: function (r) {
                     callback && callback(false);
