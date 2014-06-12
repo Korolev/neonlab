@@ -339,22 +339,9 @@ var WorkAreaViewModel = function (app) {
                     xFrom, yFrom, xTo, yTo;
 
 //TODO need better algorithm
-alert(1);
                 if (window.Worker && false) {
-console.log('QQQWWEEE');
-                    var worker = new Worker('js/workers/analiser.js'),// Создаём новый worker
-                        iData = ctx.getImageData(0, 0, svgWidth, svgHeight),//rgba,rgba,rgba
-                        iDataLen = iData.length,
-                        i = 0,
-                        _iData01 = []; //100101001
+                    var worker = new Worker('js/workers/analiser.js');// Создаём новый worker
 
-console.log('QQQ',iDataLen);
-
-                    while(i<iDataLen){
-                        _iData01.push(iData[i] > 0 ? 1 : 0);
-                        i+=4;
-                    }
-console.log(_iData01);
                     worker.postMessage({
                         // Передача ImageData в worker
                         imagedata: ctx.getImageData(0, 0, svgWidth, svgHeight),
@@ -509,7 +496,6 @@ console.log(_iData01);
             }
             self.SvgImage.didoGroup = waCanvas.g();
 
-            console.log('DRAW!', points.length);
             for (var i = 0; i < points.length; i++) {
                 setTimeout(function (i) {
                     var p = points[i].draw(waCanvas);
@@ -566,23 +552,61 @@ console.log(_iData01);
 //TODO need better algorithm
 
                 if (window.Worker) {
-                    var worker = new Worker('js/workers/analiser.js'); // Create new worker
+                    var worker = new Worker('js/workers/analiser.js'),// Create new worker
+                        width = xTo - x,
+                        height = yTo - y,
+                        useParts = false,
+                        oldHeight = height;
+
+                    if (width > 10000) {
+                        height = Math.ceil(height / 2);
+                        useParts = true;
+                    }
+
                     worker.postMessage({
                         // sent ImageData to worker
-                        imagedata: ctx.getImageData(x, y, xTo - x, yTo - y),
-                        width: xTo - x,
-                        height: yTo - y,
+                        imagedata: ctx.getImageData(x, y, width, height),
+                        width: width,
+                        height: height,
                         deep: deep,
                         dW: udtW,
                         dH: udtH
                     });
-                    worker.onerror = function(event){
-                      console.log(event);
-                    };
 
-                    worker.onmessage = function (event) {
-                        if (event.data.status == 'complite') {
-                            $.each(event.data.points, function (k, p) {
+                    if (useParts) {
+                        var worker2 = new Worker('js/workers/analiser.js');
+                        worker2.postMessage({
+                            // sent ImageData to worker
+                            imagedata: ctx.getImageData(x, y + height, width, oldHeight - height),
+                            width: width,
+                            height: oldHeight - height,
+                            deep: deep,
+                            dW: udtW,
+                            dH: udtH
+                        });
+
+                        worker2.onmessage = function (event) {
+                            if (event.data.status == 'complite') {
+                                var points = event.data.points,
+                                    dY = oldHeight - height;
+
+                                $.each(points, function (k, p) {
+                                    points[k].y += dY;
+                                });
+                                preCompleteFunc(points);
+                            }
+                        }
+                    }
+
+
+                    var _POINTS_ = [],
+                        parts = 0,
+                        completeFunc = function (_points) {
+                            _points.sort(function(a,b){
+                                return a.x < b.x ? -1 : 1;
+                            });
+
+                            $.each(_points, function (k, p) {
                                 points.push(new Diod({
                                     x: p.x * 100 + viewBox.x + x * 100,
                                     y: p.y * 100 + viewBox.y + y * 100,
@@ -599,13 +623,29 @@ console.log(_iData01);
                                 app.WorkArea.isReady(true);
                             }
                             $complete_process.text('');
+                        },
+                        preCompleteFunc = function (points) {
+                            _POINTS_ = _POINTS_.concat(points);
+                            parts++;
+                            if (parts == 2 || !useParts) {
+                                completeFunc(_POINTS_);
+                            }
+                        };
+
+
+                    worker.onerror = function (event) {
+                        console.log(event);
+                    };
+
+                    worker.onmessage = function (event) {
+                        if (event.data.status == 'complite') {
+                            preCompleteFunc(event.data.points);
                         } else if (event.data.status == 'console') {
                             console.log(event.data.log);
                         } else {
                             //show current complete level
                             var progress = event.data.progress > 100 ? 100 : event.data.progress;
                             $complete_process.text(progress + "%");
-
                         }
                     }
                 }
