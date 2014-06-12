@@ -339,9 +339,22 @@ var WorkAreaViewModel = function (app) {
                     xFrom, yFrom, xTo, yTo;
 
 //TODO need better algorithm
+alert(1);
+                if (window.Worker && false) {
+console.log('QQQWWEEE');
+                    var worker = new Worker('js/workers/analiser.js'),// Создаём новый worker
+                        iData = ctx.getImageData(0, 0, svgWidth, svgHeight),//rgba,rgba,rgba
+                        iDataLen = iData.length,
+                        i = 0,
+                        _iData01 = []; //100101001
 
-                if (window.Worker) {
-                    var worker = new Worker('js/workers/analiser.js'); // Создаём новый worker
+console.log('QQQ',iDataLen);
+
+                    while(i<iDataLen){
+                        _iData01.push(iData[i] > 0 ? 1 : 0);
+                        i+=4;
+                    }
+console.log(_iData01);
                     worker.postMessage({
                         // Передача ImageData в worker
                         imagedata: ctx.getImageData(0, 0, svgWidth, svgHeight),
@@ -377,7 +390,6 @@ var WorkAreaViewModel = function (app) {
                                 app.WorkArea.isReady(true);
                             }
                             $complete_process.text('');
-                            console.log('DRAW!', points.length);
                             for (var i = 0; i < points.length; i++) {
                                 setTimeout(function (i) {
                                     var p = points[i].draw(waCanvas);

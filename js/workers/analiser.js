@@ -31,8 +31,6 @@ onmessage = function (event) {
         diodeWidth = event.data.dW,
         diodeHeight = event.data.dH;
 
-    console.log(['deep',deep]);
-
     // Количество пикселей, попадающих в радиус размывания
     var num_pixels = width * height;
     var resPointsL = [],
