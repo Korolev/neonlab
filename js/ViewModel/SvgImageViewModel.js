@@ -16,10 +16,11 @@ var SvgImageViewModel = function (app, editor) {
 
     var createDiodePattern = function (c) {
         var p = c.group(),
-            selectedColor = "#ff6900";
+            selectedColor = "#ff6900",
+            fillColor = "#ACACAC";
 
         p.add(c.circle(1250, 1250, 3000, 3000).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1', opacity: '0.1'}));
-        p.add(c.rect(0, 0, 2500, 2500).attr({fill: '#DDDDDD', stroke: '#000000', 'stroke-with': '40'}));
+        p.add(c.rect(0, 0, 2500, 2500).attr({fill: fillColor, stroke: '#000000', 'stroke-with': '40'}));
         p.add(c.rect(300, 500, 500, 200).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
         p.add(c.rect(1600, 500, 500, 200).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
         p.add(c.circle(1250, 1250, 300, 300).attr({fill: '#FFFFFF', stroke: '#000000', 'stroke-with': '20'}));
@@ -32,7 +33,7 @@ var SvgImageViewModel = function (app, editor) {
 
         p = c.group();
         p.add(c.circle(1000, 450, 2500, 2500).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1', opacity: '0.1'}));
-        p.add(c.rect(0, 0, 2000, 900).attr({fill: '#DDDDDD', stroke: '#000000', 'stroke-with': '40'}));
+        p.add(c.rect(0, 0, 2000, 900).attr({fill: fillColor, stroke: '#000000', 'stroke-with': '40'}));
         p.add(c.rect(600, 350, 800, 200).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
         self.pattern20x9 = p.toDefs();
 
