@@ -157,14 +157,18 @@ var FileViewModel = function (app) {
                         var recusiveWalk = function (node) {
 //TODO move recursive Walk to SvgImage class
                             if (node.childNodes && node.childNodes.length) {
+                                if(node.style && node.style.stroke){
+                                    node.style.stroke = '#999999';
+                                }
                                 $.each(node.childNodes, function (i, _node) {
+                                    //console.log(_node);
                                     if (_node.getAttribute && _node.tagName) {
                                         var fill = _node.getAttribute('fill');
                                         if (fill) {
                                             if (fill != 'none') {
                                                 _node.setAttribute('fill', '#ffffff');
                                             }
-                                            _node.setAttribute('stroke', '#CCCCCC');//#555555
+                                            _node.setAttribute('stroke', '#999999');//#555555
                                             _node.setAttribute('stroke-width', '100');
                                         }
                                     }

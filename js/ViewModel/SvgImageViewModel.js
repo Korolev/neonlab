@@ -226,23 +226,28 @@ var SvgImageViewModel = function (app, editor) {
 
         createDiodePattern(s);
 
+        try{
+            $.each(s.node.children, function (k, el) {
+                var bb = el.getBoundingClientRect(),
+                    nodeName,
+                    nodeClass,
+                    g;
+                if (bb.width) {
+                    nodeName = el.nodeName;
+                    nodeClass = el.getAttribute('class');
+                    g = s.select(nodeClass ? nodeName + '.' + nodeClass : nodeName);
+                    //TODO maybe remove this rect before sent SVG
+                    self.canvas.rect(viewBox.x, viewBox.y, bb.width * 100, bb.height * 100).attr({fill: '#cccccc', 'opacity': '0.01'}).prependTo(g);
+                }
+            });
 
-        $.each(s.node.children, function (k, el) {
-            var bb = el.getBoundingClientRect(),
-                nodeName,
-                nodeClass,
-                g;
-            if (bb.width) {
-                nodeName = el.nodeName;
-                nodeClass = el.getAttribute('class');
-                g = s.select(nodeClass ? nodeName + '.' + nodeClass : nodeName);
-                //TODO maybe remove this rect before sent SVG
-                self.canvas.rect(viewBox.x, viewBox.y, bb.width * 100, bb.height * 100).attr({fill: '#cccccc', 'opacity': '0.01'}).prependTo(g);
-            }
-        });
+        }catch (e){
+            console.log(e);
+        }
 
-        self.setZoom();
+
         self.drag();
+        self.setZoom();
     };
 
     this.removeSvg = function () {
