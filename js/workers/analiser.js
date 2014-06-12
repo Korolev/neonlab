@@ -26,10 +26,12 @@ onmessage = function (event) {
         width = event.data.width,
         height = event.data.height,
         deepQuatro = event.data.deep / 5 | 0,
-        deep = event.data.deep,
+        deep = event.data.deep - event.data.deep%5, //TODO remove this bad code
         quality = 5,
         diodeWidth = event.data.dW,
         diodeHeight = event.data.dH;
+
+    console.log(['deep',deep]);
 
     // Количество пикселей, попадающих в радиус размывания
     var num_pixels = width * height;
