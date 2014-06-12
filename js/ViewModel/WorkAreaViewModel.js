@@ -564,6 +564,9 @@ var WorkAreaViewModel = function (app) {
                         dW: udtW,
                         dH: udtH
                     });
+                    worker.onerror = function(event){
+                      console.log(event);
+                    };
 
                     worker.onmessage = function (event) {
                         if (event.data.status == 'complite') {
