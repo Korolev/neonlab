@@ -241,9 +241,9 @@ var WorkAreaViewModel = function (app) {
 //            });
 //        });
         $.each(dInfo, function (i, t) {
-           if(t.itemsCount > 0){
-               used.push(t);
-           }
+            if (t.itemsCount > 0) {
+                used.push(t);
+            }
         });
         app.usedDiodTypes(used);
         app.pointsCount(points.length);
@@ -273,7 +273,7 @@ var WorkAreaViewModel = function (app) {
 
     this.resizeBase();
 
-    this.calculateDiod = function () {
+    this.calculateDiod_OLD_DEPRECATED = function () {
         app.greedDeep.valueHasMutated();
         if (!app.File.fileName()) {
             console.log('load .cdr first');
@@ -348,8 +348,8 @@ var WorkAreaViewModel = function (app) {
                         width: svgWidth,
                         height: svgHeight,
                         deep: deep,
-                        dW:udtW,
-                        dH:udtH
+                        dW: udtW,
+                        dH: udtH
                     });
 
                     worker.onmessage = function (event) {
@@ -377,7 +377,7 @@ var WorkAreaViewModel = function (app) {
                                 app.WorkArea.isReady(true);
                             }
                             $complete_process.text('');
-                            console.log('DRAW!',points.length);
+                            console.log('DRAW!', points.length);
                             for (var i = 0; i < points.length; i++) {
                                 setTimeout(function (i) {
                                     var p = points[i].draw(waCanvas);
@@ -391,7 +391,7 @@ var WorkAreaViewModel = function (app) {
                                     }
                                 }, i * 9, i);
                             }
-                        }else {
+                        } else {
                             //show current complete level
                             var progress = event.data.progress > 100 ? 100 : event.data.progress;
                             $complete_process.text(progress + "%");
@@ -468,4 +468,144 @@ var WorkAreaViewModel = function (app) {
         });
 
     };
+
+    this.calculateDiod = function () {
+        app.greedDeep.valueHasMutated();
+        if (!app.File.fileName()) {
+            console.log('load .cdr first');
+            app.Dialog.showModalWindow({
+                message: "Загрузите фаил с исходными размерами конструкции в формате <b>.cdr</b> или <b>.plt</b>"
+            });
+
+            return false;
+        }
+        if (!app.greedDeep()) {
+            app.Dialog.showModalWindow({
+                message: "Задайте глубину вывески."
+            });
+            return false;
+        }
+
+        var svgWidth = self.SvgImage.svgObjWidth(),
+            svgHeight = self.SvgImage.svgObjHeight(),
+            useDiodeType = app.usedDiodTypes()[0],
+            waCanvas = self.SvgImage.canvas.select('svg');
+
+        self.calculateDiodesByCoordinates(app, 0, 0, svgWidth, svgHeight, useDiodeType, app.greedDeep(), function (points) {
+            if (self.SvgImage.didoGroup) {
+                self.SvgImage.didoGroup.remove();
+            }
+            self.SvgImage.didoGroup = waCanvas.g();
+
+            console.log('DRAW!', points.length);
+            for (var i = 0; i < points.length; i++) {
+                setTimeout(function (i) {
+                    var p = points[i].draw(waCanvas);
+                    self.SvgImage.didoGroup.add(p);
+                    if (i == points.length - 1) {
+                        app.WorkArea.isReady(true);
+                        self.diodesArr(points);
+                        setTimeout(function () {
+                            app.testUseMorePowerfulDiode();
+                        }, 10000);
+                    }
+                }, i * 9, i);
+            }
+        })
+
+    };
+
+    this.calculateDiodesByCoordinates = function (app, x, y, xTo, yTo, useDiodeType, deep, callback) {
+        var ifrm = document.createElement('IFRAME'),
+            workArea = app.WorkArea,
+            SvgImage = app.WorkArea.SvgImage,
+            svgHtml = SvgImage.svgOrignHTML(),
+            svgWidth = SvgImage.svgObjWidth(),
+            svgHeight = SvgImage.svgObjHeight(),
+            useDiodeTypeSize = useDiodeType.size.split('x'),
+            udtW = useDiodeTypeSize[0] | 0,
+            udtH = useDiodeTypeSize[1] | 0,
+            waCanvas = SvgImage.canvas.select('svg'),
+            viewBox = waCanvas.attr('viewBox'),
+            $complete_process = $('#complete_process');
+
+        workArea.isReady(false);
+
+        ifrm.setAttribute('src', location.origin + location.pathname + 'iframe.html');
+        ifrm.style.width = '100px';
+        ifrm.style.height = '100px';
+        document.body.appendChild(ifrm);
+
+        var ifrmWin = ifrm.contentWindow;
+
+        $(ifrm).load(function () {
+            var c = document.createElement('canvas');
+
+            c.width = svgWidth;
+            c.height = svgHeight;
+            ifrmWin.$('body').append(c);
+            if (typeof FlashCanvas != "undefined") {
+                FlashCanvas.initElement(c);
+            }
+            ifrmWin.canvg(c, svgHtml, { renderCallback: function (dom) {
+                var ctx = c.getContext('2d'),
+                    points = [];
+
+//TODO need better algorithm
+
+                if (window.Worker) {
+                    var worker = new Worker('js/workers/analiser.js'); // Create new worker
+                    worker.postMessage({
+                        // sent ImageData to worker
+                        imagedata: ctx.getImageData(x, y, xTo - x, yTo - y),
+                        width: xTo - x,
+                        height: yTo - y,
+                        deep: deep,
+                        dW: udtW,
+                        dH: udtH
+                    });
+
+                    worker.onmessage = function (event) {
+                        if (event.data.status == 'complite') {
+                            $.each(event.data.points, function (k, p) {
+                                points.push(new Diod({
+                                    x: p.x * 100 + viewBox.x + x * 100,
+                                    y: p.y * 100 + viewBox.y + y * 100,
+                                    deep: deep
+                                }, useDiodeType, app));
+                            });
+
+                            if (points.length) {
+                                callback(points);
+                            } else {
+                                app.Dialog.showModalWindow({
+                                    message: 'Ниодного диода не удалось поставить, попробуйте сделать это вручную в режими редактирования.'
+                                });
+                                app.WorkArea.isReady(true);
+                            }
+                            $complete_process.text('');
+                        } else if (event.data.status == 'console') {
+                            console.log(event.data.log);
+                        } else {
+                            //show current complete level
+                            var progress = event.data.progress > 100 ? 100 : event.data.progress;
+                            $complete_process.text(progress + "%");
+
+                        }
+                    }
+                }
+                else {
+                    alert('Ваш браузер не поддерживает Web Workers!');
+                }
+
+                try {
+                    //TODO NS_ERROR_NOT_INITIALIZED: , 1000 / svg.FRAMERATE); canvg.js 2764
+                    $(ifrm).remove();
+                } catch (e) {
+                    console.log(e);
+                }
+
+            }});
+        });
+    }
 };

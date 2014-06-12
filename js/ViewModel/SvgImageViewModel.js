@@ -33,7 +33,7 @@ var SvgImageViewModel = function (app, editor) {
         p = c.group();
         p.add(c.circle(1000, 450, 2500, 2500).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1', opacity: '0.1'}));
         p.add(c.rect(0, 0, 2000, 900).attr({fill: '#DDDDDD', stroke: '#000000', 'stroke-with': '40'}));
-        p.add(c.rect(550, 300, 900, 300).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
+        p.add(c.rect(600, 350, 800, 200).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
         self.pattern20x9 = p.toDefs();
 
         p = c.group();

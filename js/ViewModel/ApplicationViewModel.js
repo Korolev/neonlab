@@ -100,115 +100,34 @@ var ApplicationViewModel = function () {
                 x2 = (selectBoxCords.x2 - viewBox.x)/100 | 0,
                 y2 = (selectBoxCords.y2 - viewBox.y)/100 | 0;
 
+            console.log(x1,y1,x2,y2);
+
             workArea.selectedDiodes([]);
 
-            var ifrm = document.createElement('IFRAME'),
-                svgHtml = workArea.SvgImage.svgOrignHTML(),
-                svgWidth = workArea.SvgImage.svgObjWidth(),
-                svgHeight = workArea.SvgImage.svgObjHeight(),
-                useDiodeTypeSize = val.size.split('x'),
-                udtW = useDiodeTypeSize[0] | 0,
-                udtH = useDiodeTypeSize[1] | 0;
 
-            workArea.isReady(false);
-
-            ifrm.setAttribute('src', location.origin + location.pathname + 'iframe.html');
-            ifrm.style.width = '100px';
-            ifrm.style.height = '100px';
-            document.body.appendChild(ifrm);
-
-            var ifrmWin = ifrm.contentWindow,
-                ifrmDoc = ifrmWin.document;
-
-
-            $(ifrm).load(function () {
-                var _Snap = ifrmWin.Snap,
-                    deep = self.additionalDeep();
-
-                var
-                    canvasId = 'wr_canvas',
-                    c = document.createElement('canvas');
-
-                c.width = svgWidth;
-                c.height = svgHeight;
-                ifrmWin.$('body').append(c);
-                if (typeof FlashCanvas != "undefined") {
-                    FlashCanvas.initElement(c);
-                }
-                ifrmWin.canvg(c, svgHtml, { renderCallback: function (dom) {
-                    var ctx = c.getContext('2d');
-
-                    var x = x1, y = y1, points = [],
-                        xFrom, yFrom, xTo, yTo;
-
-                    while (x <= x2) {
-                        while (y <= y2) {
-
-                            xFrom = x - deep / 5;
-                            yFrom = y - deep / 5;
-                            xTo = x + udtW + deep / 5;
-                            yTo = y + udtH + deep / 5;
-
-                            if (ctx.getImageData(xFrom, yFrom, 1, 1).data[0] > 0
-                                && ctx.getImageData(xTo, yFrom, 1, 1).data[0] > 0
-                                && ctx.getImageData(xTo, yTo, 1, 1).data[0] > 0
-                                && ctx.getImageData(xFrom, yTo, 1, 1).data[0] > 0
-                                && ctx.getImageData(x, y, 1, 1).data[0] > 0
-                                && ctx.getImageData(x + udtW, y + udtH, 1, 1).data[0] == 255) {
-                                points.push(new Diod({
-                                    x: x * 100 + viewBox.x,
-                                    y: y * 100 + viewBox.y,
-                                    deep:deep
-                                },val,self));
-                            }
-                            y += deep;
+            workArea.calculateDiodesByCoordinates(self, x1, y1, x2, y2, val, self.additionalDeep(), function (points) {
+//                self.usedDiodTypes.push(val);//TODO ???
+                for (var j = 0; j < selectedDiodesList.length; j++) {
+                    setTimeout(function (i) {
+                        selectedDiodesList[i].remove();
+                        if (i == selectedDiodesList.length - 1) {
+                            selectedDiodesList = [];
+                            workArea.diodesArr.valueHasMutated();
                         }
-                        y = y1;
-                        x += deep;
-                    }
+                    }, j * 10, j);
+                }
 
-                    if (points.length) {
-                        self.usedDiodTypes.push(val);
-                    } else {
-                        self.Dialog.showModalWindow({
-                            message: 'Ниодного диода не удалось поставить, попробуйте сделать это вручную в режими редактирования.'
-                        });
-                        workArea.isReady(true);
-                    }
-
-                    for (var j = 0; j < selectedDiodesList.length; j++) {
-                        setTimeout(function (i) {
-                            selectedDiodesList[i].remove();
-                            if (i == selectedDiodesList.length - 1) {
-                                selectedDiodesList = [];
-                                workArea.diodesArr.valueHasMutated();
-                            }
-
-                        }, j * 10, j);
-                    }
-
-                    for (var i = 0; i < points.length; i++) {
-                        setTimeout(function (i) {
-                            var p = points[i].draw(waCanvas);
-                            workArea.SvgImage.didoGroup.add(p);
-                            if (i == points.length - 1) {
-                                workArea.isReady(true);
-                                workArea.diodesArr.pushAll(points);
-                            }
-                        }, i * 10, i);
-                    }
-                    //TODO Duplicated DiodesInfo
-
-                    try {
-                        //TODO NS_ERROR_NOT_INITIALIZED: , 1000 / svg.FRAMERATE); canvg.js 2764
-                        $(ifrm).remove();
-                    } catch (e) {
-                        console.log(e);
-                    }
-
-                }});
+                for (var i = 0; i < points.length; i++) {
+                    setTimeout(function (i) {
+                        var p = points[i].draw(waCanvas);
+                        workArea.SvgImage.didoGroup.add(p);
+                        if (i == points.length - 1) {
+                            workArea.isReady(true);
+                            workArea.diodesArr.pushAll(points);
+                        }
+                    }, i * 10, i);
+                }
             });
-
         }
     };
 //    );

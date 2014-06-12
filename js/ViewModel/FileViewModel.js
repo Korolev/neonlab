@@ -164,7 +164,7 @@ var FileViewModel = function (app) {
                                             if (fill != 'none') {
                                                 _node.setAttribute('fill', '#ffffff');
                                             }
-                                            _node.setAttribute('stroke', '#FFFFFF');//#555555
+                                            _node.setAttribute('stroke', '#CCCCCC');//#555555
                                             _node.setAttribute('stroke-width', '100');
                                         }
                                     }
