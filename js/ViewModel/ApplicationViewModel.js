@@ -340,24 +340,25 @@ var ApplicationViewModel = function () {
                         text:'Да',
                         callback: function(){
                             self.useBetter = true;
-                            self.greedDeep.valueHasMutated();
-                            self.pointsCount.valueHasMutated();
+//                            self.greedDeep.valueHasMutated();
+//                            self.pointsCount.valueHasMutated();
 
                             self.Dialog.hideModalWindow();
+                            self.WorkArea.calculateDiod();
                             var info = self.usedDiodTypes()[0];
-                            if(self.WorkArea.diodesArr().length){
-                                var diodesArr = self.WorkArea.diodesArr(),
-                                    diodesArrLength = diodesArr.length;
-                                self.WorkArea.isReady(false);
-                                $.each(diodesArr,function(k,d){
-                                    setTimeout(function(i){
-                                        diodesArr[i].setInfo(info);
-                                        if(k == diodesArrLength-1){
-                                            self.WorkArea.isReady(true);
-                                        }
-                                    },k*10,k)
-                                });
-                            }
+//                            if(self.WorkArea.diodesArr().length){
+//                                var diodesArr = self.WorkArea.diodesArr(),
+//                                    diodesArrLength = diodesArr.length;
+//                                self.WorkArea.isReady(false);
+//                                $.each(diodesArr,function(k,d){
+//                                    setTimeout(function(i){
+//                                        diodesArr[i].setInfo(info);
+//                                        if(k == diodesArrLength-1){
+//                                            self.WorkArea.isReady(true);
+//                                        }
+//                                    },k*10,k)
+//                                });
+//                            }
                         }
                     },{
                         text:'Отмена',

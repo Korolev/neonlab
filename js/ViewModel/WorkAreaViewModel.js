@@ -503,9 +503,12 @@ var WorkAreaViewModel = function (app) {
                     if (i == points.length - 1) {
                         app.WorkArea.isReady(true);
                         self.diodesArr(points);
-                        setTimeout(function () {
-                            app.testUseMorePowerfulDiode();
-                        }, 10000);
+                        clearTimeout(app.testUseTimeOut);
+                        if(!app.useBetter){
+                            app.testUseTimeOut = setTimeout(function () {
+                                app.testUseMorePowerfulDiode();
+                            }, 10000);
+                        }
                     }
                 }, i * 9, i);
             }

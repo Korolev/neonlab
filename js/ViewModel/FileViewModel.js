@@ -152,7 +152,29 @@ var FileViewModel = function (app) {
                             self.uploadStatus('remove');
                         }, 5000);
 
-                        var svgDom = r.querySelector('svg');
+                        var svgDom = r.querySelector('svg'),
+                            fileExtension = file.name.split('.');
+                        fileExtension = fileExtension[fileExtension.length-1];
+
+                        if(fileExtension == 'plt'){
+                            var paths = [],
+                                grps = svgDom.getElementsByTagName('path');
+
+                            $.each(grps,function(k,p){
+                                var path = p.getAttribute('d');
+                                path+=' Z';
+                                paths.push(path);
+
+                                p.setAttribute('fill','#ffffff');
+                                p.setAttribute('d',path);
+                            });
+
+                            $.each(paths[0].split(''),function(k,p){
+//                                console.log('->',p);
+                            })
+                        }
+
+                        app.useBetter = false;
 
                         var recusiveWalk = function (node) {
 //TODO move recursive Walk to SvgImage class
