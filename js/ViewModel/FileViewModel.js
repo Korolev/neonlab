@@ -14,11 +14,12 @@ var FileViewModel = function (app) {
 
 
     /* =============== */
+    var helpText = 'Добавьте нужный фаил<br> с исходными размерами конструкции в формате <b>.cdr</b> с любым, внутренним фоном.';
 
     this.fileUploadStatus = {
         ready: {
             cssClass: 'question',
-            helpText: 'Добавьте нужный фаил с исходными размерами конструкции в формате <b>.cdr</b> с любым, внутренним фоном.'
+            helpText: helpText
         },
         loading: {
             cssClass: 'loading'
@@ -31,7 +32,7 @@ var FileViewModel = function (app) {
         },
         error: {
             cssClass: 'error',
-            helpText: self.fileUploadStatus.ready.helpText
+            helpText: helpText
         }
     };
 
