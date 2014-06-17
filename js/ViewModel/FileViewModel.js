@@ -156,7 +156,7 @@ var FileViewModel = function (app) {
                             fileExtension = file.name.split('.');
                         fileExtension = fileExtension[fileExtension.length-1];
 
-                        if(fileExtension == 'plt'){
+                        if(fileExtension == 'plt' && false ){//TODO remove this block if it never use
                             var paths = [],
                                 grps = svgDom.getElementsByTagName('path');
 
