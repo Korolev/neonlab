@@ -506,7 +506,9 @@ var WorkAreaViewModel = function (app) {
                         clearTimeout(app.testUseTimeOut);
                         if(!app.useBetter){
                             app.testUseTimeOut = setTimeout(function () {
-                                app.testUseMorePowerfulDiode();
+                                if(!app.Dialog.showDialog()){
+                                    app.testUseMorePowerfulDiode();
+                                }
                             }, 10000);
                         }
                     }
