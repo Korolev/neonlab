@@ -161,17 +161,29 @@ var FileViewModel = function (app) {
                                 grps = svgDom.getElementsByTagName('path');
 
                             $.each(grps,function(k,p){
-                                var path = p.getAttribute('d');
-                                path+=' Z';
-                                paths.push(path);
-
-                                p.setAttribute('fill','#ffffff');
-                                p.setAttribute('d',path);
+                                paths.push(p.getAttribute('d'));
                             });
 
-                            $.each(paths[0].split(''),function(k,p){
-//                                console.log('->',p);
-                            })
+                            if (window.Worker) {
+                                var worker = new Worker('js/workers/pltparser.js');// Create new worker
+
+                                    worker.postMessage({
+                                        pathsArr : paths
+                                    });
+
+                                worker.onmessage = function (event) {
+                                    if (event.data.status == 'complite') {
+
+                                    } else if (event.data.status == 'console') {
+                                        console.log(event.data.log);
+                                    } else {
+                                        //show current complete level
+                                        var progress = event.data.progress > 100 ? 100 : event.data.progress;
+                                    }
+                                }
+                            }else {
+                                alert('Ваш браузер не поддерживает Web Workers!');
+                            }
                         }
 
                         app.useBetter = false;
