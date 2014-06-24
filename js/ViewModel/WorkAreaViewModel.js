@@ -546,7 +546,7 @@ var WorkAreaViewModel = function (app) {
 
             c.width = svgWidth;
             c.height = svgHeight;
-            ifrmWin.$('body').append(c);
+            ifrmWin.getElementsByTagName('body')[0].innerHTML = c;
             if (typeof FlashCanvas != "undefined") {
                 FlashCanvas.initElement(c);
             }

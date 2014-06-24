@@ -2,7 +2,7 @@
 <html>
 <!-- vseMoe 8h -->
 <!--                                          |3-4-5-6-9-10-11-12x06 |-->
-<!-- 5h 5h 5h 4h 8h 6h 2h 8h 2h 3h 3h 1h 3h 1h 2h 6h 3h 4h 4h 4h 4h 3h 3h -->
+<!-- 5h 5h 5h 4h 8h 6h 2h 8h 2h 3h 3h 1h 3h 1h 2h 6h 3h 4h 4h 4h 3h 3h 2h -->
 <!-- eval("{TIME_STR}".replace(new RegExp('h','gi'),'+')+'0') -->
 <head>
     <title>«Calculed» — световая, наружная реклама, изготовление световых вывесок в Москве</title>
@@ -61,7 +61,7 @@
             </form>
             <h2>Задайте глубину вывески</h2>
             <div class="deep_form">
-                <input type="text" id="deep" data-bind="value:greedDeep">
+                <input type="text" id="deep" data-bind="value:greedDeep" />
                 <div class="deep_size">мм</div>
             </div>
             <div class="button blue_button" data-bind="click:WorkArea.calculateDiod">Рассчитать</div>
@@ -76,13 +76,13 @@
 
                     <div class="instruments_holder">
                         <!-- ko if: $root.WorkArea.fullScreen() -->
-                        <i title="Выдеить область" class="icon item_select" data-bind="click:function(){$root.WorkArea.setMode('selectItem')},css:{selected:WorkArea.editMode() == 'selectItem'}"></i></i>
+                        <i title="Выдеить область" class="icon item_select" data-bind="click:function(){$root.WorkArea.setMode('selectItem')},css:{selected:WorkArea.editMode() == 'selectItem'}"></i>
 
                         <i title="Передвинуть светодиод" class="icon item_edit" data-bind="click:function(){$root.WorkArea.setMode('moveItem')},css:{selected:WorkArea.editMode() == 'moveItem'}"></i>
 
-                        <i title="Добавить светодиод" class="icon item_add" data-bind="click:function(){$root.WorkArea.setMode('addItem')},css:{selected:WorkArea.editMode() == 'addItem'}"></i></i>
-                        <i title="Удалить светодиод" class="icon item_remove" data-bind="click:function(){$root.WorkArea.setMode('removeItem')},css:{selected:WorkArea.editMode() == 'removeItem'}"></i></i>
-                        <i title="Переместить изображение" class="icon item_move" data-bind="click:function(){$root.WorkArea.setMode('default')},css:{selected:WorkArea.editMode() == 'default'}"></i></i>
+                        <i title="Добавить светодиод" class="icon item_add" data-bind="click:function(){$root.WorkArea.setMode('addItem')},css:{selected:WorkArea.editMode() == 'addItem'}"></i>
+                        <i title="Удалить светодиод" class="icon item_remove" data-bind="click:function(){$root.WorkArea.setMode('removeItem')},css:{selected:WorkArea.editMode() == 'removeItem'}"></i>
+                        <i title="Переместить изображение" class="icon item_move" data-bind="click:function(){$root.WorkArea.setMode('default')},css:{selected:WorkArea.editMode() == 'default'}"></i>
                         <!-- /ko -->
                     </div>
                     <!-- ko if: $root.WorkArea.fullScreen() -->
