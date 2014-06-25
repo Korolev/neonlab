@@ -100,7 +100,7 @@ var ApplicationViewModel = function () {
                 x2 = (selectBoxCords.x2 - viewBox.x)/100 | 0,
                 y2 = (selectBoxCords.y2 - viewBox.y)/100 | 0;
 
-            console.log(x1,y1,x2,y2);
+//            console.log(x1,y1,x2,y2);
 
             workArea.selectedDiodes([]);
 
