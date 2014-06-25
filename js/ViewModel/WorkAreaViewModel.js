@@ -534,27 +534,27 @@ var WorkAreaViewModel = function (app) {
 
         workArea.isReady(false);
 
-        ifrm.setAttribute('src', location.origin + location.pathname + 'iframe.html');
-        ifrm.style.width = '100px';
-        ifrm.style.height = '100px';
-        document.body.appendChild(ifrm);
+//        ifrm.setAttribute('src', location.origin + location.pathname + 'iframe.html');
+        ifrm = document.getElementById('fakeFrame');
+        ifrm.style.width = '100%';
+        ifrm.style.height = '10px';
+//        document.body.appendChild(ifrm);
 
-        var ifrmWin = ifrm.contentWindow;
+//        var ifrmWin = ifrm.contentWindow;
+        var ifrmWin = window;
 
-        $(ifrm).load(function () {
+        (function () {
             var c = document.createElement('canvas');
 
             c.width = svgWidth;
             c.height = svgHeight;
-            ifrmWin.getElementsByTagName('body')[0].append(c);
+            ifrm.appendChild(c);
             if (typeof FlashCanvas != "undefined") {
                 FlashCanvas.initElement(c);
             }
             ifrmWin.canvg(c, svgHtml, { renderCallback: function (dom) {
                 var ctx = c.getContext('2d'),
                     points = [];
-
-//TODO need better algorithm
 
                 if (window.Worker) {
                     var worker = new Worker('js/workers/analiser.js'),// Create new worker
@@ -660,12 +660,13 @@ var WorkAreaViewModel = function (app) {
 
                 try {
                     //TODO NS_ERROR_NOT_INITIALIZED: , 1000 / svg.FRAMERATE); canvg.js 2764
-                    $(ifrm).remove();
+                    ifrm.setAttribute('style','');
+                    ifrm.innerHTML = '';
                 } catch (e) {
                     console.log(e);
                 }
 
             }});
-        });
+        })();
     }
 };
