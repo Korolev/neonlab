@@ -135,6 +135,15 @@ var FileViewModel = function (app) {
         console.log('TYT IE1', uploadUrl);
         $.ajax({
             url: uploadUrl,
+            beforeSend: function (request)
+            {
+                /*<meta http-equiv="Cache-Control" content="no-store,no-cache,must-revalidate">
+                    <meta http-equiv="Pragma" content="no-cache">
+                        <meta http-equiv="Expires" content="-1">*/
+                request.setRequestHeader("Cache-Control", "no-store,no-cache,must-revalidate");
+                request.setRequestHeader("Pragma", "no-cache");
+                request.setRequestHeader("Expires", "-1");
+            },
             type: "POST",
             data: data,
             processData: false,  // tell jQuery not to process the data
