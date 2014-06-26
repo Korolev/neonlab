@@ -100,7 +100,7 @@ Diod.prototype.draw = function (canvas) {
 
     this.paper.drag(function (dx, dy) {
             // move
-            dy = dy - window.scrollY;
+            dy = dy - window.pageYOffset;
             if (this.canDrag) {
                 self.x = this.ox + dx * k * 100;
                 self.y = this.oy + dy * k * 100;

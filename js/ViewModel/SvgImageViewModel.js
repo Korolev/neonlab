@@ -45,7 +45,7 @@ var SvgImageViewModel = function (app, editor) {
 
     this.canvas.click(function (e, X, Y) {
         var x = X - editor.offsetLeft(),
-            y = Y - editor.offsetTop() - window.scrollY,
+            y = Y - editor.offsetTop() - window.pageYOffset,
             s = self.canvas.select('svg'),
             viewBox,
             k = 100,
@@ -108,7 +108,7 @@ var SvgImageViewModel = function (app, editor) {
     }, 40);
     this.canvas.mousedown(function (e) {
         selRectX = e.pageX - editor.offsetLeft();
-        selRectY = e.pageY - editor.offsetTop() - window.scrollY;
+        selRectY = e.pageY - editor.offsetTop() - window.pageYOffset;
 
         if (editor.editMode() == 'selectItem') {
             self.selectRect.attr({
@@ -124,7 +124,7 @@ var SvgImageViewModel = function (app, editor) {
     this.canvas.mousemove(function (e) {
         if (editor.editMode() == 'selectItem') {
             var x = e.pageX - editor.offsetLeft(),
-                y = e.pageY - editor.offsetTop() - window.scrollY,
+                y = e.pageY - editor.offsetTop() - window.pageYOffset,
                 dX = x - selRectX, dY = y - selRectY,
                 abs = Math.abs,
                 opts = {
