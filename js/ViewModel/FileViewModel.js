@@ -132,7 +132,7 @@ var FileViewModel = function (app) {
         data.append('cdrfile', file);
 
 //TODO check file extension in JavaScript before upload
-        console.log('TYT IE1');
+        console.log('TYT IE1',uploadUrl);
         $.ajax({
             url: uploadUrl,
             type: "POST",
