@@ -132,23 +132,22 @@ var FileViewModel = function (app) {
         data.append('cdrfile', file);
 
 //TODO check file extension in JavaScript before upload
-        console.log('TYT IE1',uploadUrl);
+        console.log('TYT IE1', uploadUrl);
         $.ajax({
             url: uploadUrl,
             type: "POST",
             data: data,
-            cache: false,
             processData: false,  // tell jQuery not to process the data
             contentType: false,   // tell jQuery not to set contentType
             success: function (r) {
                 console.log('TYT IE2');
-                if(r.status == 0){
+                if (r.status == 0) {
                     self.uploadStatus('error');
                     self.showStatusText(true);
                     return false;
                 }
                 if (r.file) {
-                    $.get(downloadUrl + r.file, function (r) {
+                    $.get(downloadUrl + r.file).done(function (r) {
                         self.uploadStatus('success');
                         self.fileName(file.name);
 
@@ -158,22 +157,22 @@ var FileViewModel = function (app) {
 
                         var svgDom = r.querySelector('svg'),
                             fileExtension = file.name.split('.');
-                        fileExtension = fileExtension[fileExtension.length-1];
+                        fileExtension = fileExtension[fileExtension.length - 1];
 
-                        if(fileExtension == 'plt' && false ){//TODO remove this block if it never use
+                        if (fileExtension == 'plt' && false) {//TODO remove this block if it never use
                             var paths = [],
                                 grps = svgDom.getElementsByTagName('path');
 
-                            each(grps,function(k,p){
+                            each(grps, function (k, p) {
                                 paths.push(p.getAttribute('d'));
                             });
 
                             if (window.Worker) {
                                 var worker = new Worker('js/workers/pltparser.js');// Create new worker
 
-                                    worker.postMessage({
-                                        pathsArr : paths
-                                    });
+                                worker.postMessage({
+                                    pathsArr: paths
+                                });
 
                                 worker.onmessage = function (event) {
                                     if (event.data.status == 'complite') {
@@ -185,7 +184,7 @@ var FileViewModel = function (app) {
                                         var progress = event.data.progress > 100 ? 100 : event.data.progress;
                                     }
                                 }
-                            }else {
+                            } else {
                                 alert('Ваш браузер не поддерживает Web Workers!');
                             }
                         }
@@ -195,7 +194,7 @@ var FileViewModel = function (app) {
                         var recusiveWalk = function (node) {
 //TODO move recursive Walk to SvgImage class
                             if (node.childNodes && node.childNodes.length) {
-                                if(node.style && node.style.stroke){
+                                if (node.style && node.style.stroke) {
                                     node.style.stroke = '#999999';
                                 }
                                 each(node.childNodes, function (i, _node) {
@@ -216,7 +215,11 @@ var FileViewModel = function (app) {
                         };
                         recusiveWalk(svgDom);
                         app.WorkArea.setSvg(svgDom);
-                    });
+                    }).fail(function (r) {
+                            self.uploadStatus('error');
+                            self.showStatusText(true);
+                            console.log(r);
+                        });
                 }
                 if (r.id) {
                     self.fileId(r.id);
@@ -224,7 +227,6 @@ var FileViewModel = function (app) {
 
             },
             error: function (r) {
-                console.log('TYT IE FAIL');
                 self.uploadStatus('error');
                 self.showStatusText(true);
             }
@@ -300,9 +302,9 @@ var FileViewModel = function (app) {
                 type: 'POST',
                 data: data,
                 success: function (r) {
-                    if(r.status && r.status == 1){
+                    if (r.status && r.status == 1) {
                         callback && callback(r);
-                    }else{
+                    } else {
                         callback(false);
                     }
                 },
