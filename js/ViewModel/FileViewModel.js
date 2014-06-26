@@ -132,6 +132,7 @@ var FileViewModel = function (app) {
         data.append('cdrfile', file);
 
 //TODO check file extension in JavaScript before upload
+        console.log('TYT IE1');
         $.ajax({
             url: uploadUrl,
             type: "POST",
@@ -139,6 +140,7 @@ var FileViewModel = function (app) {
             processData: false,  // tell jQuery not to process the data
             contentType: false,   // tell jQuery not to set contentType
             success: function (r) {
+                console.log('TYT IE2');
                 if(r.status == 0){
                     self.uploadStatus('error');
                     self.showStatusText(true);
@@ -221,6 +223,7 @@ var FileViewModel = function (app) {
 
             },
             error: function (r) {
+                console.log('TYT IE FAIL');
                 self.uploadStatus('error');
                 self.showStatusText(true);
             }
