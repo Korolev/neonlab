@@ -137,6 +137,7 @@ var FileViewModel = function (app) {
             url: uploadUrl,
             type: "POST",
             data: data,
+            cache: false,
             processData: false,  // tell jQuery not to process the data
             contentType: false,   // tell jQuery not to set contentType
             success: function (r) {
