@@ -195,7 +195,7 @@ var WorkAreaViewModel = function (app) {
     this.setMode = function (mode) {
         mode = mode == self.editMode() ? 'default' : mode || 'default';
         if (self.selectedDiodes().length) {
-            $.each(self.selectedDiodes(), function (k, d) {
+            each(self.selectedDiodes(), function (k, d) {
                 d.highlight(false);
                 self.selectedDiodes([]);
             });
@@ -225,9 +225,9 @@ var WorkAreaViewModel = function (app) {
             dInfo = app.diodInfo,
             used = [];
 
-        $.each(dInfo, function (i, t) {
+        each(dInfo, function (i, t) {
             t.itemsCount = 0;
-            $.each(points, function (k, p) {
+            each(points, function (k, p) {
                 if (p.info.name == t.name) {
                     t.itemsCount++;
                 }
@@ -240,7 +240,7 @@ var WorkAreaViewModel = function (app) {
 //                }
 //            });
 //        });
-        $.each(dInfo, function (i, t) {
+        each(dInfo, function (i, t) {
             if (t.itemsCount > 0) {
                 used.push(t);
             }
@@ -262,13 +262,17 @@ var WorkAreaViewModel = function (app) {
         e.offsetHeight;
         e.style.display = 'block';
 
+        self.calculateOffset();
+
+        this.SvgImage.setZoom();
+    };
+
+    this.calculateOffset = function(){
 //====
         var boundingCR = editor_holder[0].getBoundingClientRect();
         self.offsetLeft(boundingCR.left);
         self.offsetTop(boundingCR.top);
 //====
-
-        this.SvgImage.setZoom();
     };
 
     this.resizeBase();
@@ -357,7 +361,7 @@ var WorkAreaViewModel = function (app) {
                         {
                             // Переместить принятую Image Data в контекст canvas
                             //ctx.putImageData(event.data.imagedata,0,0);
-                            $.each(event.data.points, function (k, p) {
+                            each(event.data.points, function (k, p) {
                                 points.push(new Diod({
                                     x: p.x * 100 + viewBox.x,
                                     y: p.y * 100 + viewBox.y,
@@ -595,7 +599,7 @@ var WorkAreaViewModel = function (app) {
                                 var points = event.data.points,
                                     dY = oldHeight - height;
 
-                                $.each(points, function (k, p) {
+                                each(points, function (k, p) {
                                     points[k].y += dY;
                                 });
                                 preCompleteFunc(points);
@@ -611,7 +615,7 @@ var WorkAreaViewModel = function (app) {
                                 return a.x < b.x ? -1 : 1;
                             });
 
-                            $.each(_points, function (k, p) {
+                            each(_points, function (k, p) {
                                 points.push(new Diod({
                                     x: p.x * 100 + viewBox.x + x * 100,
                                     y: p.y * 100 + viewBox.y + y * 100,

@@ -70,9 +70,9 @@ var ApplicationViewModel = function () {
     this.additionalDiode = ko.observable();
     this.settingsPosition = ko.observable('left:20px;top:10px');
 
-    var diodeSearch = function(deep){
+    var diodeSearch = function (deep) {
         var res = [];
-        $.each(self.diodInfo, function (k, d) {
+        each(self.diodInfo, function (k, d) {
             var h = d.h1.split('-'), hFrom = h[0], hTo = h[1];
 
             if (deep >= hFrom && deep <= hTo) {
@@ -83,59 +83,73 @@ var ApplicationViewModel = function () {
     };
 
     this.diodInfoFiltered = ko.computed(function () {
-      return diodeSearch(self.additionalDeep());
+        return diodeSearch(self.additionalDeep());
     }, this).extend({throttle: 50});
 
 //    this.additionalDiode.subscribe(function (val) {
-    this.calculatePartial = function(){
-        var val = self.additionalDiode();
-        if (val && self.WorkArea.selectedDiodes().length) {
-            var workArea = self.WorkArea,
-                waCanvas = workArea.SvgImage.canvas.select('svg'),
-                viewBox = waCanvas.attr('viewBox'),
-                selectedDiodesList = workArea.selectedDiodes(),
-                selectBoxCords = workArea.SvgImage.selectBoxCoords,
-                x1 = (selectBoxCords.x1 - viewBox.x)/100 | 0,
-                y1 = (selectBoxCords.y1 - viewBox.y)/100 | 0,
-                x2 = (selectBoxCords.x2 - viewBox.x)/100 | 0,
-                y2 = (selectBoxCords.y2 - viewBox.y)/100 | 0;
+    this.calculatePartial = function () {
+        setTimeout(function () {
+            var val = self.additionalDiode();
+            var findInArr = false;
+            each(self.diodInfoFiltered(),function(k,v){
+                if(val == v){
+                    findInArr = true;
+                }
+            });
+            if(!findInArr){
+                self.additionalDiode(self.diodInfoFiltered()[0]);
+                val = self.additionalDiode();
+            }
+
+            if (val && self.WorkArea.selectedDiodes().length) {
+                var workArea = self.WorkArea,
+                    waCanvas = workArea.SvgImage.canvas.select('svg'),
+                    viewBox = waCanvas.attr('viewBox'),
+                    selectedDiodesList = workArea.selectedDiodes(),
+                    selectBoxCords = workArea.SvgImage.selectBoxCoords,
+                    x1 = (selectBoxCords.x1 - viewBox.x) / 100 | 0,
+                    y1 = (selectBoxCords.y1 - viewBox.y) / 100 | 0,
+                    x2 = (selectBoxCords.x2 - viewBox.x) / 100 | 0,
+                    y2 = (selectBoxCords.y2 - viewBox.y) / 100 | 0;
 
 //            console.log(x1,y1,x2,y2);
 
-            workArea.selectedDiodes([]);
+                workArea.selectedDiodes([]);
 
 
-            workArea.calculateDiodesByCoordinates(self, x1, y1, x2, y2, val, self.additionalDeep(), function (points) {
+                workArea.calculateDiodesByCoordinates(self, x1, y1, x2, y2, val, self.additionalDeep(), function (points) {
 //                self.usedDiodTypes.push(val);//TODO ???
-                for (var j = 0; j < selectedDiodesList.length; j++) {
-                    setTimeout(function (i) {
-                        selectedDiodesList[i].remove();
-                        if (i == selectedDiodesList.length - 1) {
-                            selectedDiodesList = [];
-                            workArea.diodesArr.valueHasMutated();
-                        }
-                    }, j * 10, j);
-                }
+                    for (var j = 0; j < selectedDiodesList.length; j++) {
+                        setTimeout(function (i) {
+                            selectedDiodesList[i].remove();
+                            if (i == selectedDiodesList.length - 1) {
+                                selectedDiodesList = [];
+                                workArea.diodesArr.valueHasMutated();
+                            }
+                        }, j * 10, j);
+                    }
 
-                for (var i = 0; i < points.length; i++) {
-                    setTimeout(function (i) {
-                        var p = points[i].draw(waCanvas);
-                        workArea.SvgImage.didoGroup.add(p);
-                        if (i == points.length - 1) {
-                            workArea.isReady(true);
-                            workArea.diodesArr.pushAll(points);
-                        }
-                    }, i * 10, i);
-                }
-            });
-        }
+                    for (var i = 0; i < points.length; i++) {
+                        setTimeout(function (i) {
+                            var p = points[i].draw(waCanvas);
+                            workArea.SvgImage.didoGroup.add(p);
+                            if (i == points.length - 1) {
+                                workArea.isReady(true);
+                                workArea.diodesArr.pushAll(points);
+                            }
+                        }, i * 10, i);
+                    }
+                });
+            }
+        }, 100);
+
     };
 //    );
 
     this.additionalDeep.subscribe(function (val) {
         var minHVal, maxHVal;
 
-        $.each(self.diodInfo, function (k, d) {
+        each(self.diodInfo, function (k, d) {
             var h = d.h1.split('-'), hFrom = h[0], hTo = h[1];
             minHVal = minHVal || hFrom;
             maxHVal = maxHVal || hTo;
@@ -177,7 +191,7 @@ var ApplicationViewModel = function () {
             p = self.usedPowerSupplyTypes(),
             res = [];
 
-        $.each(d, function (k, d) {
+        each(d, function (k, d) {
             if (d.name != '-')
                 res.push({
                     desc: "Светодиодный модуль",
@@ -189,7 +203,7 @@ var ApplicationViewModel = function () {
                 })
         });
 
-        $.each(p, function (k, d) {
+        each(p, function (k, d) {
             if (d.name != '-')
                 res.push({
                     desc: "Блок питания",
@@ -209,7 +223,7 @@ var ApplicationViewModel = function () {
     this.diodTotalCost = ko.computed(function () {
         var res = 0,
             total = self.pointsCount();
-        $.each(self.usedDiodTypes(), function (k, v) {
+        each(self.usedDiodTypes(), function (k, v) {
             res += (v.itemsCount | 0) * parseFloat(v.price || 0);
         });
         return res;
@@ -217,7 +231,7 @@ var ApplicationViewModel = function () {
 
     this.powerSupplyTotalCost = ko.computed(function () {
         var res = 0;
-        $.each(self.usedPowerSupplyTypes(), function (k, v) {
+        each(self.usedPowerSupplyTypes(), function (k, v) {
             res += (v.itemsCount | 0) * parseFloat(v.price || 0);
         });
         return res;
@@ -232,7 +246,7 @@ var ApplicationViewModel = function () {
 
     this.powerSupplyAmperageTotal = ko.computed(function () {
         var res = 0;
-        $.each(self.usedPowerSupplyTypes(), function (k, d) {
+        each(self.usedPowerSupplyTypes(), function (k, d) {
             res += d.itemsCount * d.amperage;
         });
         return res.toFixed(2);
@@ -240,7 +254,7 @@ var ApplicationViewModel = function () {
 
     this.luminousMax = ko.computed(function () {
         var res = 0;
-        $.each(self.usedDiodTypes(), function (k, d) {
+        each(self.usedDiodTypes(), function (k, d) {
             res = Math.max(res, d.luminous);
         });
         return res;
@@ -256,7 +270,7 @@ var ApplicationViewModel = function () {
             choice,
             powerSupplyTC = 0;
 
-        $.each(self.usedDiodTypes(), function (k, dt) {
+        each(self.usedDiodTypes(), function (k, dt) {
             res += dt.itemsCount * parseFloat(dt.power);
         });
 
@@ -264,7 +278,7 @@ var ApplicationViewModel = function () {
         self.pointsWattCountNeeded(Math.ceil(resN));
         if (resN > 0) {
             //TODO Use minimal count of PS
-            $.each(self.powerSuplyInfo, function (k, pw) {
+            each(self.powerSuplyInfo, function (k, pw) {
                 self.powerSuplyInfo[k].itemsCount = 0;
                 blocksPower[k] = {
                     power: parseInt(pw.power, 10),
@@ -282,14 +296,13 @@ var ApplicationViewModel = function () {
                 powerSupplyTC++;
                 resN -= blocksPower[bestBPIdx].power;
             }
-
+            //objects to $.each here
             $.each(blocksPower, function (k, pw) {
                 if (pw.power > resN) {
                     candidate.push(pw);
                 }
             });
-
-            $.each(candidate, function (k, cd) {
+            each(candidate, function (k, cd) {
                 choice = choice || cd;
                 if (cd.price < self.powerSuplyInfo[choice.idx].price) {
                     choice = cd;
@@ -300,7 +313,7 @@ var ApplicationViewModel = function () {
             powerSupplyTC++;
 
             self.usedPowerSupplyTypes([]);
-            $.each(self.powerSuplyInfo, function (k, pw) {
+            each(self.powerSuplyInfo, function (k, pw) {
                 if (pw.itemsCount > 0) {
                     self.usedPowerSupplyTypes.push(pw);
                 }
@@ -323,29 +336,30 @@ var ApplicationViewModel = function () {
     }, this).extend({throttle: 100});
 
     /* =============== */
-    this.testUseMorePowerfulDiode = function(){
-      var deep = self.greedDeep(),
-          dTypes = self.usedDiodTypes(),
-          useAnother;
-        if(dTypes.length == 1){
+    this.testUseMorePowerfulDiode = function () {
+        var deep = self.greedDeep(),
+            dTypes = self.usedDiodTypes(),
+            useAnother;
+        if (dTypes.length == 1) {
             useAnother = diodeSearch(deep);
-            if(useAnother.length > 1){
+            if (useAnother.length > 1) {
                 self.Dialog.showModalWindow({
-                    type:'info',
+                    type: 'info',
                     message: 'Сделать конструкцию более яркой?<div class="comment">' +
                         '(по умолчанию расчет предлагается на оптимальных светодиодных модулях ' +
                         'по соотношению яркость/стоимость подсветки)' +
                         '</div>',
-                        buttons:[{
-                        text:'Да',
-                        callback: function(){
-                            self.useBetter = true;
+                    buttons: [
+                        {
+                            text: 'Да',
+                            callback: function () {
+                                self.useBetter = true;
 //                            self.greedDeep.valueHasMutated();
 //                            self.pointsCount.valueHasMutated();
 
-                            self.Dialog.hideModalWindow();
-                            self.WorkArea.calculateDiod();
-                            var info = self.usedDiodTypes()[0];
+                                self.Dialog.hideModalWindow();
+                                self.WorkArea.calculateDiod();
+                                var info = self.usedDiodTypes()[0];
 //                            if(self.WorkArea.diodesArr().length){
 //                                var diodesArr = self.WorkArea.diodesArr(),
 //                                    diodesArrLength = diodesArr.length;
@@ -359,13 +373,15 @@ var ApplicationViewModel = function () {
 //                                    },k*10,k)
 //                                });
 //                            }
+                            }
+                        },
+                        {
+                            text: 'Отмена',
+                            callback: function () {
+                                self.Dialog.hideModalWindow();
+                            }
                         }
-                    },{
-                        text:'Отмена',
-                        callback: function(){
-                            self.Dialog.hideModalWindow();
-                        }
-                    }]
+                    ]
                 })
             }
         }
@@ -384,7 +400,7 @@ var ApplicationViewModel = function () {
         var minHVal, maxHVal,
             selectedType;
 
-        $.each(self.diodInfo, function (k, d) {
+        each(self.diodInfo, function (k, d) {
             var h = d.h1.split('-'), hFrom = h[0], hTo = h[1];
             minHVal = minHVal || hFrom;
             maxHVal = maxHVal || hTo;
@@ -392,11 +408,11 @@ var ApplicationViewModel = function () {
             minHVal = Math.min(minHVal, hFrom);
             maxHVal = Math.max(maxHVal, hTo);
 
-            if(self.useBetter){
+            if (self.useBetter) {
                 if (val <= hTo && val >= hFrom) {
                     selectedType = k;
                 }
-            }else{
+            } else {
                 if (val <= hTo && selectedType === undefined) {
                     selectedType = k;
                 }

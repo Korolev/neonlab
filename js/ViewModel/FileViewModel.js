@@ -161,7 +161,7 @@ var FileViewModel = function (app) {
                             var paths = [],
                                 grps = svgDom.getElementsByTagName('path');
 
-                            $.each(grps,function(k,p){
+                            each(grps,function(k,p){
                                 paths.push(p.getAttribute('d'));
                             });
 
@@ -195,7 +195,7 @@ var FileViewModel = function (app) {
                                 if(node.style && node.style.stroke){
                                     node.style.stroke = '#999999';
                                 }
-                                $.each(node.childNodes, function (i, _node) {
+                                each(node.childNodes, function (i, _node) {
                                     //console.log(_node);
                                     if (_node.getAttribute && _node.tagName) {
                                         var fill = _node.getAttribute('fill');

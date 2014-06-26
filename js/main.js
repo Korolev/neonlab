@@ -34,6 +34,7 @@
         $win.on('scroll',function(){
             if(!dialog.showDialog())
             dialog.cssTop($win.scrollTop()+20);
+            app.WorkArea.calculateOffset();
         });
 
         $(document).on('keypress', function (e) {

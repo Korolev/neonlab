@@ -186,14 +186,14 @@ var SvgImageViewModel = function (app, editor) {
                 y2: y2
             };
 
-            $.each(editor.diodesArr(), function (k, d) {
+            each(editor.diodesArr(), function (k, d) {
                 d.highlight(false);
                 if (d.x >= x1 && d.x <= x2 && d.y >= y1 && d.y <= y2) {
                     selElems.push(d);
                 }
 
             });
-            $.each(selElems, function (k, d) {
+            each(selElems, function (k, d) {
                 d.highlight(true);
             });
             if(selElems[0]){
@@ -227,7 +227,7 @@ var SvgImageViewModel = function (app, editor) {
         createDiodePattern(s);
 
         try{
-            $.each(s.node.children, function (k, el) {
+            each(s.node.children, function (k, el) {
                 var bb = el.getBoundingClientRect(),
                     nodeName,
                     nodeClass,

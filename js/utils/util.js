@@ -1,17 +1,29 @@
+function each(arr, callback) {
+    if (arr && arr.length) {
+        var len = arr.length,
+            i = 0;
+        while (i < len) {
+            callback(i, arr[i]);
+            i++;
+        }
 
-function parseMathString(string){
-    try{
+    }
+}
+
+
+function parseMathString(string) {
+    try {
         var res = 0,
             elems = [],
             parts = string.split('='),
             func;
 
-        if(parts[0].length){
-            res = (new Function('','return '+parts[0]))();
+        if (parts[0].length) {
+            res = (new Function('', 'return ' + parts[0]))();
         }
 
         return res;
-    }catch (e){
+    } catch (e) {
         console.log(e);
     }
 }
