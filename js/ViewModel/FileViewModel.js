@@ -5,11 +5,11 @@
 var FileViewModel = function (app) {
 
     var self = this,
-        uploadUrl = app.isDev ? '/upload' : '/upload.php',
+        uploadUrl = app.isDev ? '/upload' : 'upload.php',
         downloadUrl = app.isDev ? '/upload/?f=' : '/upload/',
-        diodesUrl = app.isDev ? '/upload/diode.php' : '/diode.php',
-        powerUrl = app.isDev ? '/upload/power.php' : '/power.php',
-        finishUrl = app.isDev ? '/upload/finish.php' : '/finish.php',
+        diodesUrl = app.isDev ? '/upload/diode.php' : 'diode.php',
+        powerUrl = app.isDev ? '/upload/power.php' : 'power.php',
+        finishUrl = app.isDev ? '/upload/finish.php' : 'finish.php',
         dialog = app.Dialog;
 
 
