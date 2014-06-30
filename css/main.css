@@ -544,7 +544,7 @@ a.selected {
   cursor: url('../img/canvas/select.cur') 0 15, pointer;
 }
 .main_page .editor .editor_base.default {
-  cursor: url("../img/canvas/move_active.cur") 5 2, move, pointer;
+  cursor: url("../img/canvas/move_active.cur") 5 2, move;
 }
 .main_page .editor .editor_base {
   width: 750px;
