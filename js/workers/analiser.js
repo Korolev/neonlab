@@ -26,7 +26,7 @@ onmessage = function (event) {
         width = event.data.width,
         height = event.data.height,
         deepQuatro = event.data.deep / 5 | 0,
-        deep = event.data.deep - event.data.deep%5, //TODO remove this bad code
+        deep = event.data.deep - event.data.deep % 5, //TODO remove this bad code
         quality = 5,
         diodeWidth = event.data.dW,
         diodeHeight = event.data.dH;
@@ -49,16 +49,9 @@ onmessage = function (event) {
     }
 
     function getPixel(x, y) {
-        if (x < 0) {
-            return [0, 0, 0, 0];
-        }
-        if (y < 0) {
-            return [0, 0, 0, 0];
-        }
-        if (x >= width) {
-            return [0, 0, 0, 0];
-        }
-        if (y >= height) {
+        x = x | 0;
+        y = y | 0;
+        if (x < 0 || y < 0 || x >= width || y >= height) {
             return [0, 0, 0, 0];
         }
         var index = (y * width + x) * 4;
@@ -185,7 +178,7 @@ onmessage = function (event) {
         if (point.y % deep == 0) {
 //TODO optimize this duplicated code
             if (lastPoint && lastPoint.y == point.y) {
-                if(point.x - lastPoint.x > deep){
+                if (point.x - lastPoint.x > deep) {
                     lastPoint = point;
                     if (top[0] == 0) {
                         res.y += deepQuatro;
@@ -210,22 +203,29 @@ onmessage = function (event) {
     var setPreviousPoint = function (point, parent) {
         var X = point.x - deep,
             pixel = getPixel(X, point.y),
-            l = getPixel(X - quality, point.y),
-            c = getPixel(X - diodeWidth / 2, point.y),
-            b1 = getPixel(X - quality, point.y + diodeHeight + quality);
+            l = getPixel(X + quality, point.y),
+            ct = getPixel(X + diodeWidth / 2, point.y),
+            c = getPixel(X + diodeWidth / 2, point.y + diodeHeight / 2),
+            cb = getPixel(X + diodeWidth / 2, point.y + diodeHeight),
+            b1 = getPixel(X + quality, point.y + diodeHeight + quality);
 
         if (pixel[0] > 0
             && l[0] > 0
+            && ct[0] > 0
             && c[0] > 0
+            && cb[0] > 0
             && b1[0] > 0
             && point.x < width - deepQuatro) {
+
             var p = {
                 x: X,
                 y: point.y,
-                parent : parent
+                parent: parent,
+                type: 'prev'
             };
+
             _resPoints.push(p);
-            setPreviousPoint(p,parent);
+            setPreviousPoint(p, parent);
         }
     };
 
@@ -233,7 +233,7 @@ onmessage = function (event) {
         var X = point.x + deep,
             pixel = getPixel(X, point.y),
             r = getPixel(X + diodeWidth + quality, point.y),
-            c = getPixel(X + diodeWidth / 2, point.y),
+            c = getPixel(X + diodeWidth / 2, point.y + diodeHeight / 2),
             b1 = getPixel(X + diodeWidth + quality, point.y + diodeHeight + quality),
             b2 = getPixel(X + quality, point.y + diodeHeight + quality);
 
@@ -246,10 +246,11 @@ onmessage = function (event) {
             var p = {
                 x: X,
                 y: point.y,
-                parent : parent
+                parent: parent,
+                type: 'next'
             };
             _resPoints.push(p);
-               setNextPoint(p,parent);
+            setNextPoint(p, parent);
         }
     };
 
@@ -283,17 +284,17 @@ onmessage = function (event) {
         yHash[_resPoints[i].y].push(_resPoints[i]);
     }
 
-    for(var key in yHash){
-        if(yHash.hasOwnProperty(key)){
-            yHash[key].sort(function(a,b){
+    for (var key in yHash) {
+        if (yHash.hasOwnProperty(key)) {
+            yHash[key].sort(function (a, b) {
                 return a.x < b.x ? -1 : 1;
             });
 
             yHash[key][0].use = true;
             var usedX = yHash[key][0].x;
 
-            each(yHash[key],function(i,pt){
-                if(pt.x - usedX >= deep){
+            each(yHash[key], function (i, pt) {
+                if (pt.x - usedX >= deep) {
                     pt.use = true;
                     usedX = pt.x
                 }
@@ -302,27 +303,27 @@ onmessage = function (event) {
         }
     }
 
-    _resPoints = _resPoints.filter(function(el){
+    _resPoints = _resPoints.filter(function (el) {
         return el.use;
     });
 
 
-    _resPoints.sort(function(a,b){
-       return a.x < b.x ? -1 : 1;
+    _resPoints.sort(function (a, b) {
+        return a.x < b.x ? -1 : 1;
     });
 
     var pairs = [],
         abs = Math.abs,
-        diff = deep/2;
+        diff = deep / 2;
 
-    each(_resPoints,function(k,point){
-        each(_resPoints,function(_k,_point){
-            if(abs(point.x - _point.x) < diff && abs(point.y - _point.y)< diff && point !== _point){
-                point.x = (point.x+_point.x)/2;
-                point.y = (point.y+_point.y)/2;
+    each(_resPoints, function (k, point) {
+        each(_resPoints, function (_k, _point) {
+            if (abs(point.x - _point.x) < diff && abs(point.y - _point.y) < diff && point !== _point) {
+                point.x = (point.x + _point.x) / 2;
+                point.y = (point.y + _point.y) / 2;
                 _point.use = false;
                 point.use = true;
-                pairs.push([point,_point]);
+                pairs.push([point, _point]);
             }
         });
     });
@@ -331,10 +332,9 @@ onmessage = function (event) {
 
 //    console.log(_resPoints);
 
-    _resPoints = _resPoints.filter(function(el){
+    _resPoints = _resPoints.filter(function (el) {
         return el.use;
     });
-
     postMessage({status: 'complite', points: _resPoints});
 //    postMessage({status: 'complite', points: leftBorder});
 };

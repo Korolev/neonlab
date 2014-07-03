@@ -627,6 +627,7 @@ a.selected {
   vertical-align: top;
   width: 30%;
   font-size: 11px;
+  line-height: 21px;
 }
 .main_page .editor .editor_base_after > div .after_left_column .data {
   display: inline-block;
