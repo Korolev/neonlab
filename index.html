@@ -66,6 +66,10 @@
             </div>
             <div class="button blue_button" data-bind="click:WorkArea.calculateDiod">Рассчитать</div>
 
+            <div class="button white_button" style="margin-top: 15px" data-bind="click:WorkArea.calculateManual">
+                Рассчитать в ручную
+            </div>
+
             <p class="comment">
                 Если Вас не устраивает общий результат, Вы можете отредактировать каждый объект.
             </p>
@@ -184,7 +188,7 @@
 
                                 <div class="info_block">
                                     <h3>Макс. глубина<br> конструкции</h3>
-                                    <span class="digit_dark" data-bind="text:greedDeep() || '0'">0</span>
+                                    <span class="digit_dark" data-bind="text:maxDeep() || '0'">0</span>
                                 </div>
 
                                 <div class="info_block">
@@ -237,7 +241,7 @@
                         <div class="text_block_item">
                             <div>Размеры:&nbsp;<span data-bind="text:size">0</span><span> мм</span></div>
                             <div>Общий периметр:&nbsp;<span data-bind="text:perimetr">0</span><span> мм</span></div>
-                            <div>Общая глубина:&nbsp;<span data-bind="text:greedDeep() || '0'">0</span><span> мм</span></div>
+                            <div>Общая глубина:&nbsp;<span data-bind="text:totalDeep() || '0'">0</span><span> мм</span></div>
                         </div>
 
                     </div>

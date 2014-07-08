@@ -36,6 +36,8 @@ var ApplicationViewModel = function () {
     /* =============== */
 
     this.greedDeep = ko.observable();
+    this.maxDeep = ko.observable();
+    this.totalDeep = ko.observable();
 
     /* =============== */
 //TODO get Data from server
@@ -446,6 +448,7 @@ var ApplicationViewModel = function () {
             self.usedDiodTypes.push(self.diodInfo[selectedType]);
         }
         self.greedDeep(v);
+        self.totalDeep(v);
     });
 
     self.sentToManager = function () {

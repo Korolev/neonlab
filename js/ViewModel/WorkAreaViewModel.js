@@ -224,13 +224,15 @@ var WorkAreaViewModel = function (app) {
     this.diodesArr.subscribe(function (points) {
         var diodeTypes = app.usedDiodTypes(),
             dInfo = app.diodInfo,
-            used = [];
+            used = [],
+            maxDeep = 0;
 
         each(dInfo, function (i, t) {
             t.itemsCount = 0;
             each(points, function (k, p) {
                 if (p.info.name == t.name) {
                     t.itemsCount++;
+                    console.log('+');
                 }
             });
         });
@@ -241,11 +243,16 @@ var WorkAreaViewModel = function (app) {
 //                }
 //            });
 //        });
+
         each(dInfo, function (i, t) {
             if (t.itemsCount > 0) {
                 used.push(t);
             }
         });
+
+        app.totalDeep(0);
+        app.maxDeep(0);
+
         app.usedDiodTypes(used);
         app.pointsCount(points.length);
     });
@@ -278,14 +285,29 @@ var WorkAreaViewModel = function (app) {
 
     this.resizeBase();
 
-    this.calculateDiod = function () {
-        app.greedDeep.valueHasMutated();
+    this.isFileUploaded = function(){
         if (!app.File.fileName()) {
             console.log('load .cdr first');
             app.Dialog.showModalWindow({
-                message: "Загрузите фаил с исходными размерами конструкции в формате <b>.cdr</b> или <b>.plt</b>"
+                message: "Загрузите фаил с исходными размерами конструкции в формате <b>.cdr</b>"// или <b>.plt</b>"
             });
+            return false;
+        }
+        return true;
+    };
 
+    this.calculateManual = function () {
+        if (!self.isFileUploaded()){
+                return false;
+        }
+        self.changeEditMode();
+        app.greedDeep(100);
+        self.editMode('addItem');
+    };
+
+    this.calculateDiod = function () {
+        app.greedDeep.valueHasMutated();
+        if (!self.isFileUploaded()){
             return false;
         }
         if (!app.greedDeep()) {
