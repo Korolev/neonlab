@@ -79,9 +79,9 @@
                 <div class="editor_head">
 
                     <div class="instruments_holder">
-                        <i title="Выдеить область" class="icon item_select" data-bind="click:function(){$root.WorkArea.setMode('selectItem')},css:{selected:WorkArea.editMode() == 'selectItem'}"></i>
-                        <!-- ko if: $root.WorkArea.fullScreen() -->
 
+                        <!-- ko if: $root.WorkArea.fullScreen() -->
+                        <i title="Выдеить область" class="icon item_select" data-bind="click:function(){$root.WorkArea.setMode('selectItem')},css:{selected:WorkArea.editMode() == 'selectItem'}"></i>
                         <i title="Передвинуть светодиод" class="icon item_edit" data-bind="click:function(){$root.WorkArea.setMode('moveItem')},css:{selected:WorkArea.editMode() == 'moveItem'}"></i>
 
                         <i title="Добавить светодиод" class="icon item_add" data-bind="click:function(){$root.WorkArea.setMode('addItem')},css:{selected:WorkArea.editMode() == 'addItem'}"></i>

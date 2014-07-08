@@ -300,9 +300,9 @@ var WorkAreaViewModel = function (app) {
         if (!self.isFileUploaded()){
                 return false;
         }
-        self.changeEditMode();
+//        self.changeEditMode();
         app.greedDeep(100);
-        self.editMode('addItem');
+        self.editMode('selectItem');
     };
 
     this.calculateDiod = function () {
