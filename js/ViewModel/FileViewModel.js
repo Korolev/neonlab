@@ -40,6 +40,7 @@ var FileViewModel = function (app) {
     this.fileId = ko.observable('');
     this.fileName = ko.observable('');
     this.showStatusText = ko.observable(false);
+    this.fileInputElement = '';
 
     this.fileId.subscribe(function (val) {
         if (val) {
@@ -72,6 +73,10 @@ var FileViewModel = function (app) {
             self.fileName('');
             self.uploadStatus('ready');
 
+            if(self.fileInputElement && self.fileInputElement.value){
+                self.fileInputElement.value = '';
+            }
+
             app.WorkArea.SvgImage.removeSvg();
             app.resetData();
         };
@@ -99,7 +104,7 @@ var FileViewModel = function (app) {
     };
 
     this.changeInputFile = function (el, event) {
-
+        self.fileInputElement = el;
         if (self.fileName()) {
             dialog.showModalWindow({
                 type: dialog.modalTypes.info,
