@@ -225,6 +225,11 @@ var SvgImageViewModel = function (app, editor) {
         var s = self.canvas.select('svg'),
             viewBox = s.attr('viewBox');
 
+        if (self.diodGroup) {
+            self.diodGroup.remove();
+            self.diodGroup = '';
+        }
+
         createDiodePattern(s);
 
         try{

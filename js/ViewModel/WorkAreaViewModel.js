@@ -307,6 +307,7 @@ var WorkAreaViewModel = function (app) {
         }
 //        self.changeEditMode();
         app.additionalDeep(80);
+        app.greedDeep(80);
         self.editMode('selectItem');
     };
 
