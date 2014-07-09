@@ -75,6 +75,7 @@ var FileViewModel = function (app) {
 
             if(self.fileInputElement && self.fileInputElement.value){
                 self.fileInputElement.value = '';
+                document.getElementsByTagName('input')[0].value = '';
             }
 
             app.WorkArea.SvgImage.removeSvg();
