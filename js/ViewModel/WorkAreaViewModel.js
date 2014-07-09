@@ -140,6 +140,8 @@ var WorkAreaViewModel = function (app) {
     this.diodesArr = ko.observableArray([]);
     this.selectedDiodes = ko.observableArray([]);
 
+    this.showOptionsDialog = ko.observable(false);
+
     this.winWidth = ko.observable($(window).width());
     this.winHeight = ko.observable($(window).height());
 
@@ -232,7 +234,10 @@ var WorkAreaViewModel = function (app) {
             each(points, function (k, p) {
                 if (p.info.name == t.name) {
                     t.itemsCount++;
-                    console.log('+');
+                    console.log('+');//TODO to mach calls wen recalculate
+                    if(p.deep && p.deep > maxDeep){
+                        maxDeep = p.deep;
+                    }
                 }
             });
         });
@@ -250,8 +255,8 @@ var WorkAreaViewModel = function (app) {
             }
         });
 
-        app.totalDeep(0);
-        app.maxDeep(0);
+        app.totalDeep(maxDeep);
+        app.maxDeep(maxDeep);
 
         app.usedDiodTypes(used);
         app.pointsCount(points.length);
@@ -301,7 +306,7 @@ var WorkAreaViewModel = function (app) {
                 return false;
         }
 //        self.changeEditMode();
-        app.greedDeep(100);
+        app.additionalDeep(80);
         self.editMode('selectItem');
     };
 
@@ -323,15 +328,15 @@ var WorkAreaViewModel = function (app) {
             waCanvas = self.SvgImage.canvas.select('svg');
 
         self.calculateDiodesByCoordinates(app, 0, 0, svgWidth, svgHeight, useDiodeType, app.greedDeep(), function (points) {
-            if (self.SvgImage.didoGroup) {
-                self.SvgImage.didoGroup.remove();
+            if (self.SvgImage.diodGroup) {
+                self.SvgImage.diodGroup.remove();
             }
-            self.SvgImage.didoGroup = waCanvas.g();
+            self.SvgImage.diodGroup = waCanvas.g();
 
             for (var i = 0; i < points.length; i++) {
                 setTimeout(function (i) {
                     var p = points[i].draw(waCanvas);
-                    self.SvgImage.didoGroup.add(p);
+                    self.SvgImage.diodGroup.add(p);
                     if (i == points.length - 1) {
                         app.WorkArea.isReady(true);
                         self.diodesArr(points);

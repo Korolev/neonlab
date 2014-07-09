@@ -102,8 +102,8 @@ var ApplicationViewModel = function () {
                 self.additionalDiode(self.diodInfoFiltered()[0]);
                 val = self.additionalDiode();
             }
-
-            if (val && self.WorkArea.selectedDiodes().length) {
+console.log(val && self.WorkArea.showOptionsDialog());
+            if (val && self.WorkArea.showOptionsDialog()) {
                 var workArea = self.WorkArea,
                     waCanvas = workArea.SvgImage.canvas.select('svg'),
                     viewBox = waCanvas.attr('viewBox'),
@@ -131,13 +131,18 @@ var ApplicationViewModel = function () {
                         }, j * 10, j);
                     }
 
+                    if(!workArea.SvgImage.diodGroup){
+                        workArea.SvgImage.diodGroup = waCanvas.g();
+                    }
+
                     for (var i = 0; i < points.length; i++) {
                         setTimeout(function (i) {
                             var p = points[i].draw(waCanvas);
-                            workArea.SvgImage.didoGroup.add(p);
+                            workArea.SvgImage.diodGroup.add(p);
                             if (i == points.length - 1) {
                                 workArea.isReady(true);
                                 workArea.diodesArr.pushAll(points);
+                                workArea.showOptionsDialog(false);
                             }
                         }, i * 10, i);
                     }

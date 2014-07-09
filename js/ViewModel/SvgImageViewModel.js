@@ -70,7 +70,7 @@ var SvgImageViewModel = function (app, editor) {
 
     this.canvasZoomRate = 1;
     this.grid = this.canvas.g();
-    this.didoGroup = '';
+    this.diodGroup = '';
 
     for (i = greedStep; i <= 2560; i += greedStep) {
         this.grid.add(self.canvas.line(i, 0, i, 1440).attr({"stroke-dasharray": "10 10", stroke: '#d7e2ec'}));
@@ -201,6 +201,7 @@ var SvgImageViewModel = function (app, editor) {
                 app.additionalDiode(selElems[0].info);
             }
             editor.selectedDiodes(selElems);
+            editor.showOptionsDialog((Math.abs(x1-x2)>2000&&Math.abs(y1-y2)>2000));
         }
     });
 //*****
@@ -343,8 +344,8 @@ var SvgImageViewModel = function (app, editor) {
             editor.diodesArr.push(diode);
 
             diode = diode.draw(s);
-            self.didoGroup = self.didoGroup || s.group();
-            self.didoGroup.add(diode);
+            self.diodGroup = self.diodGroup || s.group();
+            self.diodGroup.add(diode);
         }
     };
 

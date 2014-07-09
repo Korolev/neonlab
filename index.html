@@ -103,7 +103,7 @@
                 </div>
                 <div class="editor_base" data-bind="css:WorkArea.editMode,attr{style:WorkArea.baseStyle}">
                     <!--SETTINGS-->
-                        <div class="diode_settings hidden" data-bind="if:WorkArea.selectedDiodes().length,attr:{style:settingsPosition},css:{'hidden':false}">
+                        <div class="diode_settings hidden" data-bind="if:WorkArea.showOptionsDialog,attr:{style:settingsPosition},css:{'hidden':false}">
                             <div class="pointer-item"></div>
                             <div class="content-block">
                                 <label>Задайте глубину</label>
