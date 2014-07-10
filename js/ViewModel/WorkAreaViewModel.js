@@ -309,6 +309,10 @@ var WorkAreaViewModel = function (app) {
         app.additionalDeep(80);
         app.greedDeep(80);
         self.editMode('selectItem');
+        app.Dialog.showModalWindow({
+            type:app.Dialog.modalTypes.info,
+            message: 'Выделите нужную область.'
+        })
     };
 
     this.calculateDiod = function () {
