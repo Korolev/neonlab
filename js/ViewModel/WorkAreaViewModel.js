@@ -312,7 +312,10 @@ var WorkAreaViewModel = function (app) {
         app.Dialog.showModalWindow({
             type:app.Dialog.modalTypes.info,
             message: 'Выделите нужную область.'
-        })
+        });
+        setTimeout(function(){
+            app.Dialog.hideModalWindow();
+        },3000);
     };
 
     this.calculateDiod = function () {
