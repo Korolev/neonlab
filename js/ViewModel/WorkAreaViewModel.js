@@ -305,7 +305,7 @@ var WorkAreaViewModel = function (app) {
         if (!self.isFileUploaded()){
                 return false;
         }
-//        self.changeEditMode();
+        self.changeEditMode();
         app.additionalDeep(80);
         app.greedDeep(80);
         self.editMode('selectItem');
