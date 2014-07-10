@@ -315,7 +315,7 @@ var WorkAreaViewModel = function (app) {
         });
         setTimeout(function(){
             app.Dialog.hideModalWindow();
-        },3000);
+        },2000);
     };
 
     this.calculateDiod = function () {
