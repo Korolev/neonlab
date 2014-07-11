@@ -88,6 +88,10 @@ var ApplicationViewModel = function () {
         return diodeSearch(self.additionalDeep());
     }, this).extend({throttle: 50});
 
+    this.diodInfoFilteredMain = ko.computed(function () {
+        return diodeSearch(self.greedDeep());
+    }, this).extend({throttle: 50});
+
 //    this.additionalDiode.subscribe(function (val) {
     this.calculatePartial = function () {
         setTimeout(function () {
@@ -192,6 +196,7 @@ console.log(val && self.WorkArea.showOptionsDialog());
 
     this.useBetter = false;
     this.usedDiodTypes = ko.observableArray([defDiod]);
+    this.usedDiodType = ko.observable(defDiod);
     this.usedPowerSupplyTypes = ko.observableArray([defPowerSupply]);
     this.usedItemsList = ko.computed(function () {
         var d = self.usedDiodTypes(),
@@ -346,10 +351,12 @@ console.log(val && self.WorkArea.showOptionsDialog());
     this.testUseMorePowerfulDiode = function () {
         var deep = self.greedDeep(),
             dTypes = self.usedDiodTypes(),
+            dType = self.usedDiodType(),
             useAnother;
         if (dTypes.length == 1) {
             useAnother = diodeSearch(deep);
-            if (useAnother.length > 1) {
+            console.log(dType === useAnother[useAnother.length-1],dType , useAnother[useAnother.length-1])
+            if (useAnother.length > 1 && dType !== useAnother[useAnother.length-1]) {
                 self.Dialog.showModalWindow({
                     type: 'info',
                     message: 'Сделать конструкцию более яркой?<div class="comment">' +
@@ -366,7 +373,7 @@ console.log(val && self.WorkArea.showOptionsDialog());
 
                                 self.Dialog.hideModalWindow();
                                 self.WorkArea.calculateDiod();
-                                var info = self.usedDiodTypes()[0];
+//                                var info = self.usedDiodTypes()[0];
 //                            if(self.WorkArea.diodesArr().length){
 //                                var diodesArr = self.WorkArea.diodesArr(),
 //                                    diodesArrLength = diodesArr.length;
@@ -398,10 +405,17 @@ console.log(val && self.WorkArea.showOptionsDialog());
     this.resetData = function () {
         self.usedPowerSupplyTypes([defPowerSupply]);
         self.usedDiodTypes([defDiod]);
+        self.usedDiodType(defDiod);
         self.pointsCount(0);
         self.pointsWattCountNeeded = ko.observable(0);
         self.powerSupplyTotalCount = ko.observable(0);
     };
+
+    self.usedDiodType.subscribe(function (val) {
+        if(self.usedDiodTypes().length == 1){
+            self.usedDiodTypes([val]);
+        }
+    });
 
     self.greedDeep.subscribe(function (val) {
         var minHVal, maxHVal,
@@ -447,10 +461,11 @@ console.log(val && self.WorkArea.showOptionsDialog());
                     ' мм. Попробуйте еще раз!'
             });
         }
-        if (selectedType !== undefined) {
+        if (selectedType !== undefined && self.usedDiodType() == defDiod) {
             self.usedDiodTypes([]);
             self.diodInfo[selectedType].itemsCount = self.diodInfo[selectedType].itemsCount || self.pointsCount();
             self.usedDiodTypes.push(self.diodInfo[selectedType]);
+            self.usedDiodType(self.diodInfo[selectedType]);
         }
         self.greedDeep(v);
         self.totalDeep(v);

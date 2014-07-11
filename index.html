@@ -59,16 +59,27 @@
                     <div class="click_area"></div>
                 </div>
             </form>
-            <h2>Задайте глубину вывески</h2>
+            <h2>Задайте глубину конструкции</h2>
             <div class="deep_form">
                 <input type="text" id="deep" data-bind="value:greedDeep" />
                 <div class="deep_size">мм</div>
             </div>
+            <h2>Выберите тип диодов</h2>
+            <div class="form_row_input">
+                <input type="hidden" data-bind="select:{
+                                        options:diodInfoFilteredMain,
+                                        optionText:'name',
+                                        value:usedDiodType,
+                                        css:{width: '100%',left:'0px'}
+                                        }">
+            </div>
             <div class="button blue_button" data-bind="click:WorkArea.calculateDiod">Рассчитать</div>
 
-            <div class="button white_button" style="margin-top: 36px" data-bind="click:WorkArea.calculateManual">
-                Рассчитать вручную
-            </div>
+
+
+            <!--<div class="button white_button" style="margin-top: 36px" data-bind="click:WorkArea.calculateManual">-->
+                <!--Рассчитать вручную-->
+            <!--</div>-->
 
             <p class="comment">
                 Если Вас не устраивает общий результат, Вы можете отредактировать каждый объект.

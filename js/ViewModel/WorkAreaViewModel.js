@@ -234,7 +234,7 @@ var WorkAreaViewModel = function (app) {
             each(points, function (k, p) {
                 if (p.info.name == t.name) {
                     t.itemsCount++;
-                    console.log('+');//TODO to mach calls wen recalculate
+//                    console.log('+');//TODO to mach calls wen recalculate
                     if(p.deep && p.deep > maxDeep){
                         maxDeep = p.deep;
                     }
