@@ -462,7 +462,12 @@ console.log(val && self.WorkArea.showOptionsDialog());
                     ' мм. Попробуйте еще раз!'
             });
         }
-        if (selectedType !== undefined && self.usedDiodType() == defDiod) {
+
+        var testUsedDiodType = function(diodType){
+          var allowed = diodeSearch(v);
+            return allowed.indexOf(diodType) == -1;
+        };
+        if (selectedType !== undefined && self.usedDiodType() === defDiod || selectedType !== undefined && testUsedDiodType(self.usedDiodType())) {
             self.usedDiodTypes([]);
             self.diodInfo[selectedType].itemsCount = self.diodInfo[selectedType].itemsCount || self.pointsCount();
             self.usedDiodTypes.push(self.diodInfo[selectedType]);
