@@ -89,7 +89,8 @@ var ApplicationViewModel = function () {
     }, this).extend({throttle: 50});
 
     this.diodInfoFilteredMain = ko.computed(function () {
-        return diodeSearch(self.greedDeep());
+        var gd = self.greedDeep();
+        return self.diodInfo;//diodeSearch(self.greedDeep());
     }, this).extend({throttle: 50});
 
 //    this.additionalDiode.subscribe(function (val) {
