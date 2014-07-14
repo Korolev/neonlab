@@ -106,7 +106,7 @@ var ApplicationViewModel = function () {
                 self.additionalDiode(self.diodInfoFiltered()[0]);
                 val = self.additionalDiode();
             }
-console.log(val && self.WorkArea.showOptionsDialog());
+
             if (val && self.WorkArea.showOptionsDialog()) {
                 var workArea = self.WorkArea,
                     waCanvas = workArea.SvgImage.canvas.select('svg'),
