@@ -97,12 +97,12 @@ var ApplicationViewModel = function () {
         setTimeout(function () {
             var val = self.additionalDiode();
             var findInArr = false;
-            each(self.diodInfoFiltered(),function(k,v){
-                if(val == v){
+            each(self.diodInfoFiltered(), function (k, v) {
+                if (val == v) {
                     findInArr = true;
                 }
             });
-            if(!findInArr){
+            if (!findInArr) {
                 self.additionalDiode(self.diodInfoFiltered()[0]);
                 val = self.additionalDiode();
             }
@@ -135,7 +135,7 @@ var ApplicationViewModel = function () {
                         }, j * 10, j);
                     }
 
-                    if(!workArea.SvgImage.diodGroup){
+                    if (!workArea.SvgImage.diodGroup) {
                         workArea.SvgImage.diodGroup = waCanvas.g();
                     }
 
@@ -355,8 +355,8 @@ var ApplicationViewModel = function () {
             useAnother;
         if (dTypes.length == 1) {
             useAnother = diodeSearch(deep);
-            console.log(dType === useAnother[useAnother.length-1],dType , useAnother[useAnother.length-1])
-            if (useAnother.length > 1 && dType !== useAnother[useAnother.length-1]) {
+            console.log(dType === useAnother[useAnother.length - 1], dType, useAnother[useAnother.length - 1])
+            if (useAnother.length > 1 && dType !== useAnother[useAnother.length - 1]) {
                 self.Dialog.showModalWindow({
                     type: 'info',
                     message: 'Сделать конструкцию более яркой?<div class="comment">' +
@@ -412,7 +412,7 @@ var ApplicationViewModel = function () {
     };
 
     self.usedDiodType.subscribe(function (val) {
-        if(self.usedDiodTypes().length == 1){
+        if (self.usedDiodTypes().length == 1) {
             self.usedDiodTypes([val]);
         }
     });
@@ -461,7 +461,11 @@ var ApplicationViewModel = function () {
                     ' мм. Попробуйте еще раз!'
             });
         }
-        if (selectedType !== undefined && self.usedDiodType() == defDiod) {
+        var testUsedDiodType = function (diodType) {
+            var allowed = diodeSearch(v);
+            return allowed.indexOf(diodType) == -1;
+        };
+        if (selectedType !== undefined && self.usedDiodType() === defDiod || selectedType !== undefined && testUsedDiodType(self.usedDiodType())) {
             self.usedDiodTypes([]);
             self.diodInfo[selectedType].itemsCount = self.diodInfo[selectedType].itemsCount || self.pointsCount();
             self.usedDiodTypes.push(self.diodInfo[selectedType]);
