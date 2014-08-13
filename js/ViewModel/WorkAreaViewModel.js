@@ -352,7 +352,7 @@ var WorkAreaViewModel = function (app) {
                         if(!app.useBetter){
                             app.testUseTimeOut = setTimeout(function () {
                                 if(!app.Dialog.showDialog()){
-                                    app.testUseMorePowerfulDiode();
+//                                    app.testUseMorePowerfulDiode();
                                 }
                             }, 10000);
                         }
