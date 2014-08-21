@@ -314,8 +314,7 @@ onmessage = function (event) {
 
     var pairs = [],
         abs = Math.abs,
-        diff = deep / 2;
-
+        diff = deep / 1.9;
     each(_resPoints, function (k, point) {
         each(_resPoints, function (_k, _point) {
             if (abs(point.x - _point.x) < diff && abs(point.y - _point.y) < diff && point !== _point) {
@@ -327,10 +326,6 @@ onmessage = function (event) {
             }
         });
     });
-
-//    console.log([pairs,pairs.length]);
-
-//    console.log(_resPoints);
 
     _resPoints = _resPoints.filter(function (el) {
         return el.use;

@@ -54,9 +54,10 @@ Diod.prototype.highlight = function (val) {
 Diod.prototype.remove = function () {
     try {
         var self = this;
-        self.paper.undrag();
-        self.app.WorkArea.diodesArr.remove(self);
-        self.paper.remove();
+//        self.paper.undrag();
+//        self.app.WorkArea.diodesArr.remove(self);
+//        self.paper.remove();
+        console.log(self.origin);
     } catch (e) {
         console && console.log("Can't remove. Reason: " + e.message, e);
     }
@@ -516,6 +517,8 @@ var WorkAreaViewModel = function (app) {
 
                 try {
                     //TODO NS_ERROR_NOT_INITIALIZED: , 1000 / svg.FRAMERATE); canvg.js 2764
+//                    ifrm.style.width = '1300px';
+//                    ifrm.style.height = '1000px';
                     ifrm.setAttribute('style','');
                     ifrm.innerHTML = '';
                 } catch (e) {
