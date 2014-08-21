@@ -54,10 +54,9 @@ Diod.prototype.highlight = function (val) {
 Diod.prototype.remove = function () {
     try {
         var self = this;
-//        self.paper.undrag();
-//        self.app.WorkArea.diodesArr.remove(self);
-//        self.paper.remove();
-        console.log(self.origin);
+        self.paper.undrag();
+        self.app.WorkArea.diodesArr.remove(self);
+        self.paper.remove();
     } catch (e) {
         console && console.log("Can't remove. Reason: " + e.message, e);
     }
