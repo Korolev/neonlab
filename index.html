@@ -34,7 +34,7 @@
                     <a href="http://www.neonlab.ru/sales/">Продажи</a>
                 </li>
                 <li>
-                    <a href="#" class="selected">Приложение</a>
+                    <a href="#" class="selected">Calculed</a>
                 </li>
                 <li>
                     <a href="http://www.neonlab.ru/contacts/">Контакты</a>
@@ -157,12 +157,20 @@
                     <div>
                         <div class="after_left_column">
                             <h1>Технические показатели</h1>
-                            <div>
+                            <div data-bind="if:usedDiodTypes().length == 1">
                                 <div class="label">Светодиоды:</div>
                                 <div class="data" data-bind="foreach:usedDiodTypes">
                                     <div>
                                         <span data-bind="text:$index()+1"></span>.&nbsp;
                                         <span data-bind="text:name"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="label">Материал:</div>
+                                <div class="data">
+                                    <div>
+                                        <span> Акрил молочный 3мм</span>
                                     </div>
                                 </div>
                             </div>
@@ -231,13 +239,21 @@
             </div>
             <div class="result_out">
                 <div class="result_block_holder">
-                    <div class="result_block">
+                    <div class="result_block" style="width: 256px;">
                         <div class="top">Общее количество<br> светодиодов</div>
                         <div class="bottom">
                             <span class="digit_dark" data-bind="text:pointsCount">0</span>
+                            <span class="points">Шт</span>
                         </div>
                     </div>
-                    <div class="result_block">
+                    <div class="result_block" style="width: 286px;">
+                        <div class="top">Освещённость<br>на лицевой части</div>
+                        <div class="bottom">
+                            <span class="digit_dark" data-bind="text:$root.luminousValue">0</span>
+                            <span class="points">Лк <span data-bind="if:$root.luminousAverage">сред.</span></span>
+                        </div>
+                    </div>
+                    <div class="result_block" style="width: 180px;">
                         <div class="top">Потребляемая<br> мощность</div>
                         <div class="bottom">
                             <span class="digit_dark" data-bind="text:pointsWattCount">0</span>
@@ -250,11 +266,25 @@
                     <div class="file_name">Фаил: <span data-bind="text:File.fileName"></span></div>
                     <div class="text_block">
                         <div class="text_block_item">
-                            <div>Размеры:&nbsp;<span data-bind="text:size">0</span><span> мм</span></div>
-                            <div>Общий периметр:&nbsp;<span data-bind="text:perimetr">0</span><span> мм</span></div>
-                            <div>Общая глубина:&nbsp;<span data-bind="text:totalDeep() || '0'">0</span><span> мм</span></div>
+                            <table>
+                                <tr><td>Размеры:</td><td><span data-bind="text:size">0</span><span> мм</span></td></tr>
+                                <tr><td style="padding-right: 20px;">Общий периметр:</td><td><span data-bind="text:perimetr">0</span><span> мм</span></td></tr>
+                                <tr><td>Общая глубина:</td><td><span data-bind="text:totalDeep() || '0'">0</span><span> мм</span></td></tr>
+                            </table>
+                            <!--<div>Размеры:&nbsp;<span data-bind="text:size">0</span><span> мм</span></div>-->
+                            <!--<div>Общий периметр:&nbsp;<span data-bind="text:perimetr">0</span><span> мм</span></div>-->
+                            <!--<div>Общая глубина:&nbsp;<span data-bind="text:totalDeep() || '0'">0</span><span> мм</span></div>-->
                         </div>
+                    </div>
+                    <div class="text_block">
+                        <div class="text_block_item">
+                            <table>
+                                <tr><td>Материал:</td><td><span >Акрил молочный 3мм</span></td></tr>
+                                <tr><td style="padding-right: 20px;">Освещенность max:</td><td><span data-bind="text:luminousMax">0</span><span> лк</span></td></tr>
+                                <tr><td style="padding-right: 20px;">Освещенность min:</td><td><span data-bind="text:luminousMin">0</span><span> лк</span></td></tr>
+                            </table>
 
+                        </div>
                     </div>
                     <!--<div class="text_block">-->
                         <!--<div data-bind="foreach:usedDiodTypes">-->
@@ -303,7 +333,7 @@
                             <!-- /ko -->
                         </div>
                     </div>
-                    <div class="thead">
+                    <div class="thead" data-bind="if:usedItemsList().length, attr:{style:usedItemsList().length > 0 ? 'height:60px;':'height:0px'}">
                         <div class="tcell cell1">№</div>
                         <div class="tcell cell2">Наименование</div>
                         <div class="tcell cell3">Кол-во, шт</div>

@@ -230,6 +230,38 @@ var ApplicationViewModel = function () {
         return res;
     }, this).extend({throttle: 1});
 
+    /* ========LUMINOUS======= */
+
+
+    this.luminousMin = ko.observable(0);
+    this.luminousMax = ko.computed(function () {
+        var res = 0, resMin = 0;
+        each(self.usedDiodTypes(), function (k, d) {
+            if(!resMin){
+                resMin = d.luminous;
+            }
+            resMin = Math.min(resMin, d.luminous);
+            res = Math.max(res, d.luminous);
+        });
+        self.luminousMin(resMin);
+        return res;
+    }, this).extend({throttle: 100});
+
+    this.luminousAverage = ko.computed(function(){
+        console.log(self.usedDiodTypes().length > 1);
+        return self.usedDiodTypes().length > 1;
+    },this).extend({throttle:5});
+
+    this.luminousValue = ko.computed(function(){
+        console.log('TADA');
+        var res = self.luminousMax();
+        if(self.luminousAverage()){
+            res = (self.luminousMax() + self.luminousMin()) /2;
+        }
+        return res;
+    },this).extend({throttle:5});
+
+    /* ========LUMINOUS======= */
     /* =============== */
     this.pointsCount = ko.observable(0);
     this.diodTotalCost = ko.computed(function () {
@@ -262,14 +294,6 @@ var ApplicationViewModel = function () {
             res += d.itemsCount * d.amperage;
         });
         return res.toFixed(2);
-    }, this).extend({throttle: 100});
-
-    this.luminousMax = ko.computed(function () {
-        var res = 0;
-        each(self.usedDiodTypes(), function (k, d) {
-            res = Math.max(res, d.luminous);
-        });
-        return res;
     }, this).extend({throttle: 100});
 
     this.pointsWattCount = ko.computed(function () {
