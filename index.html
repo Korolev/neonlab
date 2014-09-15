@@ -170,7 +170,7 @@
                                 <div class="label">Материал:</div>
                                 <div class="data">
                                     <div>
-                                        <span> Акрил молочный 3мм</span>
+                                        <span> Акрил молочный 3 мм</span>
                                     </div>
                                 </div>
                             </div>
@@ -239,21 +239,21 @@
             </div>
             <div class="result_out">
                 <div class="result_block_holder">
-                    <div class="result_block" style="width: 256px;">
+                    <div class="result_block" style="width: 336px;">
                         <div class="top">Общее количество<br> светодиодов</div>
                         <div class="bottom">
                             <span class="digit_dark" data-bind="text:pointsCount">0</span>
                             <span class="points">Шт</span>
                         </div>
                     </div>
-                    <div class="result_block" style="width: 286px;">
+                    <div class="result_block" style="width: 230px;">
                         <div class="top">Освещённость<br>на лицевой части</div>
                         <div class="bottom">
                             <span class="digit_dark" data-bind="text:$root.luminousValue">0</span>
                             <span class="points">Лк <span data-bind="if:$root.luminousAverage">сред.</span></span>
                         </div>
                     </div>
-                    <div class="result_block" style="width: 180px;">
+                    <div class="result_block" style="width: 200px;margin-right: -50px">
                         <div class="top">Потребляемая<br> мощность</div>
                         <div class="bottom">
                             <span class="digit_dark" data-bind="text:pointsWattCount">0</span>
@@ -279,9 +279,9 @@
                     <div class="text_block">
                         <div class="text_block_item">
                             <table>
-                                <tr><td>Материал:</td><td><span >Акрил молочный 3мм</span></td></tr>
-                                <tr><td style="padding-right: 20px;">Освещенность max:</td><td><span data-bind="text:luminousMax">0</span><span> лк</span></td></tr>
-                                <tr><td style="padding-right: 20px;">Освещенность min:</td><td><span data-bind="text:luminousMin">0</span><span> лк</span></td></tr>
+                                <tr><td>Материал:</td><td><span >Акрил молочный 3 мм</span></td></tr>
+                                <tr><td style="padding-right: 20px;">Освещенность max:</td><td><span data-bind="text:luminousMax">0</span><span> Лк</span></td></tr>
+                                <tr><td style="padding-right: 20px;">Освещенность min:</td><td><span data-bind="text:luminousMin">0</span><span> Лк</span></td></tr>
                             </table>
 
                         </div>
@@ -376,17 +376,18 @@
                 <div class="sent_manager" data-bind="if:usedItemsList().length">
 
                     <div>
+                        <div>
+                            <div class="blue_button button" data-bind="click:$root.sentToManager">Отправить менеджеру</div>
+                            <div class="fitalic">Отправить заказ менеджеру в производство.</div>
+                        </div>
+                    </div>
                     <div>
-                        <div class="blue_button button" data-bind="click:$root.sentToUser">Отправить мне</div>
-                        <div class="fitalic">Выслать результаты расчетов на почту.</div>
+                        <div>
+                            <div class="blue_button button" data-bind="click:$root.sentToUser">Отправить мне</div>
+                            <div class="fitalic">Выслать результаты расчетов на почту.</div>
+                        </div>
                     </div>
-                    </div>
-                    <div>
-                    <div>
-                        <div class="blue_button button" data-bind="click:$root.sentToManager">Отправить менеджеру</div>
-                        <div class="fitalic">Отправить заказ менеджеру в производство.</div>
-                    </div>
-                    </div>
+
                 </div>
                 <!-- ko if: usedItemsList().length-->
                 <div class="stick">
