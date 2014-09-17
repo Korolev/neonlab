@@ -677,6 +677,7 @@ a.selected {
   -o-box-sizing: border-box;
   box-sizing: border-box;
   padding: 5px 5px 0 5px;
+  vertical-align: top;
 }
 .main_page .editor .editor_base_after > div .after_right_column .top_block .info_block h3 {
   font-size: 10px;
@@ -692,6 +693,16 @@ a.selected {
   font-family: 'Conv_Pragmatica Bold', Sans-Serif;
   font-weight: bold;
   color: #272e41;
+}
+.main_page .editor .editor_base_after > div .after_right_column .top_block .info_block .diodes_list_ico {
+  background-image: url("../img/canvas/page_diodes.png");
+  display: inline-block;
+  height: 22px;
+  width: 19px;
+  vertical-align: top;
+  background-repeat: no-repeat;
+  background-position: 0px 0px;
+  cursor: pointer;
 }
 .main_page .editor .editor_base_after > div .after_right_column .bottom_block {
   -webkit-box-sizing: border-box;
@@ -881,7 +892,7 @@ a.selected {
 }
 .main_page .result_out .text_block {
   float: left;
-  width: 334px;
+  width: 320px;
 }
 .main_page .result_out .text_block .text_block_item {
   margin-top: 18px;
@@ -1142,6 +1153,75 @@ a.selected {
   min-width: 95px;
   padding: 0 15px;
   color: #858e93;
+}
+.diode_luminous_list_holder {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  min-height: 90px;
+  max-height: 270px;
+  width: 290px;
+  background-color: #fafafa;
+  opacity: 0.9;
+  padding-top: 30px;
+}
+.diode_luminous_list_holder .diode_luminous_list_close {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  height: 10px;
+  width: 10px;
+  background-image: url("../img/remove_img.png");
+  background-position: center center;
+}
+.diode_luminous_list_holder .diode_luminous_list {
+  overflow-y: auto;
+  max-height: 270px;
+}
+.diode_luminous_list_holder .item {
+  height: 90px;
+  position: relative;
+  overflow: hidden;
+}
+.diode_luminous_list_holder .item .left {
+  float: left;
+  width: 50px;
+  height: 50px;
+}
+.diode_luminous_list_holder .item .left .color_square {
+  display: block;
+  position: absolute;
+  left: 25px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+}
+.diode_luminous_list_holder .item .right {
+  float: left;
+  width: 220px;
+}
+.diode_luminous_list_holder .item .right .head {
+  color: #414A5B;
+  font-family: 'Conv_Pragmatica Bold', Sans-Serif;
+  font-weight: bold;
+  font-size: 12px;
+}
+.diode_luminous_list_holder .item .right div {
+  font-size: 11px;
+}
+.diode_luminous_list_holder .item .right .first_i {
+  color: #838D92;
+}
+.diode_luminous_list_holder .item .right .second_i {
+  color: #B7C1C7;
+}
+.diode_luminous_list_holder .item:hover {
+  cursor: pointer;
+}
+.diode_luminous_list_holder .item:hover .right .head,
+.diode_luminous_list_holder .item:hover .right .first_i,
+.diode_luminous_list_holder .item:hover .right .second_i {
+  color: #ff6900;
 }
 .diode_settings {
   position: absolute;

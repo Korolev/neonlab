@@ -607,6 +607,7 @@ a.selected {
               width: 13.8%;
               .box_sizing_border_box;
               padding: 5px 5px 0 5px;
+              vertical-align: top;
               h3 {
                 font-size: 10px;
                 text-transform: uppercase;
@@ -622,6 +623,17 @@ a.selected {
               }
               span.points {
 
+              }
+
+              .diodes_list_ico{
+                background-image: url("../img/canvas/page_diodes.png");
+                display: inline-block;
+                height: 22px;
+                width: 19px;
+                vertical-align: top;
+                background-repeat: no-repeat;
+                background-position: 0px 0px;
+                cursor: pointer;
               }
             }
           }
@@ -835,7 +847,7 @@ a.selected {
     }
     .text_block {
       float: left;
-      width: 334px;
+      width: 320px;
 
       .text_block_item {
         margin-top: 18px;
@@ -1136,6 +1148,80 @@ a.selected {
     }
   }
 
+}
+
+.diode_luminous_list_holder{
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  min-height: 90px;
+  max-height: 270px;
+  width: 290px;
+  background-color: #fafafa;
+  opacity: 0.9;
+  padding-top: 30px;
+
+  .diode_luminous_list_close{
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    height: 10px;
+    width: 10px;
+    background-image: url("../img/remove_img.png");
+    background-position: center center;
+  }
+
+  .diode_luminous_list{
+    overflow-y: auto;
+    max-height: 270px;
+  }
+
+  .item{
+    height: 90px;
+    position: relative;
+    overflow: hidden;
+    .left{
+      float: left;
+      width: 50px;
+      height: 50px;
+
+      .color_square{
+        display: block;
+        position: absolute;
+        left: 25px;
+        top:6px;
+        width: 10px;
+        height: 10px;
+      }
+    }
+    .right{
+      float: left;
+      width: 220px;
+
+      .head{
+        color: #414A5B;
+        .fbold;
+        font-size: 12px;
+      }
+      div{
+        font-size: 11px;
+      }
+      .first_i{
+        color: #838D92;
+      }
+      .second_i{
+        color: #B7C1C7;
+      }
+    }
+  }
+  .item:hover{
+    cursor: pointer;
+    .right{
+      .head,.first_i,.second_i{
+        color: #ff6900;
+      }
+    }
+  }
 }
 
 .diode_settings {

@@ -113,6 +113,30 @@
                     </div>
                 </div>
                 <div class="editor_base" data-bind="css:WorkArea.editMode,attr{style:WorkArea.baseStyle}">
+                    <!--DIODE LIST-->
+                        <div class="diode_luminous_list_holder hidden" data-bind="css:{hidden:!luminousWindowShow()}">
+                            <div class="diode_luminous_list_close" data-bind="click:toggleShowLuminousWindow"></div>
+                            <div class="diode_luminous_list" data-bind="foreach:usedDiodLuminousTypes">
+                                <div class="item" data-bind="event: { mouseover: $root.luminousItemOver, mouseout: $root.luminousItemOut }">
+                                    <div class="left">
+                                        <div class="color_square" data-bind="attr:{style:'background-color:'+$data.fill}"></div>
+                                    </div><div class="right">
+                                        <span class="head" data-bind="text:name"></span>
+                                        <div class="first_i">
+                                            Освещенность: <span data-bind="text:luminous"></span> Лк
+                                            <br>
+                                            Глубина: <span data-bind="text:deep"></span> мм
+                                        </div>
+                                        <div class="second_i">
+                                            Размер &ndash; <span data-bind="text:size"></span> мм, <span data-bind="text:power"></span> Вт,
+                                            <br>
+                                            Расстояние между центрами <span data-bind="text:distance"></span> мм.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <!--DIODE LIST-->
                     <!--SETTINGS-->
                         <div class="diode_settings hidden" data-bind="if:WorkArea.showOptionsDialog,attr:{style:settingsPosition},css:{'hidden':false}">
                             <div class="pointer-item"></div>
@@ -157,7 +181,7 @@
                     <div>
                         <div class="after_left_column">
                             <h1>Технические показатели</h1>
-                            <div data-bind="if:usedDiodTypes().length == 1">
+                            <div data-bind="ifnot:luminousAverage()">
                                 <div class="label">Светодиоды:</div>
                                 <div class="data" data-bind="foreach:usedDiodTypes">
                                     <div>
@@ -180,8 +204,13 @@
                                 <div class="info_block">
                                     <h3>Количество<br> светодиодов</h3>
                                     <span class="digit_dark" data-bind="text:pointsCount">0</span>
+                                    <span class="points">Шт</span>
                                 </div>
-
+                                <div class="info_block">
+                                    <h3>Освещенность<br> на лицевой части</h3>
+                                    <span class="digit_dark" data-bind="text:(+$root.luminousMax()+$root.luminousMin())/2">0</span>
+                                    <span class="points">Лк</span>
+                                </div>
                                 <div class="info_block">
                                     <h3>Потребляемая<br> мощность</h3>
                                     <span class="digit_dark" data-bind="text:pointsWattCount">0</span>
@@ -197,6 +226,7 @@
                                 <div class="info_block">
                                     <h3>Количество<br> блоков</h3>
                                     <span class="digit_dark" data-bind="text:powerSupplyTotalCount">0</span>
+                                    <span class="points">Шт</span>
                                 </div>
 
                                 <div class="info_block">
@@ -204,16 +234,18 @@
                                     <span class="digit_dark" data-bind="text:powerSupplyAmperageTotal">0</span>
                                     <span class="points">А</span>
                                 </div>
-
+                                <!-- ko ifnot: luminousAverage() -->
                                 <div class="info_block">
-                                    <h3>Макс. глубина<br> конструкции</h3>
-                                    <span class="digit_dark" data-bind="text:maxDeep() || '0'">0</span>
+                                    <h3>Общая глубина<br> конструкции</h3>
+                                    <span class="digit_dark" data-bind="text:greedDeep() || 0">0</span>
+                                    <span class="points">мм</span>
                                 </div>
-
-                                <div class="info_block">
-                                    <h3>Световой<br> поток</h3>
-                                    <span class="digit_dark" data-bind="text:luminousMax">0</span>
+                                <!-- /ko -->
+                                <!-- ko if: luminousAverage() -->
+                                <div class="info_block" style="text-align: right">
+                                    <span class="diodes_list_ico" data-bind="click:toggleShowLuminousWindow"></span>
                                 </div>
+                                <!-- /ko -->
                             </div>
                             <div class="bottom_block">
                                 <div class="info_block">
@@ -239,21 +271,21 @@
             </div>
             <div class="result_out">
                 <div class="result_block_holder">
-                    <div class="result_block" style="width: 336px;">
+                    <div class="result_block" style="width: 320px;">
                         <div class="top">Общее количество<br> светодиодов</div>
                         <div class="bottom">
                             <span class="digit_dark" data-bind="text:pointsCount">0</span>
                             <span class="points">Шт</span>
                         </div>
                     </div>
-                    <div class="result_block" style="width: 230px;">
+                    <div class="result_block" style="width: 280px;">
                         <div class="top">Освещённость<br>на лицевой части</div>
                         <div class="bottom">
                             <span class="digit_dark" data-bind="text:$root.luminousValue">0</span>
-                            <span class="points">Лк <span data-bind="if:$root.luminousAverage">сред.</span></span>
+                            <span class="points" style="margin-right: -20px;">Лк</span>
                         </div>
                     </div>
-                    <div class="result_block" style="width: 200px;margin-right: -50px">
+                    <div class="result_block" style="width: 200px;margin-right: -50px;padding-left: 30px">
                         <div class="top">Потребляемая<br> мощность</div>
                         <div class="bottom">
                             <span class="digit_dark" data-bind="text:pointsWattCount">0</span>
@@ -280,8 +312,8 @@
                         <div class="text_block_item">
                             <table>
                                 <tr><td>Материал:</td><td><span >Акрил молочный 3 мм</span></td></tr>
-                                <tr><td style="padding-right: 20px;">Освещенность max:</td><td><span data-bind="text:luminousMax">0</span><span> Лк</span></td></tr>
-                                <tr><td style="padding-right: 20px;">Освещенность min:</td><td><span data-bind="text:luminousMin">0</span><span> Лк</span></td></tr>
+                                <!--<tr><td style="padding-right: 20px;">Освещенность max:</td><td><span data-bind="text:luminousMax">0</span><span> Лк</span></td></tr>-->
+                                <!--<tr><td style="padding-right: 20px;">Освещенность min:</td><td><span data-bind="text:luminousMin">0</span><span> Лк</span></td></tr>-->
                             </table>
 
                         </div>

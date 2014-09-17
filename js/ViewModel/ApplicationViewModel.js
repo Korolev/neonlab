@@ -4,6 +4,8 @@
 
 //147.svg - KARO
 
+var console = console || {log:function(){}};
+
 var luminousConf = {
     25: {
         60: 3800,
@@ -164,10 +166,12 @@ var ApplicationViewModel = function () {
                 workArea.calculateDiodesByCoordinates(self, x1, y1, x2, y2, val, self.additionalDeep(), function (points) {
 //                self.usedDiodTypes.push(val);//TODO ???
                     for (var j = 0; j < selectedDiodesList.length; j++) {
+                        workArea.diodesArrBlockSubscribe = true;
                         setTimeout(function (i) {
                             selectedDiodesList[i].remove();
                             if (i == selectedDiodesList.length - 1) {
                                 selectedDiodesList = [];
+                                workArea.diodesArrBlockSubscribe = false;
                                 workArea.diodesArr.valueHasMutated();
                             }
                         }, j * 10, j);
@@ -234,6 +238,7 @@ var ApplicationViewModel = function () {
 
     this.useBetter = false;
     this.usedDiodTypes = ko.observableArray([defDiod]);
+    this.usedDiodLuminousTypes = ko.observableArray([defDiod]);
     this.usedDiodType = ko.observable(defDiod);
     this.usedPowerSupplyTypes = ko.observableArray([defPowerSupply]);
     this.usedItemsList = ko.computed(function () {
@@ -271,10 +276,53 @@ var ApplicationViewModel = function () {
     /* ========LUMINOUS======= */
 
 
+    this.getLuminousByDeep = function (deep, diode) {
+        self.luminousCacheTable = self.luminousCacheTable || {};
+
+        var res = self.luminousCacheTable[deep + '_' + diode.luminous];
+        if (!res) {
+            console.log('not cache');
+            for (var type in luminousConf) {
+                if (type == diode.luminous) {
+                    var i = 0,
+                        lIdx,
+                        pairsHLum = [];
+                    for (var h in luminousConf[type]) {
+                        pairsHLum.push([+h, luminousConf[type][h]]);
+                        if(deep <= h && !lIdx){
+                            lIdx = i;
+                        }
+                        i++;
+                    }
+                    if(lIdx === undefined){
+                        lIdx = pairsHLum.length - 1;
+                    }
+                    var h1 = pairsHLum[lIdx-1][0],
+                        l1 = pairsHLum[lIdx-1][1],
+                        h2 = pairsHLum[lIdx][0],
+                        l2 = pairsHLum[lIdx][1],
+                        b, k;
+                    //y = kx+b;
+                    k = (l2 - l1) / (h2 - h1);
+                    b = l1 - k * h1;
+                    res = self.luminousCacheTable[deep + '_' + diode.luminous] = k*deep+b;
+                }
+            }
+        }else{
+            console.log('it\'s cache');
+        }
+        return res || console.log('value missed in table') && 0;
+    };
+
+    this.luminousWindowShow = ko.observable(true);//false
+    this.toggleShowLuminousWindow = function(){
+        self.luminousWindowShow(!self.luminousWindowShow());
+    };
+
     this.luminousMin = ko.observable(0);
     this.luminousMax = ko.computed(function () {
         var res = 0, resMin = 0;
-        each(self.usedDiodTypes(), function (k, d) {
+        each(self.usedDiodLuminousTypes(), function (k, d) {
             if(!resMin){
                 resMin = d.luminous;
             }
@@ -286,20 +334,33 @@ var ApplicationViewModel = function () {
     }, this).extend({throttle: 100});
 
     this.luminousAverage = ko.computed(function(){
-        console.log(self.usedDiodTypes().length > 1);
-        return self.usedDiodTypes().length > 1;
+        return self.luminousMax() != self.luminousMin();
     },this).extend({throttle:5});
 
     this.luminousValue = ko.computed(function(){
-        console.log('TADA');
         var res = self.luminousMax();
         if(self.luminousAverage()){
-            res = (self.luminousMax() + self.luminousMin()) /2;
+            res = self.luminousMin()+'-'+ self.luminousMax();
         }
         return res;
     },this).extend({throttle:5});
 
     /* ========LUMINOUS======= */
+    this.luminousItemOver = function(item,event){
+        if(item.items){
+            each(item.items,function(k,it){
+                console.log(it,it.highlight);
+                it.highlight(true);
+            });
+        }
+    };
+    this.luminousItemOut = function(item,event){
+        if(item.items){
+            each(item.items,function(k,it){
+                it.highlight(false);
+            });
+        }
+    };
     /* =============== */
     this.pointsCount = ko.observable(0);
     this.diodTotalCost = ko.computed(function () {

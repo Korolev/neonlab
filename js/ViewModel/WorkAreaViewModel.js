@@ -207,6 +207,7 @@ var WorkAreaViewModel = function (app) {
     };
 
     this.changeEditMode = function () {
+        app.luminousWindowShow(false);
         var mode = !self.fullScreen();
         self.fullScreen(mode);
         self.setMode();
@@ -224,15 +225,37 @@ var WorkAreaViewModel = function (app) {
     };
 
     this.diodesArr.subscribe(function (points) {
+        if(self.diodesArrBlockSubscribe){
+            return false;
+        }
         var diodeTypes = app.usedDiodTypes(),
             dInfo = app.diodInfo,
             used = [],
-            maxDeep = 0;
+            maxDeep = 0,
+            usedLuminousHash = {};
+
+        //wipe
+        app.usedDiodLuminousTypes([]);
 
         each(dInfo, function (i, t) {
             t.itemsCount = 0;
             each(points, function (k, p) {
                 if (p.info.name == t.name) {
+                    if(!usedLuminousHash[p.deep+'+'+p.info.name]){
+                        usedLuminousHash[p.deep+'+'+p.info.name] = {
+                            name: t.name,
+                            deep: p.deep,
+                            size: t.size,
+                            power: t.power,
+                            distance: t.distance,
+                            fill: 'rgb(255,'+(255-t.luminous*2)+',255);',
+                            luminous: app.getLuminousByDeep(p.deep,t),
+                            items:[p]
+                        };
+                        app.usedDiodLuminousTypes.push(usedLuminousHash[p.deep+'+'+p.info.name]);
+                    }else{
+                        usedLuminousHash[p.deep+'+'+p.info.name].items.push(p);
+                    }
                     t.itemsCount++;
 //                    console.log('+');//TODO to mach calls wen recalculate
                     if(p.deep && p.deep > maxDeep){
@@ -240,6 +263,7 @@ var WorkAreaViewModel = function (app) {
                     }
                 }
             });
+            app.usedDiodLuminousTypes.valueHasMutated();
         });
 //        $.each(points, function (k, p) {
 //            $.each(diodeTypes, function (i, t) {
@@ -260,6 +284,8 @@ var WorkAreaViewModel = function (app) {
 
         app.usedDiodTypes(used);
         app.pointsCount(points.length);
+
+        return true;
     });
 
     this.resizeBase = function () {
