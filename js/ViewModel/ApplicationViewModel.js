@@ -314,7 +314,7 @@ var ApplicationViewModel = function () {
         return res || console.log('value missed in table') && 0;
     };
 
-    this.luminousWindowShow = ko.observable(true);//false
+    this.luminousWindowShow = ko.observable(false);//false
     this.toggleShowLuminousWindow = function(){
         self.luminousWindowShow(!self.luminousWindowShow());
     };
