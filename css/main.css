@@ -1155,6 +1155,7 @@ a.selected {
   color: #858e93;
 }
 .diode_luminous_list_holder {
+  cursor: default;
   position: absolute;
   right: 5px;
   bottom: 5px;
@@ -1173,6 +1174,7 @@ a.selected {
   width: 10px;
   background-image: url("../img/remove_img.png");
   background-position: center center;
+  cursor: pointer;
 }
 .diode_luminous_list_holder .diode_luminous_list {
   overflow-y: auto;
