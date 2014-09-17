@@ -248,7 +248,7 @@ var WorkAreaViewModel = function (app) {
                             size: t.size,
                             power: t.power,
                             distance: t.distance,
-                            fill: 'rgb(255,'+(255-t.luminous*2)+',255);',
+                            fill: 'rgb(255,'+(255-t.luminous*2)+','+(0+ p.deep)+');',
                             luminous: app.getLuminousByDeep(p.deep,t),
                             items:[p]
                         };
