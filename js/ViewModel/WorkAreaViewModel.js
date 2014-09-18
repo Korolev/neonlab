@@ -31,11 +31,14 @@ Diod.prototype.setSize = function (info) {
     this.h = size ? size[1] * 100 | 0 : 0;
 };
 
-Diod.prototype.highlight = function (val) {
+Diod.prototype.highlight = function (val, color) {
+    console.log(color);
     var app = this.app,
         self = this,
         defId = self.defaultPatternId ,
-        selId = self.selectedPatternId;
+        selId = self.selectedPatternId,
+        selectedColor = "#ff6900",
+        s_c = color ? color : selectedColor;
 
     if (self.isHighlight == val) {
         return false;
@@ -43,7 +46,7 @@ Diod.prototype.highlight = function (val) {
     self.isHighlight = val;
     if (self.paper) {
         if (val) {
-            self.paper.attr('href', selId);
+            self.paper.attr('href', selId).attr('style','fill:'+s_c+';stroke:"#000000";stroke-width:40');
         } else {
             self.paper.attr('href', defId);
         }

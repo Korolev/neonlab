@@ -350,7 +350,7 @@ var ApplicationViewModel = function () {
         if(item.items){
             each(item.items,function(k,it){
                 console.log(it,it.highlight);
-                it.highlight(true);
+                it.highlight(true,item.fill);
             });
         }
     };

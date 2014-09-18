@@ -27,8 +27,8 @@ var SvgImageViewModel = function (app, editor) {
         self.pattern25x25 = p.toDefs();
 
         p = c.group();
-        p.add(c.circle(1250, 1250, 3000, 3000).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1', opacity: '0.1'}));
-        p.add(c.rect(0, 0, 2500, 2500).attr({fill: selectedColor, stroke: '#000000', 'stroke-with': '40'}));
+//        p.add(c.circle(1250, 1250, 3000, 3000).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1', opacity: '0.1'}));
+        p.add(c.rect(0, 0, 2500, 2500));//.attr({fill: selectedColor, stroke: '#000000', 'stroke-with': '40'}));
         self.pattern25x25hl = p.toDefs();
 
         p = c.group();
@@ -38,8 +38,8 @@ var SvgImageViewModel = function (app, editor) {
         self.pattern20x9 = p.toDefs();
 
         p = c.group();
-        p.add(c.circle(1000, 450, 2500, 2500).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1', opacity: '0.1'}));
-        p.add(c.rect(0, 0, 2000, 900).attr({fill: selectedColor, stroke: '#000000', 'stroke-with': '40'}));
+//        p.add(c.circle(1000, 450, 2500, 2500).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1', opacity: '0.1'}));
+        p.add(c.rect(0, 0, 2000, 900));//.attr({fill: selectedColor, stroke: '#000000', 'stroke-with': '40'}));
         self.pattern20x9hl = p.toDefs();
     };
 
