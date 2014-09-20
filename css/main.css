@@ -638,11 +638,11 @@ a.selected {
   margin: 0 0 10px 0;
 }
 .main_page .editor .editor_base_after > div .after_left_column .label {
-  color: #b6c1c6;
   display: inline-block;
   vertical-align: top;
   width: 30%;
-  font-size: 11px;
+  font-size: 10px;
+  text-transform: uppercase;
   line-height: 21px;
 }
 .main_page .editor .editor_base_after > div .after_left_column .data {
@@ -693,6 +693,9 @@ a.selected {
   font-family: 'Conv_Pragmatica Bold', Sans-Serif;
   font-weight: bold;
   color: #272e41;
+}
+.main_page .editor .editor_base_after > div .after_right_column .top_block .info_block span.points {
+  font-size: 16px;
 }
 .main_page .editor .editor_base_after > div .after_right_column .top_block .info_block .diodes_list_ico {
   background-image: url("../img/canvas/page_diodes.png");
