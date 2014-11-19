@@ -22,6 +22,8 @@ var DialogViewModel = function(app){
     this.modalMessage = ko.observable('This is text for test like a "Lorem ipsum"');
     this.modalButtons = ko.observableArray(defButtonSet);
 
+    this.cssTop = ko.observable($(window).scrollTop()+20);
+
     this.showModalWindow = function(opts){
         if(opts){
             self.modalType(opts.type || self.modalTypes.alert);

@@ -4,19 +4,59 @@
 
 //147.svg - KARO
 
-    /*
-    - цена общая выравнивание по правому краю, а Итого по левому
-    - Имя файла в большом окне
-    - Номер расчета
-    - Кнопка Отмена в развернутом варианте ТЗ2 стр 20
-    - Разобраться с несколькими видами блоков в большом окне
-    - Поддержка нескольких видов диодов
-    - Массовое выделение
-    - Отправка писем
-     */
+var console = console || {log:function(){}};
+
+var luminousConf = {
+    25: {
+        60: 3800,
+        80: 2100,
+        100: 1500
+    },
+    50: {
+        60: 7000,
+        80: 4500,
+        100: 2900,
+        120: 2000,
+        140: 1400,
+        160: 1250
+    },
+    80: {
+        60: 11000,
+        80: 7700,
+        100: 4900,
+        120: 3300,
+        140: 2750,
+        160: 2200,
+        180: 1300,
+        200: 1100,
+        220: 900
+    },
+    120: {
+        60: 30000,
+        80: 16000,
+        100: 10500,
+        120: 6900,
+        140: 4350,
+        160: 3600,
+        180: 2850,
+        200: 2450,
+        220: 2000
+    }
+};
+
+/*
+ - цена общая выравнивание по правому краю, а Итого по левому
+ - Имя файла в большом окне
+ - Номер расчета
+ - Кнопка Отмена в развернутом варианте ТЗ2 стр 20
+ - Разобраться с несколькими видами блоков в большом окне
+ - Поддержка нескольких видов диодов
+ - Массовое выделение
+ - Отправка писем
+ */
 
 var ApplicationViewModel = function () {
-    this.isDev = location.href.indexOf('localhost')>-1;
+    this.isDev = location.href.indexOf('localhost') > -1;
     this.isSafari = navigator.vendor.indexOf('Apple') > -1;
     /* ====================== */
 
@@ -36,6 +76,8 @@ var ApplicationViewModel = function () {
     /* =============== */
 
     this.greedDeep = ko.observable();
+    this.maxDeep = ko.observable();
+    this.totalDeep = ko.observable();
 
     /* =============== */
 //TODO get Data from server
@@ -46,35 +88,285 @@ var ApplicationViewModel = function () {
         {h1: '180-250', name: 'X-Led Samsung 120', size: '25x25', luminous: '120', power: '0.72', distance: '215', price: '60'}
     ];
     this.powerSuplyInfo = [
-        {name: 'Mean Well', characteristic: '20 Вт, 12 В, IP 67', power: '20', amperage: '0.11', price: '450'},
-        {name: 'Mean Well', characteristic: ' 35 Вт, 12 В, IP 67', power: '35', amperage: '0.19', price: '620'},
-        {name: 'Mean Well', characteristic: ' 60 Вт, 12 В, IP 67', power: '60', amperage: '0.33', price: '740'},
-        {name: 'Mean Well', characteristic: ' 100 Вт, 12 В, IP 67', power: '100', amperage: '0.54', price: '1200'},
-        {name: 'Mean Well', characteristic: ' 150 Вт, 12 В, IP 65', power: '150', amperage: '0.78', price: '2450'}
+        {name: 'Mean Well LPV-20-12', characteristic: '20 Вт, 12 В, IP 67', power: '20', amperage: '0.11', price: '450'},
+        {name: 'Mean Well LPV-35-12', characteristic: ' 35 Вт, 12 В, IP 67', power: '35', amperage: '0.19', price: '620'},
+        {name: 'Mean Well LPV-60-12', characteristic: ' 60 Вт, 12 В, IP 67', power: '60', amperage: '0.33', price: '740'},
+        {name: 'Mean Well LPV-100-12', characteristic: ' 100 Вт, 12 В, IP 67', power: '100', amperage: '0.54', price: '1200'},
+        {name: 'Mean Well LPV-150-12', characteristic: ' 150 Вт, 12 В, IP 65', power: '150', amperage: '0.78', price: '2450'}
     ];
     /* =============== */
 
-    self.File.loadDiode(function(r){
-        if(r){
+    self.File.loadDiode(function (r) {
+        if (r) {
             self.diodInfo = r
         }
     });
 
-    self.File.loadPower(function(r){
-        if(r){
+    self.File.loadPower(function (r) {
+        if (r) {
             self.powerSuplyInfo = r
         }
     });
+//**** PARTIAL DIODES CHANGE
+    this.additionalDeep = ko.observable();
+    this.additionalDiode = ko.observable();
+    this.settingsPosition = ko.observable('left:20px;top:10px');
 
+    var diodeSearch = function (deep) {
+        var res = [];
+        each(self.diodInfo, function (k, d) {
+            var h = d.h1.split('-'), hFrom = h[0], hTo = h[1];
+
+            if (deep >= hFrom && deep <= hTo) {
+                res.push(d);
+            }
+        });
+        return res;
+    };
+
+    this.diodInfoFiltered = ko.computed(function () {
+        return diodeSearch(self.additionalDeep());
+    }, this).extend({throttle: 50});
+
+    this.diodInfoFilteredMain = ko.computed(function () {
+        return diodeSearch(self.greedDeep());
+    }, this).extend({throttle: 50});
+
+//    this.additionalDiode.subscribe(function (val) {
+    this.calculatePartial = function () {
+        setTimeout(function () {
+            var val = self.additionalDiode();
+            var findInArr = false;
+            each(self.diodInfoFiltered(), function (k, v) {
+                if (val == v) {
+                    findInArr = true;
+                }
+            });
+            if (!findInArr) {
+                self.additionalDiode(self.diodInfoFiltered()[0]);
+                val = self.additionalDiode();
+            }
+
+            if (val && self.WorkArea.showOptionsDialog()) {
+                var workArea = self.WorkArea,
+                    waCanvas = workArea.SvgImage.canvas.select('svg'),
+                    viewBox = waCanvas.attr('viewBox'),
+                    selectedDiodesList = workArea.selectedDiodes(),
+                    selectBoxCords = workArea.SvgImage.selectBoxCoords,
+                    x1 = (selectBoxCords.x1 - viewBox.x) / 100 | 0,
+                    y1 = (selectBoxCords.y1 - viewBox.y) / 100 | 0,
+                    x2 = (selectBoxCords.x2 - viewBox.x) / 100 | 0,
+                    y2 = (selectBoxCords.y2 - viewBox.y) / 100 | 0;
+
+//            console.log(x1,y1,x2,y2);
+
+                workArea.selectedDiodes([]);
+
+
+                workArea.calculateDiodesByCoordinates(self, x1, y1, x2, y2, val, self.additionalDeep(), function (points) {
+//                self.usedDiodTypes.push(val);//TODO ???
+                    for (var j = 0; j < selectedDiodesList.length; j++) {
+                        workArea.diodesArrBlockSubscribe = true;
+                        setTimeout(function (i) {
+                            selectedDiodesList[i].remove();
+                            if (i == selectedDiodesList.length - 1) {
+                                selectedDiodesList = [];
+                                workArea.diodesArrBlockSubscribe = false;
+                                workArea.diodesArr.valueHasMutated();
+                            }
+                        }, j * 10, j);
+                    }
+
+                    if (!workArea.SvgImage.diodGroup) {
+                        workArea.SvgImage.diodGroup = waCanvas.g();
+                    }
+
+                    for (var i = 0; i < points.length; i++) {
+                        setTimeout(function (i) {
+                            var p = points[i].draw(waCanvas);
+                            workArea.SvgImage.diodGroup.add(p);
+                            if (i == points.length - 1) {
+                                workArea.isReady(true);
+                                workArea.diodesArr.pushAll(points);
+                                workArea.showOptionsDialog(false);
+                            }
+                        }, i * 10, i);
+                    }
+                });
+            }
+        }, 100);
+
+    };
+//    );
+
+    this.additionalDeep.subscribe(function (val) {
+        var minHVal, maxHVal;
+
+        each(self.diodInfo, function (k, d) {
+            var h = d.h1.split('-'), hFrom = h[0], hTo = h[1];
+            minHVal = minHVal || hFrom;
+            maxHVal = maxHVal || hTo;
+
+            minHVal = Math.min(minHVal, hFrom);
+            maxHVal = Math.max(maxHVal, hTo);
+
+        });
+
+        var v = parseInt(val, 10),
+            error = false;
+        if (isNaN(v) || v < minHVal) {
+            v = minHVal;
+            error = true;
+        } else if (v > maxHVal) {
+            v = maxHVal;
+            error = true;
+        }
+        if (error) {
+            setTimeout(function () {
+                dialog.hideModalWindow();
+            }, 4000);
+            dialog.showModalWindow({
+                message: 'Введенная глубина конструкции<br> не попадает в диапазон от ' +
+                    minHVal +
+                    ' мм<br> до ' + maxHVal +
+                    ' мм. Попробуйте еще раз!'
+            });
+        }
+        self.additionalDeep(v);
+    });
+//**** PARTIAL DIODES CHANGE
+
+    this.useBetter = false;
     this.usedDiodTypes = ko.observableArray([defDiod]);
+    this.usedDiodLuminousTypes = ko.observableArray([defDiod]);
+    this.usedDiodType = ko.observable(defDiod);
     this.usedPowerSupplyTypes = ko.observableArray([defPowerSupply]);
+    this.usedItemsList = ko.computed(function () {
+        var d = self.usedDiodTypes(),
+            p = self.usedPowerSupplyTypes(),
+            res = [];
 
+        each(d, function (k, d) {
+            if (d.name != '-')
+                res.push({
+                    desc: "Светодиодный модуль",
+                    name: d.name,
+                    data: '(' + d.luminous + ' Лм, ' + d.size + ' мм, ' + d.distance + ' мм)',
+                    count: d.itemsCount,
+                    price: parseFloat(d.price).toFixed(2),
+                    total: (parseFloat(d.price) * d.itemsCount).toFixed(2)
+                })
+        });
+
+        each(p, function (k, d) {
+            if (d.name != '-')
+                res.push({
+                    desc: "Блок питания",
+                    name: d.name,
+                    data: '(' + d.characteristic + ')',
+                    count: d.itemsCount,
+                    price: parseFloat(d.price).toFixed(2),
+                    total: (parseFloat(d.price) * d.itemsCount).toFixed(2)
+                })
+        });
+
+        return res;
+    }, this).extend({throttle: 1});
+
+    /* ========LUMINOUS======= */
+
+
+    this.getLuminousByDeep = function (deep, diode) {
+        self.luminousCacheTable = self.luminousCacheTable || {};
+
+        var res = self.luminousCacheTable[deep + '_' + diode.luminous];
+        if (!res) {
+            console.log('not cache');
+            for (var type in luminousConf) {
+                if (type == diode.luminous) {
+                    var i = 0,
+                        lIdx,
+                        pairsHLum = [];
+                    for (var h in luminousConf[type]) {
+                        pairsHLum.push([+h, luminousConf[type][h]]);
+                        if(deep <= h && !lIdx){
+                            lIdx = i;
+                        }
+                        i++;
+                    }
+                    if(lIdx === undefined){
+                        lIdx = pairsHLum.length - 1;
+                    }
+                    var h1 = pairsHLum[lIdx-1][0],
+                        l1 = pairsHLum[lIdx-1][1],
+                        h2 = pairsHLum[lIdx][0],
+                        l2 = pairsHLum[lIdx][1],
+                        b, k;
+                    //y = kx+b;
+                    k = (l2 - l1) / (h2 - h1);
+                    b = l1 - k * h1;
+                    res = self.luminousCacheTable[deep + '_' + diode.luminous] = k*deep+b;
+                }
+            }
+        }else{
+            console.log('it\'s cache');
+        }
+        return res || console.log('value missed in table') && 0;
+    };
+
+    this.luminousWindowShow = ko.observable(false);//false
+    this.toggleShowLuminousWindow = function(){
+        self.luminousWindowShow(!self.luminousWindowShow());
+    };
+
+    this.luminousMin = ko.observable(0);
+    this.luminousMax = ko.computed(function () {
+        var res = 0, resMin = 0;
+        each(self.usedDiodLuminousTypes(), function (k, d) {
+            if(!resMin){
+                resMin = d.luminous;
+            }
+            resMin = Math.min(resMin, d.luminous);
+            res = Math.max(res, d.luminous);
+        });
+        self.luminousMin(resMin);
+        return res;
+    }, this).extend({throttle: 100});
+
+    this.luminousAverage = ko.computed(function(){
+        return self.luminousMax() != self.luminousMin();
+    },this).extend({throttle:5});
+
+    this.luminousValue = ko.computed(function(){
+        var res = self.luminousMax();
+        if(self.luminousAverage()){
+            res = self.luminousMin()+'-'+ self.luminousMax();
+        }
+        return res;
+    },this).extend({throttle:5});
+
+    /* ========LUMINOUS======= */
+    this.luminousItemOver = function(item,event){
+        if(item.items){
+            each(item.items,function(k,it){
+                console.log(it,it.highlight);
+                it.highlight(true,item.fill);
+            });
+        }
+    };
+    this.luminousItemOut = function(item,event){
+        if(item.items){
+            each(item.items,function(k,it){
+                it.highlight(false);
+            });
+        }
+    };
     /* =============== */
     this.pointsCount = ko.observable(0);
     this.diodTotalCost = ko.computed(function () {
         var res = 0,
             total = self.pointsCount();
-        $.each(self.usedDiodTypes(), function (k, v) {
+        each(self.usedDiodTypes(), function (k, v) {
             res += (v.itemsCount | 0) * parseFloat(v.price || 0);
         });
         return res;
@@ -82,7 +374,7 @@ var ApplicationViewModel = function () {
 
     this.powerSupplyTotalCost = ko.computed(function () {
         var res = 0;
-        $.each(self.usedPowerSupplyTypes(), function (k, v) {
+        each(self.usedPowerSupplyTypes(), function (k, v) {
             res += (v.itemsCount | 0) * parseFloat(v.price || 0);
         });
         return res;
@@ -97,18 +389,10 @@ var ApplicationViewModel = function () {
 
     this.powerSupplyAmperageTotal = ko.computed(function () {
         var res = 0;
-        $.each(self.usedPowerSupplyTypes(),function(k,d){
+        each(self.usedPowerSupplyTypes(), function (k, d) {
             res += d.itemsCount * d.amperage;
         });
         return res.toFixed(2);
-    }, this).extend({throttle: 100});
-
-    this.luminousMax = ko.computed(function () {
-        var res = 0;
-        $.each(self.usedDiodTypes(),function(k,d){
-            res = Math.max(res, d.luminous);
-        });
-        return res;
     }, this).extend({throttle: 100});
 
     this.pointsWattCount = ko.computed(function () {
@@ -121,7 +405,7 @@ var ApplicationViewModel = function () {
             choice,
             powerSupplyTC = 0;
 
-        $.each(self.usedDiodTypes(), function (k, dt) {
+        each(self.usedDiodTypes(), function (k, dt) {
             res += dt.itemsCount * parseFloat(dt.power);
         });
 
@@ -129,7 +413,7 @@ var ApplicationViewModel = function () {
         self.pointsWattCountNeeded(Math.ceil(resN));
         if (resN > 0) {
             //TODO Use minimal count of PS
-            $.each(self.powerSuplyInfo, function (k, pw) {
+            each(self.powerSuplyInfo, function (k, pw) {
                 self.powerSuplyInfo[k].itemsCount = 0;
                 blocksPower[k] = {
                     power: parseInt(pw.power, 10),
@@ -147,14 +431,13 @@ var ApplicationViewModel = function () {
                 powerSupplyTC++;
                 resN -= blocksPower[bestBPIdx].power;
             }
-
+            //objects to $.each here
             $.each(blocksPower, function (k, pw) {
                 if (pw.power > resN) {
                     candidate.push(pw);
                 }
             });
-
-            $.each(candidate, function (k, cd) {
+            each(candidate, function (k, cd) {
                 choice = choice || cd;
                 if (cd.price < self.powerSuplyInfo[choice.idx].price) {
                     choice = cd;
@@ -165,7 +448,7 @@ var ApplicationViewModel = function () {
             powerSupplyTC++;
 
             self.usedPowerSupplyTypes([]);
-            $.each(self.powerSuplyInfo, function (k, pw) {
+            each(self.powerSuplyInfo, function (k, pw) {
                 if (pw.itemsCount > 0) {
                     self.usedPowerSupplyTypes.push(pw);
                 }
@@ -188,17 +471,80 @@ var ApplicationViewModel = function () {
     }, this).extend({throttle: 100});
 
     /* =============== */
+    this.testUseMorePowerfulDiode = function () {
+        var deep = self.greedDeep(),
+            dTypes = self.usedDiodTypes(),
+            dType = self.usedDiodType(),
+            useAnother;
+        if (dTypes.length == 1) {
+            useAnother = diodeSearch(deep);
+            console.log(dType === useAnother[useAnother.length - 1], dType, useAnother[useAnother.length - 1])
+            if (useAnother.length > 1 && dType !== useAnother[useAnother.length - 1]) {
+                self.Dialog.showModalWindow({
+                    type: 'info',
+                    message: 'Сделать конструкцию более яркой?<div class="comment">' +
+                        '(по умолчанию расчет предлагается на оптимальных светодиодных модулях ' +
+                        'по соотношению яркость/стоимость подсветки)' +
+                        '</div>',
+                    buttons: [
+                        {
+                            text: 'Да',
+                            callback: function () {
+                                self.useBetter = true;
+//                            self.greedDeep.valueHasMutated();
+//                            self.pointsCount.valueHasMutated();
 
-    this.resetData = function(){
-        self.usedDiodTypes([defDiod]);
-        self.usedPowerSupplyTypes([defPowerSupply]);
+                                self.Dialog.hideModalWindow();
+                                self.WorkArea.calculateDiod();
+//                                var info = self.usedDiodTypes()[0];
+//                            if(self.WorkArea.diodesArr().length){
+//                                var diodesArr = self.WorkArea.diodesArr(),
+//                                    diodesArrLength = diodesArr.length;
+//                                self.WorkArea.isReady(false);
+//                                $.each(diodesArr,function(k,d){
+//                                    setTimeout(function(i){
+//                                        diodesArr[i].setInfo(info);
+//                                        if(k == diodesArrLength-1){
+//                                            self.WorkArea.isReady(true);
+//                                        }
+//                                    },k*10,k)
+//                                });
+//                            }
+                            }
+                        },
+                        {
+                            text: 'Отмена',
+                            callback: function () {
+                                self.Dialog.hideModalWindow();
+                            }
+                        }
+                    ]
+                })
+            }
+        }
     };
+    /* =============== */
+
+    this.resetData = function () {
+        self.usedPowerSupplyTypes([defPowerSupply]);
+        self.usedDiodTypes([defDiod]);
+        self.usedDiodType(defDiod);
+        self.pointsCount(0);
+        self.pointsWattCountNeeded = ko.observable(0);
+        self.powerSupplyTotalCount = ko.observable(0);
+    };
+
+    self.usedDiodType.subscribe(function (val) {
+        if (self.usedDiodTypes().length == 1) {
+            self.usedDiodTypes([val]);
+        }
+    });
 
     self.greedDeep.subscribe(function (val) {
         var minHVal, maxHVal,
             selectedType;
 
-        $.each(self.diodInfo, function (k, d) {
+        each(self.diodInfo, function (k, d) {
             var h = d.h1.split('-'), hFrom = h[0], hTo = h[1];
             minHVal = minHVal || hFrom;
             maxHVal = maxHVal || hTo;
@@ -206,9 +552,16 @@ var ApplicationViewModel = function () {
             minHVal = Math.min(minHVal, hFrom);
             maxHVal = Math.max(maxHVal, hTo);
 
-            if (val <= hTo && selectedType === undefined) {
-                selectedType = k;
+            if (self.useBetter) {
+                if (val <= hTo && val >= hFrom) {
+                    selectedType = k;
+                }
+            } else {
+                if (val <= hTo && selectedType === undefined) {
+                    selectedType = k;
+                }
             }
+
         });
 
         var v = parseInt(val, 10),
@@ -225,28 +578,45 @@ var ApplicationViewModel = function () {
                 dialog.hideModalWindow();
             }, 4000);
             dialog.showModalWindow({
-                message : 'Введенная глубина конструкции<br> не попадает в диапазон от ' +
+                message: 'Введенная глубина конструкции<br> не попадает в диапазон от ' +
                     minHVal +
                     ' мм<br> до ' + maxHVal +
                     ' мм. Попробуйте еще раз!'
             });
         }
-        if(selectedType !== undefined){
+        var testUsedDiodType = function (diodType) {
+            var allowed = diodeSearch(v);
+            return allowed.indexOf(diodType) == -1;
+        };
+        if (selectedType !== undefined && self.usedDiodType() === defDiod || selectedType !== undefined && testUsedDiodType(self.usedDiodType())) {
             self.usedDiodTypes([]);
-            self.diodInfo[selectedType].itemsCount = self.diodInfo[selectedType].itemsCount || 0;
+            self.diodInfo[selectedType].itemsCount = self.diodInfo[selectedType].itemsCount || self.pointsCount();
             self.usedDiodTypes.push(self.diodInfo[selectedType]);
+            self.usedDiodType(self.diodInfo[selectedType]);
         }
         self.greedDeep(v);
+        self.totalDeep(v);
     });
 
-    self.sentToManager = function(){
+    self.sentToManager = function () {
         var summ = self.projectCost();
-        if(summ > 0){
-            self.User.sentToManager = true;
+        if (summ > 0) {
+
+            self.User.sentToManager(true);
             self.Dialog.showDialogWindow();
-        }else{
+        } else {
             self.Dialog.showModalWindow({
-               message:"Ошибка! Невозможно отправить нулевой расчет."
+                message: "Ошибка! Невозможно отправить нулевой расчет."
+            });
+        }
+    };
+    self.sentToUser = function () {
+        var summ = self.projectCost();
+        if (summ > 0) {
+            self.Dialog.showDialogWindow();
+        } else {
+            self.Dialog.showModalWindow({
+                message: "Ошибка! Невозможно отправить нулевой расчет."
             });
         }
     };

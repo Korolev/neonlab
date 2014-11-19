@@ -5,20 +5,21 @@
 var FileViewModel = function (app) {
 
     var self = this,
-        uploadUrl = app.isDev ? '/upload' : '/upload.php',
+        uploadUrl = app.isDev ? '/upload' : 'upload.php',
         downloadUrl = app.isDev ? '/upload/?f=' : '/upload/',
-        diodesUrl = app.isDev ? '/upload/diode.php' : '/diode.php',
-        powerUrl = app.isDev ? '/upload/power.php' : '/power.php',
-        finishUrl = app.isDev ? '/upload/finish.php' : '/finish.php',
+        diodesUrl = app.isDev ? '/upload/diode.php' : 'diode.php',
+        powerUrl = app.isDev ? '/upload/power.php' : 'power.php',
+        finishUrl = app.isDev ? '/upload/finish.php' : 'finish.php',
         dialog = app.Dialog;
 
 
     /* =============== */
+    var helpText = 'Добавьте нужный фаил<br> с исходными размерами конструкции в формате <b>.cdr</b> с любым, внутренним фоном.';
 
     this.fileUploadStatus = {
         ready: {
             cssClass: 'question',
-            helpText: 'Добавьте нужный фаил с исходными размерами конструкции в формате <b>.cdr</b> или <b>.plt</b>'
+            helpText: helpText
         },
         loading: {
             cssClass: 'loading'
@@ -31,7 +32,7 @@ var FileViewModel = function (app) {
         },
         error: {
             cssClass: 'error',
-            helpText: 'Добавьте нужный фаил с исходными размерами конструкции в формате <b>.cdr</b> или <b>.plt</b>'
+            helpText: helpText
         }
     };
 
@@ -40,15 +41,15 @@ var FileViewModel = function (app) {
     this.fileName = ko.observable('');
     this.showStatusText = ko.observable(false);
 
-    this.fileId.subscribe(function(val){
-        if(val){
-            var s = val+'',
+    this.fileId.subscribe(function (val) {
+        if (val) {
+            var s = val + '',
                 l = s.length;
-            while(l<4){
+            while (l < 4) {
                 s = '0' + s;
                 l = s.length;
             }
-        }else{
+        } else {
             s = '0001';
         }
         app.User.projectNumber(s);
@@ -70,6 +71,8 @@ var FileViewModel = function (app) {
             dialog.hideModalWindow();
             self.fileName('');
             self.uploadStatus('ready');
+
+            document.getElementsByTagName('form')[0].reset();
 
             app.WorkArea.SvgImage.removeSvg();
             app.resetData();
@@ -98,7 +101,6 @@ var FileViewModel = function (app) {
     };
 
     this.changeInputFile = function (el, event) {
-
         if (self.fileName()) {
             dialog.showModalWindow({
                 type: dialog.modalTypes.info,
@@ -133,13 +135,27 @@ var FileViewModel = function (app) {
 //TODO check file extension in JavaScript before upload
         $.ajax({
             url: uploadUrl,
+            beforeSend: function (request)
+            {
+                /*<meta http-equiv="Cache-Control" content="no-store,no-cache,must-revalidate">
+                    <meta http-equiv="Pragma" content="no-cache">
+                        <meta http-equiv="Expires" content="-1">*/
+                request.setRequestHeader("Cache-Control", "no-store,no-cache,must-revalidate");
+                request.setRequestHeader("Pragma", "no-cache");
+                request.setRequestHeader("Expires", "-1");
+            },
             type: "POST",
             data: data,
             processData: false,  // tell jQuery not to process the data
             contentType: false,   // tell jQuery not to set contentType
             success: function (r) {
+                if (r.status == 0) {
+                    self.uploadStatus('error');
+                    self.showStatusText(true);
+                    return false;
+                }
                 if (r.file) {
-                    $.get(downloadUrl + r.file, function (r) {
+                    $.get(downloadUrl + r.file).done(function (r) {
                         self.uploadStatus('success');
                         self.fileName(file.name);
 
@@ -147,18 +163,57 @@ var FileViewModel = function (app) {
                             self.uploadStatus('remove');
                         }, 5000);
 
-                        var svgDom = r.firstChild;
+                        var svgDom = r.querySelector('svg'),
+                            fileExtension = file.name.split('.');
+                        fileExtension = fileExtension[fileExtension.length - 1];
+
+                        if (fileExtension == 'plt' && false) {//TODO remove this block if it never use
+                            var paths = [],
+                                grps = svgDom.getElementsByTagName('path');
+
+                            each(grps, function (k, p) {
+                                paths.push(p.getAttribute('d'));
+                            });
+
+                            if (window.Worker) {
+                                var worker = new Worker('js/workers/pltparser.js');// Create new worker
+
+                                worker.postMessage({
+                                    pathsArr: paths
+                                });
+
+                                worker.onmessage = function (event) {
+                                    if (event.data.status == 'complite') {
+
+                                    } else if (event.data.status == 'console') {
+                                        console.log(event.data.log);
+                                    } else {
+                                        //show current complete level
+                                        var progress = event.data.progress > 100 ? 100 : event.data.progress;
+                                    }
+                                }
+                            } else {
+                                alert('Ваш браузер не поддерживает Web Workers!');
+                            }
+                        }
+
+                        app.useBetter = false;
 
                         var recusiveWalk = function (node) {
+//TODO move recursive Walk to SvgImage class
                             if (node.childNodes && node.childNodes.length) {
-                                $.each(node.childNodes, function (i, _node) {
+                                if (node.style && node.style.stroke) {
+                                    node.style.stroke = '#999999';
+                                }
+                                each(node.childNodes, function (i, _node) {
+                                    //console.log(_node);
                                     if (_node.getAttribute && _node.tagName) {
                                         var fill = _node.getAttribute('fill');
                                         if (fill) {
                                             if (fill != 'none') {
                                                 _node.setAttribute('fill', '#ffffff');
                                             }
-                                            _node.setAttribute('stroke', '#000000');
+                                            _node.setAttribute('stroke', '#999999');//#555555
                                             _node.setAttribute('stroke-width', '100');
                                         }
                                     }
@@ -168,11 +223,16 @@ var FileViewModel = function (app) {
                         };
                         recusiveWalk(svgDom);
                         app.WorkArea.setSvg(svgDom);
-                    });
+                    }).fail(function (r) {
+                            self.uploadStatus('error');
+                            self.showStatusText(true);
+                            console.log(r);
+                        });
                 }
-                if(r.id){
+                if (r.id) {
                     self.fileId(r.id);
                 }
+
             },
             error: function (r) {
                 self.uploadStatus('error');
@@ -201,25 +261,25 @@ var FileViewModel = function (app) {
 
     };
 
-    this.loadDiode = function(callback){
+    this.loadDiode = function (callback) {
         $.ajax({
             url: diodesUrl,
-            success: function(r){
+            success: function (r) {
                 callback && callback(r.diode);
             },
-            error : function(r){
+            error: function (r) {
                 callback && callback(false);
             }
         });
     };
 
-    this.loadPower = function(callback){
+    this.loadPower = function (callback) {
         $.ajax({
             url: powerUrl,
-            success: function(r){
+            success: function (r) {
                 callback && callback(r.power);
             },
-            error : function(r){
+            error: function (r) {
                 callback && callback(false);
             }
         });
@@ -228,23 +288,33 @@ var FileViewModel = function (app) {
     this.sentToServer = function (callback) {
         if (app.WorkArea.isReady()) {
             var data = {
-                id: self.fileId(),
-                svg: app.WorkArea.getSvgImg(),
-                name: app.User.userName(),
-                email: app.User.userEmail(),
-                phone: app.User.userPhone(),
-                manager: app.User.sentToManager,
-                data:{
-                    diode:app.usedDiodTypes(),
-                    power:app.usedPowerSupplyTypes()
-                }
-            };
+                    id: self.fileId(),
+                    svg: app.WorkArea.fullSizeSVG,
+                    name: app.User.userName(),
+                    email: app.User.userEmail(),
+                    phone: app.User.userPhone(),
+                    manager: app.User.sentToManager()
+                },
+                additionalData = {
+                    items: app.usedItemsList(),
+                    perimeter: app.perimetr(),
+                    dimension: app.size(),
+                    depth: app.greedDeep(),
+                    total: app.projectCost(),
+                    itemsCount: app.pointsCount(),
+                    totalPower: app.pointsWattCount()
+                };
+            data.data = JSON.stringify(additionalData);
             $.ajax({
                 url: finishUrl,
                 type: 'POST',
                 data: data,
                 success: function (r) {
-                    callback && callback(r);
+                    if (r.status && r.status == 1) {
+                        callback && callback(r);
+                    } else {
+                        callback(false);
+                    }
                 },
                 error: function (r) {
                     callback && callback(false);

@@ -11,49 +11,66 @@ var SvgImageViewModel = function (app, editor) {
     this.canvas = Snap('#editor_svg');
     this.pattern25x25 = '';
     this.pattern20x9 = '';
+    this.pattern25x25hl = '';
+    this.pattern20x9hl = '';
 
-    var c = self.canvas,
+    var createDiodePattern = function (c) {
+        var p = c.group(),
+            selectedColor = "#ff6900",
+            fillColor = "#b7b7b7";
+
+        p.add(c.circle(1250, 1250, 3000, 3000).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1', opacity: '0.1'}));
+        p.add(c.rect(0, 0, 2500, 2500).attr({fill: fillColor, stroke: '#000000', 'stroke-with': '40'}));
+        p.add(c.rect(300, 500, 500, 200).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
+        p.add(c.rect(1600, 500, 500, 200).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
+        p.add(c.circle(1250, 1250, 300, 300).attr({fill: '#FFFFFF', stroke: '#000000', 'stroke-with': '20'}));
+        self.pattern25x25 = p.toDefs();
+
         p = c.group();
+//        p.add(c.circle(1250, 1250, 3000, 3000).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1', opacity: '0.1'}));
+        p.add(c.rect(0, 0, 2500, 2500));//.attr({fill: selectedColor, stroke: '#000000', 'stroke-with': '40'}));
+        self.pattern25x25hl = p.toDefs();
 
-    p.add(c.rect(0, 0, 2500, 2500).attr({fill: '#DDDDDD', stroke: '#000000', 'stroke-with': '40'}));
-    p.add(c.rect(300, 500, 500, 200).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
-    p.add(c.rect(1600, 500, 500, 200).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
-    p.add(c.circle(1250, 1250, 300, 300).attr({fill: '#FFFFFF', stroke: '#000000', 'stroke-with': '20'}));
+        p = c.group();
+        p.add(c.circle(1000, 450, 2500, 2500).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1', opacity: '0.1'}));
+        p.add(c.rect(0, 0, 2000, 900).attr({fill: fillColor, stroke: '#000000', 'stroke-with': '40'}));
+        p.add(c.rect(800, 325, 400, 250).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
+        self.pattern20x9 = p.toDefs();
 
-//    this.pattern25x25 = p.pattern(0,0,2500,2500);
-    this.pattern25x25  = p.toDefs();
-
-    p = c.group();
-    p.add(c.rect(0, 0, 2000, 900).attr({fill: '#DDDDDD', stroke: '#000000', 'stroke-with': '40'}));
-    p.add(c.rect(550, 300, 900, 300).attr({fill: '#FFDE00', stroke: '#000000', 'stroke-with': '20'}));
-
-//    this.pattern20x9 = p.pattern(0,0,2000,900);
-    this.pattern20x9 = p.toDefs();
+        p = c.group();
+//        p.add(c.circle(1000, 450, 2500, 2500).attr({fill: '#FFFFFF', stroke: '#FFFFFF', 'stroke-with': '1', opacity: '0.1'}));
+        p.add(c.rect(0, 0, 2000, 900));//.attr({fill: selectedColor, stroke: '#000000', 'stroke-with': '40'}));
+        self.pattern20x9hl = p.toDefs();
+    };
 
     this.canvas.click(function (e, X, Y) {
         var x = X - editor.offsetLeft(),
-            y = Y - editor.offsetTop() - window.scrollY,
+            y = Y - editor.offsetTop() - window.pageYOffset,
             s = self.canvas.select('svg'),
             viewBox,
             k = 100,
             r = self.canvasZoomRate,
-            sX,sY;
+            sX, sY;
 
-        if(s && editor.editMode() == 'addItem'){
-            viewBox = s.attr('viewBox'),
-            sX = parseInt(s.attr('x')||0);
-            sY = parseInt(s.attr('y')||0);
-            //TODO need fix diff
+        if (s && editor.editMode() == 'addItem') {
+            viewBox = s.attr('viewBox');
+            sX = parseInt(s.attr('x') || 0);
+            sY = parseInt(s.attr('y') || 0);
             x = x - sX;
             y = y - sY;
 
-            self.addDiode(x*k*r+viewBox.x,y*k*r+viewBox.y);
+            var svgClientRect = self.canvas.node.getBoundingClientRect();
+
+            x = x - svgClientRect.left * 5;
+            y = y - svgClientRect.left * 4;
+
+            self.addDiode(x * k * r + viewBox.x, y * k * r + viewBox.y);
         }
     });
 
     this.canvasZoomRate = 1;
     this.grid = this.canvas.g();
-    this.didoGroup = '';
+    this.diodGroup = '';
 
     for (i = greedStep; i <= 2560; i += greedStep) {
         this.grid.add(self.canvas.line(i, 0, i, 1440).attr({"stroke-dasharray": "10 10", stroke: '#d7e2ec'}));
@@ -69,13 +86,134 @@ var SvgImageViewModel = function (app, editor) {
     this.svgOrignHTML = ko.observable();
     this.svgStartunitType = 0;
 
+    //***** SELECT ITEMS
+    var dashoffset = 0,
+        selRectX,
+        selRectY;
+    this.selectBoxCoords = {x1: 0, x2: 0, y1: 0, y2: 0};
+    this.selectRect = self.canvas.rect(10, 10, 200, 100).attr({
+        'stroke': '#000000',
+        'stroke-width': '1px',
+        'fill': 'none',
+        'stroke-dasharray': '5 3',
+        'stroke-dashoffset': dashoffset,
+        opacity: 0
+    });
+    setInterval(function () {
+        dashoffset++;
+        dashoffset = dashoffset > 8 ? 0 : dashoffset;
+        self.selectRect.attr({
+            'stroke-dashoffset': dashoffset
+        })
+    }, 40);
+    this.canvas.mousedown(function (e) {
+        selRectX = e.pageX - editor.offsetLeft();
+        selRectY = e.pageY - editor.offsetTop() - window.pageYOffset;
+
+        if (editor.editMode() == 'selectItem') {
+            self.selectRect.attr({
+                opacity: 1,
+                x: selRectX,
+                y: selRectY,
+                width: 1,
+                height: 1
+            })
+        }
+    });
+
+    this.canvas.mousemove(function (e) {
+        if (editor.editMode() == 'selectItem') {
+            var x = e.pageX - editor.offsetLeft(),
+                y = e.pageY - editor.offsetTop() - window.pageYOffset,
+                dX = x - selRectX, dY = y - selRectY,
+                abs = Math.abs,
+                opts = {
+                    width: dX || 0,
+                    height: dY || 0
+                };
+            if (dX < 0) {
+                opts.x = x;
+                opts.width = abs(dX);
+            }
+            if (dY < 0) {
+                opts.y = y;
+                opts.height = abs(dY);
+            }
+            self.selectRect.attr(opts);
+        }
+    });
+
+    this.canvas.mouseup(function (e) {
+        var x1 = parseFloat(self.selectRect.attr('x')),
+            y1 = parseFloat(self.selectRect.attr('y')),
+            x2 = parseFloat(self.selectRect.attr('width')) + x1,
+            y2 = parseFloat(self.selectRect.attr('height')) + y1,
+            s = self.canvas.select('svg'),
+            viewBox,
+            k = 100,
+            r = self.canvasZoomRate,
+            sX, sY, x, y,
+            selElems = [],
+            settingsLeft = (x2 - 50),
+            settingsTop = y2 / 2,
+            deltaLeft = editor.width() - settingsLeft - 243;
+
+        if(deltaLeft < 0){
+            settingsLeft = settingsLeft + deltaLeft - 30;
+        }
+
+        app.settingsPosition('left:' + settingsLeft + 'px;top:' + settingsTop + 'px;');
+
+        self.selectRect.attr({opacity: 0});
+        if (editor.editMode() == 'selectItem' && s && !editor.selectedDiodes().length) {
+            viewBox = s.attr('viewBox');
+            sX = parseInt(s.attr('x') || 0);
+            sY = parseInt(s.attr('y') || 0);
+            x1 = x1 - sX;
+            y1 = y1 - sY;
+            x2 = x2 - sX;
+            y2 = y2 - sY;
+
+            x1 = parseInt(x1 * r * k + viewBox.x, 10);
+            y1 = parseInt(y1 * r * k + viewBox.y, 10);
+            x2 = parseInt(x2 * r * k + viewBox.x, 10);
+            y2 = parseInt(y2 * r * k + viewBox.y, 10);
+
+            self.selectBoxCoords = {
+                x1: x1,
+                x2: x2,
+                y1: y1,
+                y2: y2
+            };
+
+            each(editor.diodesArr(), function (k, d) {
+                d.highlight(false);
+                if (d.x >= x1 && d.x <= x2 && d.y >= y1 && d.y <= y2) {
+                    selElems.push(d);
+                }
+
+            });
+            each(selElems, function (k, d) {
+                d.highlight(true);
+            });
+            if(selElems[0]){
+                app.additionalDeep(selElems[0].deep);
+                app.additionalDiode(selElems[0].info);
+            }
+            editor.selectedDiodes(selElems);
+            editor.showOptionsDialog((Math.abs(x1-x2)>2000&&Math.abs(y1-y2)>2000));
+        }
+    });
+//*****
+
+
     this.setSvg = function (svgDom) {
         var baseWidth = parseInt(svgDom.getAttribute('width'), 10),
             baseHeight = parseInt(svgDom.getAttribute('height'), 10);
 
         svgDom.setAttribute('width', baseWidth);
         svgDom.setAttribute('height', baseHeight);
-        self.canvas.append(svgDom);
+        self.selectRect.before(svgDom);
 
         self.svgObjWidth(baseWidth);
         self.svgObjHeight(baseHeight);
@@ -85,12 +223,37 @@ var SvgImageViewModel = function (app, editor) {
         self.svgOrignHTML(svg);
 
         var s = self.canvas.select('svg'),
-            d = s.select('defs');
+            viewBox = s.attr('viewBox');
+
+        if (self.diodGroup) {
+            self.diodGroup.remove();
+            self.diodGroup = '';
+        }
+
+        createDiodePattern(s);
+
+        try{
+            each(s.node.children, function (k, el) {
+                var bb = el.getBoundingClientRect(),
+                    nodeName,
+                    nodeClass,
+                    g;
+                if (bb.width) {
+                    nodeName = el.nodeName;
+                    nodeClass = el.getAttribute('class');
+                    g = s.select(nodeClass ? nodeName + '.' + nodeClass : nodeName);
+                    //TODO maybe remove this rect before sent SVG
+                    self.canvas.rect(viewBox.x, viewBox.y, bb.width * 100, bb.height * 100).attr({fill: '#cccccc', 'opacity': '0.01'}).prependTo(g);
+                }
+            });
+
+        }catch (e){
+            console.log(e);
+        }
 
 
-
-        self.setZoom();
         self.drag();
+        self.setZoom();
     };
 
     this.removeSvg = function () {
@@ -177,18 +340,17 @@ var SvgImageViewModel = function (app, editor) {
         self.canvasZoomRate = self.svgObjWidth() / svgW;
     };
 
-    this.addDiode = function(x,y){
-        console.log(x,y);
-        if(app.greedDeep()){
+    this.addDiode = function (x, y) {
+        if (app.greedDeep()) {
             var usedDiodeType = app.usedDiodTypes()[0],
                 s = self.canvas.select('svg'),
-                diode = new Diod({x:x,y:y},usedDiodeType,app);
+                diode = new Diod({x: x, y: y}, usedDiodeType, app);
 
             editor.diodesArr.push(diode);
 
             diode = diode.draw(s);
-            self.didoGroup = self.didoGroup || s.group();
-            self.didoGroup.add(diode);
+            self.diodGroup = self.diodGroup || s.group();
+            self.diodGroup.add(diode);
         }
     };
 

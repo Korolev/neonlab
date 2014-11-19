@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <!-- vseMoe 8h -->
-<!-- 5h 5h 5h 4h 8h 6h 2h 8h 2h 3h 3h -->
+<!--                                          |3-4-5-6-9-10-11-12x06 |-->
+<!-- 5h 5h 5h 4h 8h 6h 2h 8h 2h 3h 3h 1h 3h 1h 2h 6h 3h 4h 4h 4h 3h 3h 2h -->
 <!-- eval("{TIME_STR}".replace(new RegExp('h','gi'),'+')+'0') -->
 <head>
     <title>«Calculed» — световая, наружная реклама, изготовление световых вывесок в Москве</title>
@@ -19,12 +20,6 @@
 
 </head>
 
-<!--Ссылки на страницы:-->
-<!--О компании: http://www.neonlab.ru/about/-->
-<!--Производство: http://www.neonlab.ru/prodaction/-->
-<!--Продажи: http://www.neonlab.ru/sales/-->
-<!--Программа: (активна)-->
-<!--Контакты: http://www.neonlab.ru/contacts/-->
 <body>
     <div class="wrapper">
         <div class="head_nav">
@@ -39,7 +34,7 @@
                     <a href="http://www.neonlab.ru/sales/">Продажи</a>
                 </li>
                 <li>
-                    <a href="#" class="selected">Приложение</a>
+                    <a href="#" class="selected">Calculed</a>
                 </li>
                 <li>
                     <a href="http://www.neonlab.ru/contacts/">Контакты</a>
@@ -58,18 +53,33 @@
                 <input type="file" data-bind="event:{change:File.changeInputFile}">
                 <div class="button yellow_button">Добавить</div>
                 <div class="blue_button_after " data-bind="css:File.statusClass">
-                    <div class="status_text" data-bind="if:File.statusText">
+                    <div class="status_text hidden" data-bind="if:File.statusText, css:{'hidden':false}">
                         <div class="status_text_message" data-bind="html:File.statusText"></div>
                     </div>
                     <div class="click_area"></div>
                 </div>
             </form>
-            <h2>Задайте глубину вывески</h2>
+            <h2>Задайте глубину конструкции</h2>
             <div class="deep_form">
-                <input type="text" id="deep" data-bind="value:greedDeep">
+                <input type="text" id="deep" data-bind="value:greedDeep" />
                 <div class="deep_size">мм</div>
             </div>
+            <h2>Выберите тип диодов</h2>
+            <div class="form_row_input">
+                <input type="hidden" data-bind="select:{
+                                        options:diodInfoFilteredMain,
+                                        optionText:'name',
+                                        value:usedDiodType,
+                                        css:{width: '100%',left:'0px'}
+                                        }">
+            </div>
             <div class="button blue_button" data-bind="click:WorkArea.calculateDiod">Рассчитать</div>
+
+
+
+            <!--<div class="button white_button" style="margin-top: 36px" data-bind="click:WorkArea.calculateManual">-->
+                <!--Рассчитать вручную-->
+            <!--</div>-->
 
             <p class="comment">
                 Если Вас не устраивает общий результат, Вы можете отредактировать каждый объект.
@@ -80,13 +90,19 @@
                 <div class="editor_head">
 
                     <div class="instruments_holder">
-                        <i title="Передвинуть светодиод" class="icon item_edit" data-bind="click:function(){$root.WorkArea.setMode('moveItem')},css:{selected:WorkArea.editMode() == 'moveItem'}"></i>
+
                         <!-- ko if: $root.WorkArea.fullScreen() -->
-                        <i title="Добавить светодиод" class="icon item_add" data-bind="click:function(){$root.WorkArea.setMode('addItem')},css:{selected:WorkArea.editMode() == 'addItem'}"></i></i>
-                        <i title="Удалить светодиод" class="icon item_remove" data-bind="click:function(){$root.WorkArea.setMode('removeItem')},css:{selected:WorkArea.editMode() == 'removeItem'}"></i></i>
+                        <i title="Выделить область" class="icon item_select" data-bind="click:function(){$root.WorkArea.setMode('selectItem')},css:{selected:WorkArea.editMode() == 'selectItem'}"></i>
+                        <i title="Передвинуть светодиод" class="icon item_edit" data-bind="click:function(){$root.WorkArea.setMode('moveItem')},css:{selected:WorkArea.editMode() == 'moveItem'}"></i>
+
+                        <i title="Добавить светодиод" class="icon item_add" data-bind="click:function(){$root.WorkArea.setMode('addItem')},css:{selected:WorkArea.editMode() == 'addItem'}"></i>
+                        <i title="Удалить светодиод" class="icon item_remove" data-bind="click:function(){$root.WorkArea.setMode('removeItem')},css:{selected:WorkArea.editMode() == 'removeItem'}"></i>
+                        <i title="Переместить изображение" class="icon item_move" data-bind="click:function(){$root.WorkArea.setMode('default')},css:{selected:WorkArea.editMode() == 'default'}"></i>
                         <!-- /ko -->
                     </div>
-
+                    <!-- ko if: $root.WorkArea.fullScreen() -->
+                    <div class="file_name" data-bind="text:File.fileName"></div>
+                    <!-- /ko -->
                     <div class="button darkgrey_button" data-bind="click:WorkArea.changeEditMode">
                         <!-- ko ifnot: $root.WorkArea.fullScreen() -->
                         <i class="icon i-edit"></i><span>Редактировать</span>
@@ -97,6 +113,57 @@
                     </div>
                 </div>
                 <div class="editor_base" data-bind="css:WorkArea.editMode,attr{style:WorkArea.baseStyle}">
+                    <!--DIODE LIST-->
+                        <div class="diode_luminous_list_holder hidden" data-bind="css:{hidden:!luminousWindowShow()}">
+                            <div class="diode_luminous_list_close" data-bind="click:toggleShowLuminousWindow"></div>
+                            <div class="diode_luminous_list" data-bind="foreach:usedDiodLuminousTypes">
+                                <div class="item" data-bind="event: { mouseover: $root.luminousItemOver, mouseout: $root.luminousItemOut }">
+                                    <div class="left">
+                                        <div class="color_square" data-bind="attr:{style:'background-color:'+$data.fill}"></div>
+                                    </div><div class="right">
+                                        <span class="head" data-bind="text:name"></span>
+                                        <div class="first_i">
+                                            Освещенность: <span data-bind="text:luminous"></span> Лк
+                                            <br>
+                                            Глубина: <span data-bind="text:deep"></span> мм
+                                        </div>
+                                        <div class="second_i">
+                                            Размер &ndash; <span data-bind="text:size"></span> мм, <span data-bind="text:power"></span> Вт,
+                                            <br>
+                                            Расстояние между центрами <span data-bind="text:distance"></span> мм.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <!--DIODE LIST-->
+                    <!--SETTINGS-->
+                        <div class="diode_settings hidden" data-bind="if:WorkArea.showOptionsDialog,attr:{style:settingsPosition},css:{'hidden':false}">
+                            <div class="pointer-item"></div>
+                            <div class="content-block">
+                                <label>Задайте глубину</label>
+                                <div class="form_row_input">
+                                    <input type="text" data-bind="value:additionalDeep">
+                                    <div class="inp_comment">мм</div>
+                                </div>
+                                <label>Определите тип светодиода</label>
+                                <div class="form_row_input">
+                                    <input type="hidden" data-bind="select:{
+                                        options:diodInfoFiltered,
+                                        optionText:'name',
+                                        value:additionalDiode,
+                                        css:{width: '100%',left:'0px'}
+                                        }">
+                                </div>
+                                <label>&nbsp;</label>
+                                <div class="form_row_input">
+                                    <div class="button blue_button" data-bind="click:calculatePartial">
+                                        Рассчитать
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <!--SETTINGS-->
                     <!--ZOOM-->
                     <div class="zoom_pane">
                         <div data-bind="click:function(){$root.WorkArea.SvgImage.setZoom('zoomIn')}" title="Увеличить"><i class="icon zoom_in"></i></div>
@@ -106,18 +173,28 @@
                     </div>
                     <!--ZOOM-->
                     <svg id="editor_svg"></svg>
-                    <div class="big_loader" data-bind="css:{hidden:WorkArea.isReady}"></div>
+                    <div class="big_loader" data-bind="css:{hidden:WorkArea.isReady}">
+                        <div id="complete_process"></div>
+                    </div>
                 </div>
                 <div class="editor_base_after" data-bind="if:WorkArea.fullScreen">
                     <div>
                         <div class="after_left_column">
                             <h1>Технические показатели</h1>
-                            <div>
+                            <div data-bind="ifnot:luminousAverage()">
                                 <div class="label">Светодиоды:</div>
                                 <div class="data" data-bind="foreach:usedDiodTypes">
                                     <div>
                                         <span data-bind="text:$index()+1"></span>.&nbsp;
                                         <span data-bind="text:name"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="label">Материал:</div>
+                                <div class="data">
+                                    <div>
+                                        <span> Акрил молочный 3 мм</span>
                                     </div>
                                 </div>
                             </div>
@@ -127,8 +204,13 @@
                                 <div class="info_block">
                                     <h3>Количество<br> светодиодов</h3>
                                     <span class="digit_dark" data-bind="text:pointsCount">0</span>
+                                    <span class="points">Шт</span>
                                 </div>
-
+                                <div class="info_block">
+                                    <h3>Освещенность<br> на лицевой части</h3>
+                                    <span class="digit_dark" data-bind="text:(+$root.luminousMax()+$root.luminousMin())/2">0</span>
+                                    <span class="points">Лк</span>
+                                </div>
                                 <div class="info_block">
                                     <h3>Потребляемая<br> мощность</h3>
                                     <span class="digit_dark" data-bind="text:pointsWattCount">0</span>
@@ -144,22 +226,26 @@
                                 <div class="info_block">
                                     <h3>Количество<br> блоков</h3>
                                     <span class="digit_dark" data-bind="text:powerSupplyTotalCount">0</span>
+                                    <span class="points">Шт</span>
                                 </div>
 
                                 <div class="info_block">
                                     <h3>Сила тока<br> потребления</h3>
                                     <span class="digit_dark" data-bind="text:powerSupplyAmperageTotal">0</span>
+                                    <span class="points">А</span>
                                 </div>
-
+                                <!-- ko ifnot: luminousAverage() -->
                                 <div class="info_block">
-                                    <h3>Макс. глубина<br> конструкции</h3>
-                                    <span class="digit_dark" data-bind="text:greedDeep">0</span>
+                                    <h3>Общая глубина<br> конструкции</h3>
+                                    <span class="digit_dark" data-bind="text:greedDeep() || 0">0</span>
+                                    <span class="points">мм</span>
                                 </div>
-
-                                <div class="info_block">
-                                    <h3>Световой<br> поток</h3>
-                                    <span class="digit_dark" data-bind="text:luminousMax">0</span>
+                                <!-- /ko -->
+                                <!-- ko if: luminousAverage() -->
+                                <div class="info_block" >
+                                    <span class="diodes_list_ico" data-bind="click:toggleShowLuminousWindow"></span>
                                 </div>
+                                <!-- /ko -->
                             </div>
                             <div class="bottom_block">
                                 <div class="info_block">
@@ -175,9 +261,9 @@
                                 </div>
 
                                 <!-- /ko -->
-                                <div class="info_block">
-                                    <div>Поверхность: <span>Матовое стекло</span></div>
-                                </div>
+                                <!--<div class="info_block">-->
+                                    <!--<div>Поверхность: <span>Матовое стекло</span></div>-->
+                                <!--</div>-->
                             </div>
                         </div>
                     </div>
@@ -185,13 +271,21 @@
             </div>
             <div class="result_out">
                 <div class="result_block_holder">
-                    <div class="result_block">
+                    <div class="result_block" style="width: 320px;">
                         <div class="top">Общее количество<br> светодиодов</div>
                         <div class="bottom">
                             <span class="digit_dark" data-bind="text:pointsCount">0</span>
+                            <span class="points">Шт</span>
                         </div>
                     </div>
-                    <div class="result_block">
+                    <div class="result_block" style="width: 280px;">
+                        <div class="top">Освещённость<br>на лицевой части</div>
+                        <div class="bottom">
+                            <span class="digit_dark" data-bind="text:$root.luminousValue">0</span>
+                            <span class="points" style="margin-right: -20px;">Лк</span>
+                        </div>
+                    </div>
+                    <div class="result_block" style="width: 200px;margin-right: -50px;padding-left: 30px">
                         <div class="top">Потребляемая<br> мощность</div>
                         <div class="bottom">
                             <span class="digit_dark" data-bind="text:pointsWattCount">0</span>
@@ -204,117 +298,158 @@
                     <div class="file_name">Фаил: <span data-bind="text:File.fileName"></span></div>
                     <div class="text_block">
                         <div class="text_block_item">
-                            <div>Размеры: <span data-bind="text:size">0</span><span> мм</span></div>
-                            <div>Общий периметр: <span data-bind="text:perimetr">0</span><span> мм</span></div>
-                            <div>Общая глубина: <span data-bind="text:greedDeep() || '0'">0</span><span> мм</span></div>
+                            <table>
+                                <tr><td>Размеры:</td><td><span data-bind="text:size">0</span><span> мм</span></td></tr>
+                                <tr><td style="padding-right: 20px;">Общий периметр:</td><td><span data-bind="text:perimetr">0</span><span> мм</span></td></tr>
+                                <tr><td>Общая глубина:</td><td><span data-bind="text:totalDeep() || '0'">0</span><span> мм</span></td></tr>
+                            </table>
+                            <!--<div>Размеры:&nbsp;<span data-bind="text:size">0</span><span> мм</span></div>-->
+                            <!--<div>Общий периметр:&nbsp;<span data-bind="text:perimetr">0</span><span> мм</span></div>-->
+                            <!--<div>Общая глубина:&nbsp;<span data-bind="text:totalDeep() || '0'">0</span><span> мм</span></div>-->
                         </div>
-
                     </div>
                     <div class="text_block">
-                        <div data-bind="foreach:usedDiodTypes">
-                            <div class="text_block_item">
-                                <div>Светодиоды: <span data-bind="text:name">-</span></div>
-                                <div>Расстояние между центрами<br>
-                                    светодиодов: <span data-bind="text:distance">0</span><span> мм</span></div>
-                                <div>Размер светодиода: <span data-bind="text:size">0</span><span> мм</span></div>
-                                <div>Глубина: <span data-bind="text:$root.greedDeep() || '0'">0</span><span> мм</span></div>
-                                <div>Поверхность: <span> Матовая </span></div>
-                                <div>Количество: <span data-bind="text:itemsCount">0</span><span> Шт</span></div>
-                                <div>Световой поток: <span data-bind="text:luminous">0</span><span> Лм</span></div>
-                            </div>
-                        </div>
-                        <div data-bind="foreach:usedPowerSupplyTypes">
-                            <div class="text_block_item">
-                                <div>Блок питания: <span data-bind="text:name">-</span></div>
-                                <div>Характеристики: <span data-bind="text:characteristic">-</span></div>
-                                <div>Необходимая мощность<br>
-                                    блока питания: <span data-bind="text:power">0</span><span> Вт</span></div>
-                                <!--<div>Глубина: <span>0</span><span> мм</span></div>-->
-                                <div>Количество: <span data-bind="text:itemsCount">0</span><span> Шт</span></div>
-                                <div>Сила тока потребления: <span data-bind="text:(amperage * itemsCount).toFixed(2)">0</span><span> А</span></div>
-                            </div>
+                        <div class="text_block_item">
+                            <table>
+                                <tr><td>Материал:</td><td><span >Акрил молочный 3 мм</span></td></tr>
+                                <!--<tr><td style="padding-right: 20px;">Освещенность max:</td><td><span data-bind="text:luminousMax">0</span><span> Лк</span></td></tr>-->
+                                <!--<tr><td style="padding-right: 20px;">Освещенность min:</td><td><span data-bind="text:luminousMin">0</span><span> Лк</span></td></tr>-->
+                            </table>
+
                         </div>
                     </div>
+                    <!--<div class="text_block">-->
+                        <!--<div data-bind="foreach:usedDiodTypes">-->
+                            <!--<div class="text_block_item">-->
+                                <!--<div>Светодиоды: <span data-bind="text:name">-</span></div>-->
+                                <!--<div>Расстояние между центрами<br>-->
+                                    <!--светодиодов: <span data-bind="text:distance">0</span><span> мм</span></div>-->
+                                <!--<div>Размер светодиода: <span data-bind="text:size">0</span><span> мм</span></div>-->
+                                <!--<div>Глубина: <span data-bind="text:$root.greedDeep() || '0'">0</span><span> мм</span></div>-->
+                                <!--<div>Поверхность: <span> Матовая </span></div>-->
+                                <!--<div>Количество: <span data-bind="text:itemsCount">0</span><span> Шт</span></div>-->
+                                <!--<div>Световой поток: <span data-bind="text:luminous">0</span><span> Лм</span></div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div data-bind="foreach:usedPowerSupplyTypes">-->
+                            <!--<div class="text_block_item">-->
+                                <!--<div>Блок питания: <span data-bind="text:name">-</span></div>-->
+                                <!--<div>Характеристики: <span data-bind="text:characteristic">-</span></div>-->
+                                <!--<div>Необходимая мощность<br>-->
+                                    <!--блока питания: <span data-bind="text:power">0</span><span> Вт</span></div>-->
+                                <!--&lt;!&ndash;<div>Глубина: <span>0</span><span> мм</span></div>&ndash;&gt;-->
+                                <!--<div>Количество: <span data-bind="text:itemsCount">0</span><span> Шт</span></div>-->
+                                <!--<div>Сила тока потребления: <span data-bind="text:(amperage * itemsCount).toFixed(2)">0</span><span> А</span></div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
                     <div class="clear"></div>
+                </div>
+                <div class="text-table">
+                    <div class="table_left_bar_info" data-bind="if:usedItemsList().length">
+                        <div class="result_block">
+                            <div class="top">Расчет №</div>
+                            <div class="bottom">
+                                <span class="slim_digit" data-bind="text:User.projectNumber">0001</span>
+                            </div>
+                        </div>
+                        <div class="user_stick">
+                            <!-- ko ifnot: User.isEmpty && User.isEmpty() -->
+                            <div><span>Имя:</span><span data-bind="text:User.userName"></span></div>
+                            <div><span>Mail:</span><span data-bind="text:User.userEmail"></span></div>
+                            <div><span>Тел:</span><span data-bind="text:User.userPhone"></span></div>
+                            <br>
+                            <div>
+                                <a href="#" data-bind="click:function(){$root.Dialog.showDialog(true)}">Изменить</a>
+                            </div>
+                            <!-- /ko -->
+                        </div>
+                    </div>
+                    <div class="thead" data-bind="if:usedItemsList().length, attr:{style:usedItemsList().length > 0 ? 'height:60px;':'height:0px'}">
+                        <div class="tcell cell1">№</div>
+                        <div class="tcell cell2">Наименование</div>
+                        <div class="tcell cell3">Кол-во, шт</div>
+                        <div class="tcell cell4">Цена, руб/шт</div>
+                        <div class="tcell cell5">Стоимость, руб</div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="" data-bind="foreach:usedItemsList,css:{tbody:usedItemsList().length}">
+                        <div class="trow">
+                            <div class="tcell cell1" data-bind="text:$index()+1"></div>
+                            <div class="tcell cell2">
+                                <span data-bind="text:desc"></span>
+                                <span data-bind="text:name"></span>
+                                <span data-bind="text:data" class="greyc"></span>
+                            </div>
+                            <div class="tcell cell3" data-bind="text:count"></div>
+                            <div class="tcell cell4" data-bind="text:price"></div>
+                            <div class="tcell cell5" data-bind="text:total"></div>
+                            <div class="clear"></div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
                 </div>
                 <div class="result_block_holder summ_result">
                     <div class="result_block">
-                        <div class="top">Расчет №</div>
                         <div class="bottom">
-                            <span class="slim_digit" data-bind="text:User.projectNumber">0001</span>
+                            <span class="slim_digit">Итого</span>
                         </div>
+                        <div class="afterbottom">Стоимость подсветки (с НДС 18%)</div>
                     </div>
                     <div class="result_block summ_result">
-                        <div class="separate_result">
-                            <div class="result_line">
-                                <div>Светодиоды</div>
-                                <div class="fbold"><span data-bind="digitext: diodTotalCost"></span> р.</div>
-                            </div>
-                            <div class="result_line">
-                                <div>Блоки питания</div>
-                                <div class="fbold"><span data-bind="digitext: powerSupplyTotalCost"></span> р.</div>
-                            </div>
-                        </div>
-                        <div class="top"></div>
-                        <div class="bottom">
-                            <span >Итог   </span>
-                            <span>
+                        <div class="bottom" style="text-align: right;">
+                            <span style="width: 100%;">
                                 <span class="slim_digit" data-bind="digitext:projectCost">0</span>
                                 <span class="slim_digit"> р.</span>
                             </span>
                         </div>
                     </div>
-                    <div class="user_stick">
-                        <!-- ko ifnot: User.isEmpty && User.isEmpty() -->
-                        <div><span>Имя:</span><span data-bind="text:User.userName"></span></div>
-                        <div><span>Mail:</span><span data-bind="text:User.userEmail"></span></div>
-                        <div><span>Тел:</span><span data-bind="text:User.userPhone"></span></div>
-                        <br>
-                        <div>
-                            <a href="#" data-bind="click:function(){$root.Dialog.showDialog(true)}">Изменить</a>
-                        </div>
-                        <!-- /ko -->
-                        <!-- ko if: User.isEmpty && User.isEmpty() -->
-                        <div>
-                            <a href="#" data-bind="click:function(){$root.Dialog.showDialog(true)}">Отправить мне</a>
-                        </div>
-                        <div class="comment" style="margin-right: -20px">
-                            Выслать результаты расчетов<br/> на почту.
-                        </div>
-                        <!-- /ko -->
-                    </div>
                 </div>
-                <div class="sent_manager">
+                <div class="sent_manager" data-bind="if:usedItemsList().length">
+
                     <div>
-                        <div class="blue_button button" data-bind="click:$root.sentToManager">Отправить менеджеру</div>
-                        <div class="fitalic">Отправить заказ менеджеру в производство.</div>
+                        <div>
+                            <div class="blue_button button" data-bind="click:$root.sentToManager">Отправить менеджеру</div>
+                            <div class="fitalic">Отправить заказ менеджеру в производство.</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <div class="blue_button button" data-bind="click:$root.sentToUser">Отправить мне</div>
+                            <div class="fitalic">Выслать результаты расчетов на почту.</div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- ko if: usedItemsList().length-->
+                <div class="stick">
+                    <i class="mark icon"></i>
+                    Если Вас не устраивает данный результат,&nbsp;Вы можете&nbsp;позвонить нам по телефонам:
+                    <br>
+                    <b>Москва:</b>
+                    +7 (495) 980-01-67,
+                    +7 (495) 963-41-57,
+                    <br>
+                    <b>Иркутск:</b>
+                    +7 (902) 578-08-00.
+                    <div class="stick_link">
+                        <a href="mailto:info@neonlab.ru?subject=Сообщение от пользователя из приложения CalcuLed">Написать нам</a>
+                        <span class="vr"></span>
+                        <a href="http://calculed.reformal.ru">Поддержка</a>
                     </div>
                 </div>
+                <!-- /ko -->
             </div>
         </div>
         <div class="clear"></div>
-        <div class="stick">
-            <i class="mark icon"></i>
-            Передумали расставлять
-            светодиоды, позвоните <br>
-            нам по телефонам:
-            <br>
-            <b>Москва:</b>
-            <br>
-            +7 (495) 980-01-67, <br>
-            +7 (495) 963-41-57,
-            <br>
-            <b>Иркутск:</b>
-            <br>
-            +7 (902) 578-08-00.
-            <div class="stick_link">
-                <a href="mailto:info@neonlab.ru?subject=Сообщение от пользователя из приложения CalcuLed">Написать нам</a>
-                <span class="vr"></span>
-                <a href="http://calculed.reformal.ru">Поддержка</a>
-            </div>
-        </div>
         <div class="footer">
-           © ООО «НеонЛаб» &ndash; световая, наружная, светодиодная реклама, 2005-2014
+            <div>© ООО «НеонЛаб» &ndash; световая, наружная, светодиодная реклама.&nbsp;2005-2014</div>
+            <div style="text-align: right">
+                <div style="text-align: left;display: inline-block; color: #bbb; font-size: 11px;margin-top: 30px;margin-bottom: 35px;">
+                    CalcuLed создан —<br>
+                    <a href = "http://www.studiovsemoe.com/" style="color: #bbb">www.Studiovsemoe.com</a>
+                </div>
+            </div>
         </div>
     </div>
     <div class="hidden" data-bind="if:Dialog.showModal, css:{'show_dialog':Dialog.showModal,hidden:!Dialog.showModal()}">
@@ -332,7 +467,7 @@
     </div>
     <div class="hidden" data-bind="if:Dialog.showDialog, css:{'show_dialog':Dialog.showDialog,hidden:!Dialog.showDialog}">
         <div class="dialog_holder">&nbsp;</div>
-        <div class="dialog_body" >
+        <div class="dialog_body" data-bind="attr:{style:'top:'+ Dialog.cssTop()+'px;'}">
             <div class="dialog_close" data-bind="click:function(){$__app.Dialog.showDialog(false)}"></div>
             <div class="user_info_dialog">
                 <div class="img_holder">
@@ -358,12 +493,17 @@
                     </div>
                     <div class="horisontal_form_element">
                         <div class="label"></div>
-                        <div class="button blue_button" data-bind="click:$root.User.saveUserInfo">ПРОДОЛЖИТЬ</div>
+                        <div class="button blue_button" data-bind="click:$root.User.saveUserInfo, css:{'disabled':User.disabledButton}">ПРОДОЛЖИТЬ</div>
                     </div>
                 </div>
                 <div class="clear"></div>
             </div>
         </div>
+    </div>
+    <div id="fakeFrame">
+        <script src="js/libs/rgbcolor.js"></script>
+        <script src="js/libs/StackBlur.js"></script>
+        <script src="js/libs/canvg.js?v1"></script>
     </div>
     <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>-->
     <script src="js/libs/jquery.min.js"></script>
@@ -379,5 +519,71 @@
     <script src="js/ViewModel/DialogViewModel.js"></script>
     <script src="js/ViewModel/ApplicationViewModel.js"></script>
     <script src="js/main.js"></script>
+
+    <!-- Yandex.Metrika counter -->
+    <script src="//mc.yandex.ru/metrika/watch.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        try { var yaCounter1321971 = new Ya.Metrika({id:1321971,
+        webvisor:true,
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true});
+        } catch(e) { }
+    </script>
+    <noscript><div><img src="//mc.yandex.ru/watch/1321971" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+
+
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-11241997-1']);
+        _gaq.push(['_addOrganic','images.yandex.ru','text',true]);
+        _gaq.push(['_addOrganic','blogsearch.google.ru','q',true]);
+        _gaq.push(['_addOrganic','blogs.yandex.ru','text',true]);
+        _gaq.push(['_addOrganic','go.mail.ru','q']);
+        _gaq.push(['_addOrganic','nova.rambler.ru','query']);
+        _gaq.push(['_addOrganic','nigma.ru','s']);
+        _gaq.push(['_addOrganic','webalta.ru','q']);
+        _gaq.push(['_addOrganic','aport.ru','r']);
+        _gaq.push(['_addOrganic','poisk.ru','text']);
+        _gaq.push(['_addOrganic','liveinternet.ru','q']);
+        _gaq.push(['_addOrganic','quintura.ru','request']);
+        _gaq.push(['_addOrganic','search.qip.ru','query']);
+        _gaq.push(['_addOrganic','gogo.ru','q']);
+        _gaq.push(['_addOrganic','ru.yahoo.com','p']);
+        _gaq.push(['_addOrganic','market.yandex.ru','text']);
+        _gaq.push(['_addOrganic','price.ru','query']);
+        _gaq.push(['_addOrganic','tyndex.ru','query']);
+        _gaq.push(['_addOrganic','torg.mail.ru','q']);
+        _gaq.push(['_addOrganic','tiu.ru','query']);
+        _gaq.push(['_addOrganic','tech2u.ru','text']);
+        _gaq.push(['_addOrganic','goods.marketgid.com','query']);
+        _gaq.push(['_addOrganic','poisk.ngs.ru','q']);
+        _gaq.push(['_addOrganic','akavita.by','z']);
+        _gaq.push(['_addOrganic','tut.by','query']);
+        _gaq.push(['_addOrganic','all.by','query']);
+        _gaq.push(['_addOrganic','meta.ua','q']);
+        _gaq.push(['_addOrganic','bigmir.net','q']);
+        _gaq.push(['_addOrganic','i.ua','q']);
+        _gaq.push(['_addOrganic','online.ua','q']);
+        _gaq.push(['_addOrganic','a.ua','query']);
+        _gaq.push(['_addOrganic','ukr.net','q']);
+        _gaq.push(['_addOrganic','search.com.ua','q']);
+        _gaq.push(['_addOrganic','search.ua','area']);
+        _gaq.push(['_addOrganic','search.ukr.net','q']);
+        _gaq.push(['_addOrganic','sm.aport.ru','key']);
+        _gaq.push(['_trackPageview']);
+        _gaq.push(['_trackPageLoadTime']);
+        setTimeout('_gaq.push([\'_trackEvent\', \'NoBounce\', \'Over 10 seconds\'])',10000);
+        (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+    <!-- developed by KMC korolev.m.c@gmail.com -->
+
+
 </body>
 </html>
