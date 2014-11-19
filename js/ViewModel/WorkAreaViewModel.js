@@ -376,6 +376,9 @@ var WorkAreaViewModel = function (app) {
                     self.SvgImage.diodGroup.add(p);
                     if (i == points.length - 1) {
                         app.WorkArea.isReady(true);
+                        if(app.User.isEmpty()){
+                            app.Dialog.showDialog(true);
+                        }
                         self.diodesArr(points);
                         clearTimeout(app.testUseTimeOut);
                         if(!app.useBetter){
